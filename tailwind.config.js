@@ -14,6 +14,9 @@ export default {
             fontFamily: {
                 sans: ['Poppins', ...defaultTheme.fontFamily.sans],
             },
+            boxShadow: {
+               'customblue': '0px 4px 30px rgba(42, 34, 212, 0.5)'
+            },
         },
     },
 

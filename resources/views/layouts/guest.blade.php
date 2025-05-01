@@ -16,37 +16,30 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="flex items-center mt-5 ms-5">
-        <div class="w-8 md:w-12 h-auto ">
+<body class="font-sans antialiased mx-20 mt-4 ">
+    <div class="flex items-center gap-2">
+        <div class="w-7 2xl:w-12 h-auto ">
             <img src="{{ asset('images/PNBLogo.png') }}" alt="">
         </div>
-        <div class="font-extrabold text-sm md:text-2xl ">
+        <div class="font-extrabold text-sm 2xl:text-2xl ">
             <p> PNB Pusat Karir</p>
         </div>
     </div>
-    <div class="flex">
-        <div class="md:mt-52 md:ms-96">
-            <div class="font-extrabold text-lg md:text-4xl">
-                <p>Seamat Datang !</p>
+    <div class="flex justify-between 2xl:mt-10">
+        <div class="flex flex-col md:mt-28 2xl:mt-32 lg:ms-20 px-10">
+            <p class="font-semibold text-3xl 2xl:text-5xl my-2">Selamat Datang !</p>
+            <p class="my-3 text-md 2xl:text-xl">Temukan peluang baru atau rekrut talenta <br> terbaik bersama kami.</p>
+            <p class="text-sm">Masuk ke akun Anda dan mari lanjutkan petualangan ini!</p>
+            <div class=" hidden lg:flex ms-52  mt-10 2xl:mt-20 lg:w-[300px] 2xl:w-[480px]">
+                <img src="{{ asset('images/HumanLogin.png') }}" alt="3D Human" class="">
             </div>
-            <div class="">
-                <p>Temukan peluang baru atau rekrut talenta terbaik bersama kami</p>
-            </div>
-            <div class="">
-                <p>Masuk ke akun Anda dan mari lanjutkan petualangan ini!</p>
-            </div>
-            <img src="{{ asset('images/HumanLogin.png') }}" alt="3D Human" class="w-96">
         </div>
-        <div class="">
-            <form action="">
-                <input type="text">
-            </form>
+        <div class="w-1/2 2xl:w-1/4 mx-20 2xl:me-60 2xl:mb-72 mb-20 flex flex-col justify-center items-center">
+            <div class="w-full sm:max-w-md  sm:rounded-lg">
+                {{ $slot }}
+            </div>
         </div>
-    </div>
-    {{-- <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-        {{ $slot }}
-    </div> --}}
 </body>
+</div>
 
 </html>
