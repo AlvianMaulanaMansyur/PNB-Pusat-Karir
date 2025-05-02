@@ -27,11 +27,11 @@
     </div>
     <div
         class="flex flex-col lg:flex-row justify-center items-center lg:items-start md:justify-between mt-10 2xl:mt-20">
-        <div class="flex flex-col lg:mt-24 2xl:mt-32 lg:ms-20 md:px-10">
+        <div class="flex flex-col lg:mt-24 2xl:mt-32 lg:ms-20 md:px-10 sm:max-w-md sm:px-0">
             <p class="font-semibold text-3xl 2xl:text-5xl mb-2">Selamat Datang !</p>
             <p class="my-3 text-md 2xl:text-xl">Temukan peluang baru atau rekrut talenta <br> terbaik bersama kami.</p>
             <p class="text-sm">Masuk ke akun Anda dan mari lanjutkan petualangan ini!</p>
-            <div class=" hidden lg:flex ms-0 2xl:ms-48  mt-5 2xl:mt-20 lg:w-[300px] 2xl:w-[480px]">
+            <div class=" hidden lg:flex ms-48 2xl:ms-48  mt-5 2xl:mt-20 lg:w-[300px] 2xl:w-[480px]">
                 <img src="{{ asset('images/HumanLogin.png') }}" alt="3D Human">
             </div>
         </div>
