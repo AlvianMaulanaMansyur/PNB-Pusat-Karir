@@ -34,7 +34,7 @@
             </p>
             <p class="text-sm">Sudah terdaftar?</p>
             <a href="{{ route('login') }}" class="">Masuk ke akun Anda!</a>
-            <div class=" hidden lg:flex  self-center lg:w-[300px] 2xl:w-[300px]">
+            <div class=" hidden lg:flex self-center  lg:w-[200px] 2xl:w-[300px]">
                 <img src="{{ asset('images/HumanRegister.png') }}" alt="3D Human">
             </div>
         </div>
@@ -46,7 +46,7 @@
             </div>
         </div>
     </div>
-</body>
+    @stack('scripts')
 </body>
 
 </div>
