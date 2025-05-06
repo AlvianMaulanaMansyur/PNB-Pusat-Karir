@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased mx-10 md:mx-20 mt-4 ">
+<body class="font-sans antialiased mx-10 md:mx-20 mt-4 pb-20">
     <div class="flex items-center gap-2">
         <div class="w-7 2xl:w-12 h-auto ">
             <img src="{{ asset('images/PNBLogo.png') }}" alt="">
@@ -32,8 +32,8 @@
             <p class="font-semibold text-3xl 2xl:text-5xl mb-2">Buat Akun Pemberi Kerja</p>
             <p class="my-3 text-md 2xl:text-xl">Kelola lowongan dan kandidat Anda dengan solusi rekrutmen terpercaya.
             </p>
-            <p class="text-sm">Sudah terdaftar?</p>
-            <a href="{{ route('login') }}" class="">Masuk ke akun Anda!</a>
+            <p class="text-md ">Sudah terdaftar?</p>
+            <a href="{{ route('login') }}" class="underline font-bold text-purple-800 text-lg">Masuk ke akun Anda!</a>
             <div class=" hidden lg:flex self-center  lg:w-[200px] 2xl:w-[300px]">
                 <img src="{{ asset('images/HumanRegister.png') }}" alt="3D Human">
             </div>

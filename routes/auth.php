@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 use phpDocumentor\Reflection\Location;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+    Route::get('register', [RegisteredUserController::class, 'employer'])
+        ->name('register-employer');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::post('register', [RegisteredUserController::class, 'EmployerDataStore']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
@@ -40,6 +40,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/get-cities', [LocationController::class, 'getCities']);
 
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)

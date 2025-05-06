@@ -1,20 +1,21 @@
 <x-employer-register-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register-employer') }}">
         @csrf
         <div class="lg:grid col-1 md:grid-col-4 lg:grid-cols-6 gap-2 lg:max-w-3xl  sm:max-w-xl flex flex-col mx-auto">
             <!-- Name -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2  ">
                 <x-label-required for="name" :value="__('Nama Perusahaan')" />
-                <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')"
-                    required autofocus autocomplete="name" />
+                <x-text-input id="name" class="block mt-1 w-full" type="text" name="nameCompany" :value="old('name')"
+                    required autofocus autocomplete="nameCompany" />
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <!-- No Pendaftaran Bisnis -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-required-hint-label for="noPendaftaran" :value="__('No Pendaftaran Bisnis')" :hint="__('Nomor resmi terdaftar yang dikeluarkan oleh kementrian setempat')" />
-                <x-text-input id="noPendaftaran" class="block mt-1 w-full" type="text" :value="old('noPendaftaranm')" />
-                <x-input-error :messages="$errors->get('noPendaftaran')" class="mt-2" />
+                <x-text-input id="noPendaftaranBisnis" class="block mt-1 w-full" type="text"
+                    name="noPendaftaranBisnis" :value="old('noPendaftaranBisnis')" />
+                <x-input-error :messages="$errors->get('noPendaftaranBisnis')" class="mt-2" />
             </div>
 
             <!-- Industri -->
@@ -29,7 +30,7 @@
                 <x-required-hint-label for="website" :value="__('Website Perusahaan')" :hint="__('Harus menyertakan https://')" />
                 <x-text-input id="website" class="block mt-1 w-full" type="text" name="website" :value="old('website')"
                     required autocomplete="website" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <x-input-error :messages="$errors->get('website')" class="mt-2" />
             </div>
 
             <!-- Jenis Organisasi Perusahaan -->
@@ -41,9 +42,9 @@
 
             {{-- Kekuatan Staff --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
-                <x-label-required for="industri" :value="__('Industri')" />
-                <x-dropdown.industry-dropdown name="industry" :value="old('industry')" class="block mt-1 w-full" />
-                <x-input-error :messages="$errors->get('industry')" class="mt-2" />
+                <x-label-required for="staff" :value="__('Kekuatan Staff')" />
+                <x-dropdown.staff-strength-dropdown name="kekuatan" :value="old('kekuatan')" class="block mt-1 w-full" />
+                <x-input-error :messages="$errors->get('kekuatan')" class="mt-2" />
             </div>
 
             {{-- Negara --}}
