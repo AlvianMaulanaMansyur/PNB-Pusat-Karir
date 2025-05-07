@@ -5,7 +5,7 @@
             <!-- Name -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2  ">
                 <x-label-required for="name" :value="__('Nama Perusahaan')" />
-                <x-text-input id="name" class="block mt-1 w-full" type="text" name="nameCompany" :value="old('name')"
+                <x-text-input id="name" class="block mt-1 w-full" type="text" name="nameCompany" :value="old('nameCompany')"
                     required autofocus autocomplete="nameCompany" />
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
@@ -29,7 +29,7 @@
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-required-hint-label for="website" :value="__('Website Perusahaan')" :hint="__('Harus menyertakan https://')" />
                 <x-text-input id="website" class="block mt-1 w-full" type="text" name="website" :value="old('website')"
-                    required autocomplete="website" />
+                    required />
                 <x-input-error :messages="$errors->get('website')" class="mt-2" />
             </div>
 
@@ -43,8 +43,8 @@
             {{-- Kekuatan Staff --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="staff" :value="__('Kekuatan Staff')" />
-                <x-dropdown.staff-strength-dropdown name="kekuatan" :value="old('kekuatan')" class="block mt-1 w-full" />
-                <x-input-error :messages="$errors->get('kekuatan')" class="mt-2" />
+                <x-dropdown.staff-strength-dropdown name="staff" :value="old('staff')" class="block mt-1 w-full" />
+                <x-input-error :messages="$errors->get('staff')" class="mt-2" />
             </div>
 
             {{-- Negara --}}
@@ -125,27 +125,25 @@
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
-            <!-- Email Address -->
+            <!-- telephone Address -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
-                <x-label-required for="email" :value="__('Email')" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
-                    :value="old('email')" required autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <x-label-required for="phone" :value="__('Phone Number')" />
+                <x-text-input id="phone" name="phone" type="number" class="block mt-1 w-full" required />
+                <x-input-error :messages="$errors->get('phone')" class="mt-2" />
             </div>
 
             <!-- Username -->
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
-                <x-label-required for="email" :value="__('Username')" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                <x-label-required for="username" :value="__('Username')" />
+                <x-text-input id="username" class="block mt-1 w-full" type="text" name="username"
                     :value="old('email')" required autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
             <!-- Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password" :value="__('Password')" />
-                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                    autocomplete="new-password" />
+                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
@@ -153,7 +151,7 @@
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password_confirmation" :value="__('Confirm Password')" />
                 <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                    name="password_confirmation" required autocomplete="new-password" />
+                    name="password_confirmation" required />
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
@@ -169,6 +167,7 @@
         <script>
             $(document).ready(function() {
                 $.get('/get-countries', function(data) {
+                    // console.log(data);
                     data.forEach(function(country) {
                         $('#country').append(new Option(country.name, country.name));
                     });
@@ -193,4 +192,4 @@
         </script>
     @endpush
 
-    </x-employer-register-lay>
+</x-employer-register-layout>

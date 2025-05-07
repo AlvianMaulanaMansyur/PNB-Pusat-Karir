@@ -38,7 +38,6 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/get-countries', [LocationController::class, 'getCountries']);
     Route::get('/get-cities', [LocationController::class, 'getCities']);
-
 });
 
 

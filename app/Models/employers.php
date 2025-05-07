@@ -11,10 +11,33 @@ class employers extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'nameCompany',
-        'noPendaftaranBisnis',
+        'company_name',
+        'business_registration_number',
         'industry',
-        'website',
-
+        'company_website',
+        'organization_type',
+        'staff_strength',
+        'country',
+        'city',
+        'company_profile',
+        'salutation',
+        'first_name',
+        'last_name',
+        'suffix',
+        'job_title',
+        'department',
+        'phone',
+        'email',
     ];
-}
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'business_registration_number',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed', 
+    ];
+};

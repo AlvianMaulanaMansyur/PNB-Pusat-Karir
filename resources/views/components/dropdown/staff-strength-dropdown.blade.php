@@ -1,5 +1,5 @@
 @props([
-    'name' => 'kekuatan',
+    'name' => 'staff',
     'selected' => null,
 ])
 
@@ -19,7 +19,7 @@
 <div>
     <select name="{{ $name }}" id="{{ $name }}"
         {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
-        <option value="">-- Pilih Kekuatan --</option>
+        <option value="">-- Pilih Kekuatan Staff --</option>
         @foreach ($kekuatan as $key => $value)
             <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>{{ $value }}</option>
         @endforeach

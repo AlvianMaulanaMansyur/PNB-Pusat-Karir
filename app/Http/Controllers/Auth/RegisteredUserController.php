@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\employers;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -35,24 +36,43 @@ class RegisteredUserController extends Controller
             // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
             'nameCompany' => ['required', 'string', 'max:255'],
-            'noPendaftaranBisnis' => ['required', 'bigInt', 'max:255', 'unique:'.User::class],
+            'business_registration_number' => ['required', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class, ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'password_confirmation' => ['required', 'string', 'same:password'],
+            'password_confirmation' => ['required', 'string', 'same:password',],
+            'phone' => ['required','numeric' , ],
 
         ]);
 
-        $user = User::create([
-            'nameCompany' => $request->nameCom,
+
+        $user = employers::create([
+            'company_name' => $request->nameCompany,
+            'business_registration_number' => $request->noPendaftaranBisnis,
+
+            'industry'=> $request->industry,
+            'company_website' => $request->website,
+            'organization_type' => $request->organisasi,
+            'staff_strength' => $request->staff,
+            'country' => $request->negara,
+            'city' => $request->kota,
+            'company_profile' => $request->profil_perusahaan,
+            'salutation' => $request->sapaan,
+            'first_name' => $request->nama_depan,
+            'last_name' => $request->nama_belakang,
+            'suffix' => $request->akhiran,
+            'job_title' => $request->pekerjaan,
+            'department' => $request->departemen,
             'email' => $request->email,
+            'phone' => $request->telepon,
             'password' => Hash::make($request->password),
         ]);
 
+        dd($user);
+        dd($request->all());
+
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('login', absolute: false));
     }
 }
