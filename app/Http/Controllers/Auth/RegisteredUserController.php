@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -36,43 +37,49 @@ class RegisteredUserController extends Controller
             // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
             'nameCompany' => ['required', 'string', 'max:255'],
-            'business_registration_number' => ['required', 'unique:'.User::class],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class, ],
+            // 'business_registration_number' => ['required', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:' . User::class,],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
-            'phone' => ['required','numeric' , ],
+            'phone' => ['required', 'numeric',],
 
         ]);
 
+        DB::beginTransaction();
 
-        $user = employers::create([
-            'company_name' => $request->nameCompany,
-            'business_registration_number' => $request->noPendaftaranBisnis,
-
-            'industry'=> $request->industry,
-            'company_website' => $request->website,
-            'organization_type' => $request->organisasi,
-            'staff_strength' => $request->staff,
-            'country' => $request->negara,
-            'city' => $request->kota,
-            'company_profile' => $request->profil_perusahaan,
-            'salutation' => $request->sapaan,
-            'first_name' => $request->nama_depan,
-            'last_name' => $request->nama_belakang,
-            'suffix' => $request->akhiran,
-            'job_title' => $request->pekerjaan,
-            'department' => $request->departemen,
-            'email' => $request->email,
-            'phone' => $request->telepon,
-            'password' => Hash::make($request->password),
-        ]);
-
-        dd($user);
-        dd($request->all());
-
-        event(new Registered($user));
-
-        return redirect(route('login', absolute: false));
+        try {
+            $user = User::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'employer',
+                'is_active' => false,
+            ]);
+            $employer = employers::create([
+                'user_id' => $user->id,
+                'company_name' => $request->nameCompany,
+                'business_registration_number' => $request->business_registration_number,
+                'industry' => $request->industry,
+                'company_website' => $request->website,
+                'organization_type' => $request->organisasi,
+                'staff_strength' => $request->staff,
+                'country' => $request->negara,
+                'city' => $request->kota,
+                'company_profile' => $request->profil_perusahaan,
+                'salutation' => $request->sapaan,
+                'first_name' => $request->nama_depan,
+                'last_name' => $request->nama_belakang,
+                'suffix' => $request->akhiran,
+                'job_title' => $request->pekerjaan,
+                'department' => $request->departemen,
+                'phone' => $request->telepon,
+            ]);
+            DB::commit();
+            return redirect(route('login', absolute: false));
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal mendaftar, silahkan coba lagi');
+        }
     }
 }

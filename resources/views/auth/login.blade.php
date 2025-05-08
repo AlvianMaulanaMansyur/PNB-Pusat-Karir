@@ -19,12 +19,11 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-
             <x-text-input id="password" class="block mt-1 w-full md:text-sm 2xl:text-lg" type="password"
                 name="password" required autocomplete="current-password" placeholder="Masukan Password" />
-
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
+        
         <div class="flex flex-col items-end  mt-4">
             @if (Route::has('password.request'))
                 <a class="text-xs 2xl:text-sm text-gray-600 hover:text-purple-900 hover:underline rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

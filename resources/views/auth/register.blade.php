@@ -4,23 +4,23 @@
         <div class="lg:grid col-1 md:grid-col-4 lg:grid-cols-6 gap-2 lg:max-w-3xl  sm:max-w-xl flex flex-col mx-auto">
             <!-- Name -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2  ">
-                <x-label-required for="name" :value="__('Nama Perusahaan')" />
-                <x-text-input id="name" class="block mt-1 w-full" type="text" name="nameCompany" :value="old('nameCompany')"
-                    required autofocus autocomplete="nameCompany" />
+                <x-label-required for="nameCompany" :value="__('Nama Perusahaan')" />
+                <x-text-input id="nameCompany" class="block mt-1 w-full" type="text" name="nameCompany" :value="old('nameCompany')"
+                    required autofocus />
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <!-- No Pendaftaran Bisnis -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
-                <x-required-hint-label for="noPendaftaran" :value="__('No Pendaftaran Bisnis')" :hint="__('Nomor resmi terdaftar yang dikeluarkan oleh kementrian setempat')" />
-                <x-text-input id="noPendaftaranBisnis" class="block mt-1 w-full" type="text"
-                    name="noPendaftaranBisnis" :value="old('noPendaftaranBisnis')" />
-                <x-input-error :messages="$errors->get('noPendaftaranBisnis')" class="mt-2" />
+                <x-required-hint-label for="business_registration_number" :value="__('No Pendaftaran Bisnis')" :hint="__('Nomor resmi terdaftar yang dikeluarkan oleh kementrian setempat')" />
+                <x-text-input id="business_registration_number" class="block mt-1 w-full" type="text"
+                    name="business_registration_number" :value="old('business_registration_number')" />
+                <x-input-error :messages="$errors->get('business_registration_number')" class="mt-2" />
             </div>
 
             <!-- Industri -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
-                <x-label-required for="industri" :value="__('Industri')" />
+                <x-label-required for="industry" :value="__('Industri')" />
                 <x-dropdown.industry-dropdown name="industry" :value="old('industry')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('industry')" class="mt-2" />
             </div>
@@ -128,7 +128,7 @@
             <!-- telephone Address -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="phone" :value="__('Phone Number')" />
-                <x-text-input id="phone" name="phone" type="number" class="block mt-1 w-full" required />
+                <x-text-input id="phone" name="phone" type="number" class="block mt-1 w-full" :value="old('phone')" required />
                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
             </div>
 
@@ -136,7 +136,7 @@
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
                 <x-label-required for="username" :value="__('Username')" />
                 <x-text-input id="username" class="block mt-1 w-full" type="text" name="username"
-                    :value="old('email')" required autocomplete="username" />
+                    :value="old('email')" required  />
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
