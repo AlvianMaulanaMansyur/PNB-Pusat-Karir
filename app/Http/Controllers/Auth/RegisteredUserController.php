@@ -43,6 +43,20 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
+            'negara' => ['required', 'string',],
+            'kota' => ['required', 'string',],
+            'profil_perusahaan' => ['required', 'string',],
+            'sapaan' => ['required', 'string',],
+            'nama_depan' => ['required', 'string',],
+            'nama_belakang' => ['required', 'string',],
+            'akhiran' => ['required', 'string',],
+            'pekerjaan' => ['required', 'string',],
+            'departemen' => ['required', 'string',],
+            'website' => ['required', 'string',],
+            'industry' => ['required', 'string',],
+            'staff' => ['required', 'string',],
+            'organisasi' => ['required', 'string',]
+
 
         ]);
 
@@ -73,10 +87,11 @@ class RegisteredUserController extends Controller
                 'suffix' => $request->akhiran,
                 'job_title' => $request->pekerjaan,
                 'department' => $request->departemen,
-                'phone' => $request->telepon,
+                'phone' => $request->phone,
             ]);
             DB::commit();
             return redirect(route('login', absolute: false));
+
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal mendaftar, silahkan coba lagi');

@@ -128,7 +128,8 @@
             <!-- telephone Address -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="phone" :value="__('Phone Number')" />
-                <x-text-input id="phone" name="phone" type="number" class="block mt-1 w-full" :value="old('phone')" required />
+                <x-text-input id="phone" name="phone" type="number" class="block mt-1 w-full"
+                    :value="old('phone')" required />
                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
             </div>
 
@@ -136,7 +137,7 @@
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
                 <x-label-required for="username" :value="__('Username')" />
                 <x-text-input id="username" class="block mt-1 w-full" type="text" name="username"
-                    :value="old('email')" required  />
+                    :value="old('email')" required />
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
@@ -155,17 +156,33 @@
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
+            {{-- toggle syarat --}}
+            <div class="iniline-flex flex col-span-3">
+                <x-toggle name="syarat" id="syaratKetentuan" />
+                <p class="text-sm text-gray-600 ms-2">Saya setuju dengan <a href="#"
+                        class="text-purple-800 underline">syarat dan ketentuan</a></p>
+            </div>
+            <div class="iniline-flex flex col-span-3">
+                <x-toggle name="kebijakan" id="syaratKetentuan" />
+                <p class="text-sm text-gray-600 ">Saya setuju dengan <a href="#"
+                        class="text-purple-800 underline">kebijakan privasi</a></p>
+            </div>
             <div class="flex items-end justify-end mt-4">
-                <x-primary-button class="ms-4">
+                <x-primary-button class="ms-4" id="buttonRegister" disabled>
                     {{ __('Register') }}
                 </x-primary-button>
             </div>
+
         </div>
     </form>
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function() {
+                const syaratKetentuan = getElementById('syaratKetentuan');
+                const kebijakan = getElementById('kebijakan');
+                const buttonRegister = getElementById('buttonRegister');
+
                 $.get('/get-countries', function(data) {
                     // console.log(data);
                     data.forEach(function(country) {
@@ -188,6 +205,16 @@
                         });
                     });
                 });
+
+
+
+                function checkToggles() {
+                    registerButton.disabled = !(syaratToggle.checked && kebijakanToggle.checked);
+                }
+                checkToggles();
+
+                syaratToggle.addEventListener('change', checkToggles);
+                kebijakanToggle.addEventListener('change', checkToggles);
             });
         </script>
     @endpush
