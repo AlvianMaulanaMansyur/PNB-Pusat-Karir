@@ -14,11 +14,19 @@ use Illuminate\Support\Facades\Route;
 use phpDocumentor\Reflection\Location;
 
 Route::middleware('guest')->group(function () {
+    // route untuk menampilkan halaman register jobseeker
+    Route::get('register-jobseeker', [RegisteredUserController::class, 'JobSeeker'])
+        ->name('jobseeker-store');
+
+    Route::post('register-jobseeker', [RegisteredUserController::class, 'JobSeekerDataStore']);
+
+    // route untuk menyimpan data Employer ke database
     Route::get('register', [RegisteredUserController::class, 'employer'])
         ->name('register-employer');
 
     Route::post('register', [RegisteredUserController::class, 'EmployerDataStore']);
 
+    // Route untuk login
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 

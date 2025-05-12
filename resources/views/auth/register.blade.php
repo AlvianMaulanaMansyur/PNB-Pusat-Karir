@@ -157,21 +157,36 @@
             </div>
 
             {{-- toggle syarat --}}
-            <div class="iniline-flex flex col-span-3">
-                <x-toggle name="syarat" id="syaratKetentuan" />
-                <p class="text-sm text-gray-600 ms-2">Saya setuju dengan <a href="#"
-                        class="text-purple-800 underline">syarat dan ketentuan</a></p>
+            <div class="col-span-6" x-data="{ syarat: false, kebijakan: false }">
+                <!-- Toggle Syarat -->
+                <div class="flex flex-col lg:flex-row lg:items-center lg:gap-5 mt-4">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <x-toggle name="syarat" id="syaratKetentuan" x-model="syarat" />
+                        <p class="text-sm text-gray-600">
+                            Saya setuju dengan
+                            <a href="#" class="text-purple-800 underline">syarat dan ketentuan</a>
+                        </p>
+                    </div>
+
+                    <!-- Toggle Kebijakan -->
+                    <div class="flex items-center space-x-3 mb-4">
+                        <x-toggle name="kebijakan" id="kebijakanPrivasi" x-model="kebijakan" />
+                        <p class="text-sm text-gray-600">
+                            Saya setuju dengan
+                            <a href="#" class="text-purple-800 underline">kebijakan privasi</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!--Button register -->
+                <div class="col-span-6 flex justify-end">
+                    <x-primary-button class="ms-4 disabled:opacity-50 disabled:cursor-not-allowed" id="buttonRegister"
+                        x-bind:disabled="!(syarat && kebijakan)">
+                        {{ __('Register') }}
+                    </x-primary-button>
+                </div>
             </div>
-            <div class="iniline-flex flex col-span-3">
-                <x-toggle name="kebijakan" id="syaratKetentuan" />
-                <p class="text-sm text-gray-600 ">Saya setuju dengan <a href="#"
-                        class="text-purple-800 underline">kebijakan privasi</a></p>
-            </div>
-            <div class="flex items-end justify-end mt-4">
-                <x-primary-button class="ms-4" id="buttonRegister" disabled>
-                    {{ __('Register') }}
-                </x-primary-button>
-            </div>
+
 
         </div>
     </form>
@@ -179,10 +194,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function() {
-                const syaratKetentuan = getElementById('syaratKetentuan');
-                const kebijakan = getElementById('kebijakan');
-                const buttonRegister = getElementById('buttonRegister');
-
                 $.get('/get-countries', function(data) {
                     // console.log(data);
                     data.forEach(function(country) {
@@ -205,16 +216,6 @@
                         });
                     });
                 });
-
-
-
-                function checkToggles() {
-                    registerButton.disabled = !(syaratToggle.checked && kebijakanToggle.checked);
-                }
-                checkToggles();
-
-                syaratToggle.addEventListener('change', checkToggles);
-                kebijakanToggle.addEventListener('change', checkToggles);
             });
         </script>
     @endpush

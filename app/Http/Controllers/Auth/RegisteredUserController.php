@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\employers;
+use App\Models\JobSeeker;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +19,16 @@ class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
+     *
      */
+    // menampilkan halaman register jobseeker
+    public function JobSeeker(): View
+    {
+        return view('auth.employee-register');
+    }
+
+
+    // menampilkan halaman register employer
     public function Employer(): View
     {
         return view('auth.register');
@@ -29,15 +39,12 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+
+    // menyimpan data jobseeker ke database
     public function EmployerDataStore(Request $request): RedirectResponse
     {
         $request->validate([
-            // 'name' => ['required', 'string', 'max:255'],
-            // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-
             'nameCompany' => ['required', 'string', 'max:255'],
-            // 'business_registration_number' => ['required', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'username' => ['required', 'string', 'max:255', 'unique:' . User::class,],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -56,8 +63,6 @@ class RegisteredUserController extends Controller
             'industry' => ['required', 'string',],
             'staff' => ['required', 'string',],
             'organisasi' => ['required', 'string',]
-
-
         ]);
 
         DB::beginTransaction();
@@ -90,6 +95,8 @@ class RegisteredUserController extends Controller
                 'phone' => $request->phone,
             ]);
             DB::commit();
+
+            event(new Registered($user));
             return redirect(route('login', absolute: false));
 
         } catch (\Throwable $e) {
@@ -97,4 +104,51 @@ class RegisteredUserController extends Controller
             return redirect()->back()->with('error', 'Gagal mendaftar, silahkan coba lagi');
         }
     }
-}
+
+
+    // menyimpan data jobseeker ke database
+    public function JobSeekerDataStore (Request $request)
+    {
+        $request->validate([
+
+        ]);
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'Employee',
+                'is_active' => false,
+            ]);
+            $jobseeker = JobSeeker::create([
+                'user_id' => $user->id,
+                'salutation' => $request->sapaan,
+                'first_name' => $request->nama_depan,
+                'last_name' => $request->nama_belakang,
+                'suffix' => $request->akhiran,
+                'phone' => $request->phone,
+                'country' => $request->negara,
+                'city' => $request->kota,
+                'highest_education' => $request->education,
+                'main_skill' => $request->bidang,
+                'current_or_previous_industry' => $request->previous_industry,
+                'current_or_previous_job_type' => $request->jenis_pekerjaan,
+                'current_or_previous_position' => $request->jabatan,
+                'employment_status' => $request->status,
+                'year_of_experience' => $request->tahun_pengalaman,
+                'availability' => $request->ketersediaan,
+            ]);
+
+            // mengkomit data ke database
+            DB::commit();
+            event(new Registered($user));
+
+            // merollback jika terjadi error
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal mendaftar, silahkan coba lagi');
+        }
+        }
+    }
