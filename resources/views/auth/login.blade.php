@@ -23,7 +23,7 @@
                 name="password" required autocomplete="current-password" placeholder="Masukan Password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
-        
+
         <div class="flex flex-col items-end  mt-4">
             @if (Route::has('password.request'))
                 <a class="text-xs 2xl:text-sm text-gray-600 hover:text-purple-900 hover:underline rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -52,7 +52,8 @@
     <div class="flex flex-col items-center mt-5 gap-4">
 
         {{-- link untuk mendaftar pencari kerja --}}
-        <a href="#" class="flex items-center space-x-2 text-[#1B0462] hover:underline text-sm sm:text-base">
+        <a href="{{ route('jobseeker-register') }}"
+            class="flex items-center space-x-2 text-[#1B0462] hover:underline text-sm sm:text-base">
             <span>Daftar sebagai pencari kerja</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -65,7 +66,8 @@
         </a>
 
         {{-- link untuk mendaftar pemberi kerja --}}
-        <a href="#" class="flex items-center space-x-2 text-[#1B0462] hover:underline text-sm sm:text-base">
+        <a href="{{ route('register-employer') }}"
+            class="flex items-center space-x-2 text-[#1B0462] hover:underline text-sm sm:text-base">
             <span>Daftar sebagai pemeberi kerja</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path

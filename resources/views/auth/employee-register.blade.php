@@ -1,5 +1,5 @@
 <x-job-seeker-register>
-    <form method="POST" action="{{ route('jobseeker-store') }}">
+    <form method="POST" action="{{ route('jobseeker-register') }}">
         @csrf
         <div class="lg:grid col-1 md:grid-col-4 lg:grid-cols-6 gap-2 lg:max-w-3xl  sm:max-w-xl flex flex-col mx-auto">
 
@@ -14,7 +14,7 @@
             <div class="mt-4  md:col-span-2">
                 <x-label-required for="Nama Depan" :value="__('Nama Depan')" />
                 <x-text-input id="nama_depan" class="block mt-1 w-full" type="text" name="nama_depan"
-                    :value="old('nama_depan')" required autocomplete="username" />
+                    :value="old('nama_depan')" required />
                 <x-input-error :messages="$errors->get('nama_depan')" class="mt-2" />
             </div>
 
@@ -76,14 +76,14 @@
             {{-- Negara --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="negara" :value="__('Negara')" />
-                <x-dropdown.negara-dropdown name="negara" :value="old('negara')" class="block mt-1 w-full" />
+                <x-dropdown.negara-dropdown name="negara" :selected="old('negara')" class="block mt-1 w-full" required />
                 <x-input-error :messages="$errors->get('negara')" class="mt-2" />
             </div>
 
             {{-- Kota --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="kota" :value="__('Kota')" />
-                <x-dropdown.kota-dropdown name="kota" :value="old('kota')" class="block mt-1 w-full" />
+                <x-dropdown.kota-dropdown name="kota" :selected="old('kota')" class="block mt-1 w-full" required />
                 <x-input-error :messages="$errors->get('kota')" class="mt-2" />
             </div>
 
@@ -97,7 +97,7 @@
             {{-- keahlian Utama --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-required-hint-label for="keahlian" :value="__('Keahlian Utama')" :hint="__('Bidang keahlian utama, spesialisasi, bidang studi utama yang Anda kuasai.')" />
-                <x-dropdown.disiplin-utama :selected="old('bidang')" class="block mt-1 w-full" />
+                <x-dropdown.disiplin-utama :selected="old('bidang')" class="block mt-1 w-full" required />
                 <x-input-error :messages="$errors->get('bidang')" class="mt-2" />
             </div>
 
@@ -141,7 +141,7 @@
             <!-- Ketersediaan Bekerja -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-required-hint-label for="ketersediaan" :value="__('Ketersediaan')" :hint="__('Kapan Anda bisa mulai bekerja?')" />
-                <x-dropdown.ketersediaan-bekerja :selected="old('ketersediaan')" class="block mt-1 w-full" />
+                <x-dropdown.ketersediaan-bekerja :selected="old('ketersediaan_bekerja')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('ketersediaan')" class="mt-2" />
             </div>
 
@@ -170,8 +170,8 @@
                 <!--Button register -->
                 <div class="flex flex-col lg:flex-row lg:items-center lg:gap-5 mt-4">
                     <div class="col-span-6 flex justify-start">
-                        <x-primary-button class=" disabled:opacity-50 disabled:cursor-not-allowed" id="buttonRegister"
-                            x-bind:disabled="!(syarat && kebijakan)">
+                        <x-primary-button class=" disabled:opacity-50 disabled:cursor-not-allowed  shadow-customblue"
+                            id="buttonRegister" x-bind:disabled="!(syarat && kebijakan)">
                             {{ __('Register') }}
                         </x-primary-button>
                     </div>

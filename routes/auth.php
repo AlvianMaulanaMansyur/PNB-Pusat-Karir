@@ -16,7 +16,7 @@ use phpDocumentor\Reflection\Location;
 Route::middleware('guest')->group(function () {
     // route untuk menampilkan halaman register jobseeker
     Route::get('register-jobseeker', [RegisteredUserController::class, 'JobSeeker'])
-        ->name('jobseeker-store');
+        ->name('jobseeker-register');
 
     Route::post('register-jobseeker', [RegisteredUserController::class, 'JobSeekerDataStore']);
 

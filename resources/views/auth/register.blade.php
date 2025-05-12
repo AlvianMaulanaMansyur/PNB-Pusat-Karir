@@ -156,7 +156,6 @@
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
-            {{-- toggle syarat --}}
             <div class="col-span-6" x-data="{ syarat: false, kebijakan: false }">
                 <!-- Toggle Syarat -->
                 <div class="flex flex-col lg:flex-row lg:items-center lg:gap-5 mt-4">
@@ -179,15 +178,16 @@
                 </div>
 
                 <!--Button register -->
-                <div class="col-span-6 flex justify-end">
-                    <x-primary-button class="ms-4 disabled:opacity-50 disabled:cursor-not-allowed" id="buttonRegister"
-                        x-bind:disabled="!(syarat && kebijakan)">
-                        {{ __('Register') }}
-                    </x-primary-button>
+                <div class="flex flex-col lg:flex-row lg:items-center lg:gap-5 mt-4">
+                    <div class="col-span-6 flex justify-start">
+                        <x-primary-button class=" disabled:opacity-50 disabled:cursor-not-allowed  shadow-customblue"
+                            id="buttonRegister" x-bind:disabled="!(syarat && kebijakan)">
+                            {{ __('Register') }}
+                        </x-primary-button>
+                    </div>
+                    <p class="text-xs text-red-500">Harap isi semua form yang ditandai dengan (*)</p>
                 </div>
             </div>
-
-
         </div>
     </form>
     @push('scripts')

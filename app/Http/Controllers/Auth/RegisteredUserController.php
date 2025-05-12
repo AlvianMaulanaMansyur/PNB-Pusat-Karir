@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\employees;
 use App\Models\employers;
-use App\Models\JobSeeker;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -50,24 +50,25 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
-            'negara' => ['required', 'string',],
-            'kota' => ['required', 'string',],
-            'profil_perusahaan' => ['required', 'string',],
-            'sapaan' => ['required', 'string',],
-            'nama_depan' => ['required', 'string',],
-            'nama_belakang' => ['required', 'string',],
-            'akhiran' => ['required', 'string',],
-            'pekerjaan' => ['required', 'string',],
-            'departemen' => ['required', 'string',],
-            'website' => ['required', 'string',],
-            'industry' => ['required', 'string',],
-            'staff' => ['required', 'string',],
-            'organisasi' => ['required', 'string',]
+            // 'negara' => ['required', 'string',],
+            // 'kota' => ['required', 'string',],
+            // 'profil_perusahaan' => ['required', 'string',],
+            // 'sapaan' => ['required', 'string',],
+            // 'nama_depan' => ['required', 'string',],
+            // 'nama_belakang' => ['required', 'string',],
+            // 'akhiran' => ['required', 'string',],
+            // 'pekerjaan' => ['required', 'string',],
+            // 'departemen' => ['required', 'string',],
+            // 'website' => ['required', 'string',],
+            // 'industry' => ['required', 'string',],
+            // 'staff' => ['required', 'string',],
+            // 'organisasi' => ['required', 'string',]
         ]);
 
         DB::beginTransaction();
 
         try {
+            // dd($request->all());
             $user = User::create([
                 'username' => $request->username,
                 'email' => $request->email,
@@ -96,12 +97,12 @@ class RegisteredUserController extends Controller
             ]);
             DB::commit();
 
-            event(new Registered($user));
+            // event(new Registered($user));
             return redirect(route('login', absolute: false));
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal mendaftar, silahkan coba lagi');
+            return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
@@ -110,45 +111,64 @@ class RegisteredUserController extends Controller
     public function JobSeekerDataStore (Request $request)
     {
         $request->validate([
-
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:' . User::class,],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password_confirmation' => ['required', 'string', 'same:password',],
+            'phone' => ['required', 'numeric',],
+            'negara' => ['required', 'string',],
+            'kota' => ['required', 'string',],
+            'sapaan' => ['required', 'string',],
+            'nama_depan' => ['required', 'string',],
+            'nama_belakang' => ['required', 'string',],
+            'akhiran' => ['required', 'string',],
+            'bidang' => ['required', 'string',],
+            'previous_industry' => ['required', 'string',],
+            'jenis_pekerjaan' => ['required', 'string',],
+            'jabatan' => ['required', 'string',],
+            'status' => ['required', 'string',],
+            'tahun_pengalaman' => ['required', 'string',],
+            'ketersediaan_bekerja' => ['required', 'string',],
         ]);
         DB::beginTransaction();
 
-        try {
-            $user = User::create([
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => 'Employee',
-                'is_active' => false,
-            ]);
-            $jobseeker = JobSeeker::create([
-                'user_id' => $user->id,
-                'salutation' => $request->sapaan,
-                'first_name' => $request->nama_depan,
-                'last_name' => $request->nama_belakang,
-                'suffix' => $request->akhiran,
-                'phone' => $request->phone,
-                'country' => $request->negara,
-                'city' => $request->kota,
-                'highest_education' => $request->education,
-                'main_skill' => $request->bidang,
-                'current_or_previous_industry' => $request->previous_industry,
-                'current_or_previous_job_type' => $request->jenis_pekerjaan,
-                'current_or_previous_position' => $request->jabatan,
-                'employment_status' => $request->status,
-                'year_of_experience' => $request->tahun_pengalaman,
-                'availability' => $request->ketersediaan,
-            ]);
+            try {
+                // dd($request->all());
+                $user = User::create([
+                    'username' => $request->username,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'role' => 'Employee',
+                    'is_active' => false,
+                ]);
+                $jobseeker = employees::create([
+                    'user_id' => $user->id,
+                    'salutation' => $request->sapaan,
+                    'first_name' => $request->nama_depan,
+                    'last_name' => $request->nama_belakang,
+                    'suffix' => $request->akhiran,
+                    'phone' => $request->phone,
+                    'country' => $request->negara,
+                    'city' => $request->kota,
+                    'highest_education' => $request->education,
+                    'main_skill' => $request->bidang,
+                    'current_or_previous_industry' => $request->previous_industry,
+                    'current_or_previous_job_type' => $request->jenis_pekerjaan,
+                    'current_or_previous_position' => $request->jabatan,
+                    'employment_status' => $request->status,
+                    'years_of_experience' => $request->tahun_pengalaman,
+                    'availability' => $request->ketersediaan_bekerja,
+                ]);
 
-            // mengkomit data ke database
-            DB::commit();
-            event(new Registered($user));
+                // mengkomit data ke database
+                DB::commit();
+                // event(new Registered($user));
+                return redirect(route('login', absolute: false));
 
-            // merollback jika terjadi error
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal mendaftar, silahkan coba lagi');
-        }
+                // merollback jika terjadi error
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return back()->with('error', 'Error: ' . $e->getMessage());
+            }
         }
     }
