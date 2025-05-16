@@ -52,7 +52,7 @@
     <div class="flex flex-col items-center mt-5 gap-4">
 
         {{-- link untuk mendaftar pencari kerja --}}
-        <a href="{{ route('jobseeker-register') }}"
+        <a href="{{ route('account-checker', ['role' => 'employee']) }}"
             class="flex items-center space-x-2 text-[#1B0462] hover:underline text-sm sm:text-base">
             <span>Daftar sebagai pencari kerja</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +66,7 @@
         </a>
 
         {{-- link untuk mendaftar pemberi kerja --}}
-        <a href="{{ route('register-employer') }}"
+        <a href="{{ route('account-checker', ['role' => 'employer']) }}"
             class="flex items-center space-x-2 text-[#1B0462] hover:underline text-sm sm:text-base">
             <span>Daftar sebagai pemeberi kerja</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

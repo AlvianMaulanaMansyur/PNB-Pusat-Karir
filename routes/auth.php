@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\AuthenticationChecker;
 use Illuminate\Support\Facades\Route;
 use phpDocumentor\Reflection\Location;
 
@@ -18,12 +19,14 @@ Route::middleware('guest')->group(function () {
     Route::get('register-jobseeker', [RegisteredUserController::class, 'JobSeeker'])
         ->name('jobseeker-register');
 
+    // route untuk menyimpan data Jobseeker ke database
     Route::post('register-jobseeker', [RegisteredUserController::class, 'JobSeekerDataStore']);
 
-    // route untuk menyimpan data Employer ke database
+    // route untuk halaman form register employer
     Route::get('register', [RegisteredUserController::class, 'employer'])
-        ->name('register-employer');
+    ->name('register-employer');
 
+    // route untuk menyimpan data Employer ke database
     Route::post('register', [RegisteredUserController::class, 'EmployerDataStore']);
 
     // Route untuk login
@@ -44,8 +47,14 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
+    // API untuk menampilkan dropdown negara dan kota
     Route::get('/get-countries', [LocationController::class, 'getCountries']);
     Route::get('/get-cities', [LocationController::class, 'getCities']);
+
+    // API untuk mengecek username dan email terdaftar atau tidak
+    Route::get('/AuthCheker', [AuthenticationChecker::class, 'CheckerShowForm'])->name('account-checker');
+    Route::post('/AuthCheker', [AuthenticationChecker::class, 'CheckerFormStore']);
+
 });
 
 
