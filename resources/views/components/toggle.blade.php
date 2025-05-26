@@ -1,6 +1,6 @@
 @props(['name', 'label' => '', 'checked' => false])
 
-<label class="inline-flex items-center me-5 cursor-pointer">
+<label class="inline-flex items-center cursor-pointer">
     <input type="checkbox" name="{{ $name }}" id="{{ $name }}" class="sr-only peer"
         {{ $checked ? 'checked' : '' }} {{ $attributes }}>
     <div

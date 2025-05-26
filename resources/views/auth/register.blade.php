@@ -120,8 +120,8 @@
             <!-- Email Address -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="email" :value="__('Alamat Email')" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
-                    :value="old('email')" required />
+                <x-text-input id="email" class="block mt-1 w-full opacity-50" type="email" name="email"
+                    value="{{ session('registered_email') }}" required  readonly/>
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
@@ -136,53 +136,64 @@
             <!-- Username -->
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
                 <x-label-required for="username" :value="__('Username')" />
-                <x-text-input id="username" class="block mt-1 w-full" type="text" name="username"
-                    :value="old('email')" required />
+                <x-text-input id="username" class="block mt-1 w-full opacity-50" type="text" name="username"
+                    value="{{ session('registered_username') }}" readonly required />
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
             <!-- Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password" :value="__('Password')" />
-                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+                <x-input-password id="password" class="block mt-1 w-full" type="password" name="password" required />
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <!-- Confirm Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password_confirmation" :value="__('Confirm Password')" />
-                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
+                <x-input-password id="password_confirmation" class="block mt-1 w-full" type="password"
                     name="password_confirmation" required />
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
-            {{-- toggle syarat --}}
-            <div class="iniline-flex flex col-span-3">
-                <x-toggle name="syarat" id="syaratKetentuan" />
-                <p class="text-sm text-gray-600 ms-2">Saya setuju dengan <a href="#"
-                        class="text-purple-800 underline">syarat dan ketentuan</a></p>
-            </div>
-            <div class="iniline-flex flex col-span-3">
-                <x-toggle name="kebijakan" id="syaratKetentuan" />
-                <p class="text-sm text-gray-600 ">Saya setuju dengan <a href="#"
-                        class="text-purple-800 underline">kebijakan privasi</a></p>
-            </div>
-            <div class="flex items-end justify-end mt-4">
-                <x-primary-button class="ms-4" id="buttonRegister" disabled>
-                    {{ __('Register') }}
-                </x-primary-button>
-            </div>
+            <div class="col-span-6" x-data="{ syarat: false, kebijakan: false }">
+                <!-- Toggle Syarat -->
+                <div class="flex flex-col lg:flex-row lg:items-center lg:gap-5 mt-4">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <x-toggle name="syarat" id="syaratKetentuan" x-model="syarat" />
+                        <p class="text-sm text-gray-600">
+                            Saya setuju dengan
+                            <a href="#" class="text-purple-800 underline">syarat dan ketentuan</a>
+                        </p>
+                    </div>
 
+                    <!-- Toggle Kebijakan -->
+                    <div class="flex items-center space-x-3 mb-4">
+                        <x-toggle name="kebijakan" id="kebijakanPrivasi" x-model="kebijakan" />
+                        <p class="text-sm text-gray-600">
+                            Saya setuju dengan
+                            <a href="#" class="text-purple-800 underline">kebijakan privasi</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!--Button register -->
+                <div class="flex flex-col lg:flex-row lg:items-center lg:gap-5 mt-4">
+                    <div class="col-span-6 flex justify-start">
+                        <x-primary-button class=" disabled:opacity-50 disabled:cursor-not-allowed  shadow-customblue"
+                            id="buttonRegister" x-bind:disabled="!(syarat && kebijakan)">
+                            {{ __('Register') }}
+                        </x-primary-button>
+                    </div>
+                    <p class="text-xs text-red-500">Harap isi semua form yang ditandai dengan (*)</p>
+                </div>
+            </div>
         </div>
     </form>
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function() {
-                const syaratKetentuan = getElementById('syaratKetentuan');
-                const kebijakan = getElementById('kebijakan');
-                const buttonRegister = getElementById('buttonRegister');
-
                 $.get('/get-countries', function(data) {
                     // console.log(data);
                     data.forEach(function(country) {
@@ -205,16 +216,6 @@
                         });
                     });
                 });
-
-
-
-                function checkToggles() {
-                    registerButton.disabled = !(syaratToggle.checked && kebijakanToggle.checked);
-                }
-                checkToggles();
-
-                syaratToggle.addEventListener('change', checkToggles);
-                kebijakanToggle.addEventListener('change', checkToggles);
             });
         </script>
     @endpush

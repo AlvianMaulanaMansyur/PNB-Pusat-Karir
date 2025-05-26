@@ -30,9 +30,8 @@
     <div
         class="flex flex-col lg:flex-row justify-center items-center lg:items-start md:justify-between mt-10 2xl:mt-20 ">
         <div class="flex flex-col lg:mt-24 2xl:mt-23 lg:ms-20 md:px-10 sm:px-0 lg:sticky  top-0 lg:top-20">
-            <p class="font-semibold text-3xl 2xl:text-5xl mb-2">Buat Akun Pemberi Kerja</p>
-            <p class="my-3 text-md 2xl:text-xl">Kelola lowongan dan kandidat Anda dengan solusi rekrutmen terpercaya.
-            </p>
+            <p class="font-semibold text-3xl 2xl:text-5xl mb-2">Buat Akun Pencari Kerja</p>
+            <p class="my-3 text-md 2xl:text-xl">Jelajahi peluang kerja dari berbagai sektor industri terkemuka.</p>
             <p class="text-md ">Sudah terdaftar?</p>
             <a href="{{ route('login') }}" class="underline font-bold text-purple-800 text-lg">Masuk ke akun Anda!</a>
             <div class=" hidden lg:flex self-center  lg:w-[200px] 2xl:w-[300px]">
