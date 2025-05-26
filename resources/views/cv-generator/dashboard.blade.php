@@ -90,17 +90,29 @@
                                         </svg>
                                         Edit
                                     </a>
-                                    {{-- Download Link --}}
-                                    <a href="{{ route('cv.download', $cv->slug) }}"
-                                        class="flex-1 bg-gray-700 hover:bg-gray-800 text-white py-2 px-3 rounded-md text-center text-sm">
-                                        <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
-                                            </path>
-                                        </svg>
-                                        Unduh
-                                    </a>
+
+                                    <form action="{{ route('cv.download', $cv->slug) }}" method="POST">
+                                        @csrf
+
+                                        <div class="flex justify-center">
+
+                                            {{-- Save & Continue Button --}}
+                                            <div class="flex justify-end">
+                                                <button type="submit"
+                                                    class="flex-1 bg-gray-700 hover:bg-gray-800 text-white py-2 px-3 rounded-md text-center text-sm">
+                                                    <svg class="inline-block w-4 h-4 mr-1" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                        </path>
+                                                    </svg>
+                                                    Unduh
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                     <div class="relative">
                                         <button id="dropdownMenuButton-{{ $cv->id }}"
                                             data-dropdown-toggle="dropdownDots-{{ $cv->id }}"
