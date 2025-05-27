@@ -26,8 +26,13 @@ class AuthenticationChecker extends Controller
         'username' => 'required|unique:users,username'
     ]);
 
+    session ([
+        'registered_email' => $validated['email'],
+        'registered_username' => $validated['username']
+    ]);
+
     $redirectRoute = $validated['role'] === 'employer' ? 'register-employer' : 'jobseeker-register';
 
-    return redirect()->route($redirectRoute)->withInput();
+    return redirect()->route($redirectRoute);
     }
 }
