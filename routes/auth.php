@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -85,6 +86,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/admin/login', [  AdminAuthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [ AdminAuthController::class, 'login'])->name('admin.login.submit');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', [AdminAuthController::class, 'index'])->name('admin.dashboard');
-});
+Route::get('/admin/dashboard', [ AdminDashboardController::class, 'AdminDashboard'])->name('adminDashboard');
+
+    // Route::middleware('auth')->group(function () {
+    //     Route::get('/admin/dashboard', [AdminAuthController::class, 'index'])->name('admin.dashboard');
+    // });

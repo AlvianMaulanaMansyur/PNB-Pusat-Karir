@@ -3,14 +3,14 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminDashboardController;
-    use App\Http\Controllers\Auth\AdminauthController;
+use App\Http\Controllers\Auth\AdminauthController;
 
 Route::get('/admin/login', [  AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [ AdminauthController::class, 'login'])->name('admin.login.submit');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+// });
 
 
 Route::get('/dashboard', function () {
