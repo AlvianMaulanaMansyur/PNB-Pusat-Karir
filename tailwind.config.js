@@ -7,6 +7,7 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        './resources/**/*.blade.php',
     ],
 
     theme: {
@@ -15,8 +16,12 @@ export default {
                 sans: ['Poppins', ...defaultTheme.fontFamily.sans],
             },
             boxShadow: {
-               'customblue': '0px 4px 30px rgba(42, 34, 212, 0.5)'
+            'customblue': '0px 4px 30px rgba(42, 34, 212, 0.5)'
             },
+            colors: {
+                'primaryColor' : '#5A4FF3',
+                'darkBlue' : '#091A50'
+            }
         },
     },
 

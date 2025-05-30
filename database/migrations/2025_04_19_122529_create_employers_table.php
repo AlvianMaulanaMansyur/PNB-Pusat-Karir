@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('employers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
-            
+
             $table->string('company_name');
             $table->string('business_registration_number')->nullable();
             $table->string('industry')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->text('company_profile')->nullable();
-            
+
             // Contact Person
             $table->string('salutation')->nullable();
             $table->string('first_name');
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('job_title')->nullable();
             $table->string('department')->nullable();
             $table->string('phone')->nullable();
-           
+
             $table->timestamps();
 
             // $table->foreignId('industry_id')->nullable()->constrained('industries');

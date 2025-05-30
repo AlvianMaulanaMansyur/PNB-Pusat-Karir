@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('last_login')->nullable();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
             // $table->timestamp('email_verified_at')->nullable();
             // $table->string('email_verification_token')->nullable();
         });
