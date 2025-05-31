@@ -14,9 +14,7 @@ Route::post('/admin/login', [ AdminauthController::class, 'login'])->name('admin
 // });
 
 
-Route::get('/dashboard', function () {
-    return view('layouts.jobseeker');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 
 
@@ -91,5 +89,5 @@ Route::middleware('auth')->group(function () {
 
 
 
-
+require __DIR__ . '/jobseeker.php';
 require __DIR__ . '/auth.php';

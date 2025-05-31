@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
         $email = session('registered_email');
         $request->validate([
             'nameCompany' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*?&]/', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
 
@@ -103,9 +103,10 @@ class RegisteredUserController extends Controller
         $request->validate([
             // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             // 'username' => ['required', 'string', 'max:255', 'unique:' . User::class,],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*?&]/', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
+            'photo_profile' => ['required'],
             'negara' => ['required', 'string',],
             'kota' => ['required', 'string',],
             'sapaan' => ['required', 'string',],
@@ -123,7 +124,7 @@ class RegisteredUserController extends Controller
         DB::beginTransaction();
 
         try {
-            // dd($request->all()); 
+            // dd($request->all());
             $user = User::create([
                 'username' => $username,
                 'email' => $email,
@@ -138,6 +139,7 @@ class RegisteredUserController extends Controller
                 'last_name' => $request->nama_belakang,
                 'suffix' => $request->akhiran,
                 'phone' => $request->phone,
+                'photo_profile' => '/images/profile.png',
                 'country' => $request->negara,
                 'city' => $request->kota,
                 'highest_education' => $request->education,
@@ -160,5 +162,14 @@ class RegisteredUserController extends Controller
             DB::rollBack();
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
+    }
+
+    public function messages(): array
+    {
+        return [
+            'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
+            'password.min' => 'Password minimal harus 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ];
     }
 }
