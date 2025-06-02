@@ -18,20 +18,19 @@
             $isActive = $step['slug'] === $activeStep;
             $isCompleted = array_search($activeStep, array_column($steps, 'slug')) > $index;
             $iconColor = $isActive || $isCompleted ? 'text-white' : 'text-gray-600';
-            $bgColor = $isActive || $isCompleted ? 'bg-indigo-600' : 'bg-gray-200';
+            $bgColor = $isActive || $isCompleted ? 'bg-primaryColor' : 'bg-gray-200';
             $url = url("/cv-generator/{$step['slug']}");
         @endphp
 
         <a href="{{ $url }}" class="flex flex-col items-center text-center group relative z-10">
             <div
                 class="w-16 h-16 flex items-center justify-center rounded-full {{ $bgColor }} transition-all duration-300 ease-in-out
-                {{ $isActive ? 'shadow-lg ring-4 ring-indigo-300' : '' }}
-                {{ $isCompleted ? 'bg-indigo-600' : 'bg-gray-200' }}">
+                {{ $isActive ? 'shadow-lg ring-4 ring-primaryColor' : '' }}
+                {{ $isCompleted ? 'bg-primaryColor-600' : 'bg-gray-200' }}">
                 <svg class="w-8 h-8 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $step['icon'] }}"></path>
                 </svg>
             </div>
-           
         </a>
         {{-- <div>
             <span class="mt-3 text-sm font-semibold whitespace-nowrap
@@ -43,7 +42,7 @@
         @if (!$loop->last)
             {{-- Garis penghubung --}}
             <div class="flex-grow h-1 bg-gray-200 relative -ml-8 -mr-8 z-0">
-                <div class="absolute inset-y-0 left-0 {{ $isCompleted ? 'bg-indigo-600' : '' }}"
+                <div class="absolute inset-y-0 left-0 {{ $isCompleted ? 'bg-primaryColor' : '' }}"
                     style="width: {{ $isCompleted ? '100%' : '0%' }}; transition: width 0.3s ease-in-out;"></div>
             </div>
         @endif

@@ -81,6 +81,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    Route::get('/get-countries', [LocationController::class, 'getCountries']);
+    Route::get('/get-cities', [LocationController::class, 'getCities']);
+
 });
 
 Route::get('/admin/login', [  AdminAuthController::class, 'showLoginForm'])->name('admin.adminLogin');

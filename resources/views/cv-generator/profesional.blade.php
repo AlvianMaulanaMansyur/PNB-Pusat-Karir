@@ -36,31 +36,32 @@
                             placeholder="Enter Company Profile"></textarea>
                     </div>
 
-                    {{-- Start Date --}}
+                    {{-- Tanggal Mulai --}}
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <x-input-label for="start_month_1" :value="__('Start Month')" />
-                            <x-text-input id="start_month_1" name="experiences[1][start_month]" type="text"
-                                class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: January" />
+                            <x-input-label for="start_month_1" :value="__('Tanggal Mulai (Bulan)')" />
+                            <x-dropdown.bulan-dropdown id="start_month_1" name="experiences[1][start_month]"
+                                class="block mt-1 w-full text-sm 2xl:text-lg" />
                         </div>
                         <div>
-                            <x-input-label for="start_year_1" :value="__('Start Year')" />
-                            <x-text-input id="start_year_1" name="experiences[1][start_year]" type="number"
-                                class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: 2020" />
+                            <x-input-label for="start_year_1" :value="__('Tanggal Mulai (Tahun)')" />
+                            <x-dropdown.tahun-dropdown id="start_year_1" :name="__('experiences[1][start_year]')"
+                                class="mt-1 w-full text-sm 2xl:text-lg" />
                         </div>
                     </div>
 
-                    {{-- End Date --}}
+                    {{-- Tanggal Selesai --}}
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <x-input-label for="end_month_1" :value="__('End Month')" />
-                            <x-text-input id="end_month_1" name="experiences[1][end_month]" type="text"
-                                class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: December" />
+                            <x-input-label for="end_month_1" :value="__('Tanggal Selesai (Bulan)')" />
+                            <x-dropdown.bulan-dropdown id="end_month_1" name="experiences[1][end_month]"
+                                class="block mt-1 w-full text-sm 2xl:text-lg" />
+
                         </div>
                         <div>
-                            <x-input-label for="end_year_1" :value="__('End Year')" />
-                            <x-text-input id="end_year_1" name="experiences[1][end_year]" type="number"
-                                class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: 2023" />
+                            <x-input-label for="end_year_1" :value="__('Tanggal Selesai (Tahun)')" />
+                            <x-dropdown.tahun-dropdown id="end_year_1" :name="__('experiences[1][end_year]')"
+                                class="mt-1 w-full text-sm 2xl:text-lg" />
                         </div>
                     </div>
 
@@ -95,23 +96,23 @@
         </button>
 
         <div class="flex justify-end">
-        {{-- Kembali Button --}}
+            {{-- Kembali Button --}}
 
-        <div class="mt-8 flex justify-end">
-            <a href="{{ route('cv.personal-info', ['slug' => $currentCv->slug]) }}"
-               class="inline-flex items-center px-6 py-3 bg-white border border-indigo-600 rounded-md font-semibold text-base text-indigo-600 uppercase tracking-widest hover:bg-indigo-50 focus:bg-indigo-50 active:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 mr-4">
-                Kembali
-            </a>
-        </div>
+            <div class="mt-8 flex justify-end">
+                <a href="{{ route('cv.personal-info', ['slug' => $currentCv->slug]) }}"
+                    class="inline-flex items-center px-6 py-3 bg-white border border-indigo-600 rounded-md font-semibold text-base text-indigo-600 uppercase tracking-widest hover:bg-indigo-50 focus:bg-indigo-50 active:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 mr-4">
+                    Kembali
+                </a>
+            </div>
 
-        {{-- Save & Continue Button --}}
-        <div class="mt-8 flex justify-end">
-            <button type="button" id="savePengalamanBtn"
-                class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-md font-semibold text-base text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                Simpan & Lanjutkan
-            </button>
+            {{-- Save & Continue Button --}}
+            <div class="mt-8 flex justify-end">
+                <button type="button" id="savePengalamanBtn"
+                    class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-md font-semibold text-base text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    Simpan & Lanjutkan
+                </button>
+            </div>
         </div>
-    </div>
 
     </div>
 
@@ -155,31 +156,25 @@
                                 placeholder="Enter Company Profile"></textarea>
                         </div>
 
-                        {{-- Start Date --}}
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <x-input-label for="start_month_${counter}" :value="__('Start Month')" />
-                                <x-text-input id="start_month_${counter}" name="experiences[${counter}][start_month]" type="text"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: January" />
+                                <x-input-label for="start_month_${counter}" :value="__('Tanggal Mulai (Bulan)')" />
+                                <x-dropdown.bulan-dropdown id="start_month_${counter}" name="experiences[${counter}][start_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                             </div>
                             <div>
-                                <x-input-label for="start_year_${counter}" :value="__('Start Year')" />
-                                <x-text-input id="start_year_${counter}" name="experiences[${counter}][start_year]" type="number"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: 2020" />
+                                <x-input-label for="start_year_${counter}" :value="__('Tanggal Mulai (Tahun)')" />
+                                <x-dropdown.tahun-dropdown id="start_year_${counter}" :name="__('experiences[${counter}][start_year]')" class="mt-1 w-full text-sm 2xl:text-lg" />
                             </div>
                         </div>
 
-                        {{-- End Date --}}
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <x-input-label for="end_month_${counter}" :value="__('End Month')" />
-                                <x-text-input id="end_month_${counter}" name="experiences[${counter}][end_month]" type="text"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: December" />
+                                <x-input-label for="end_month_${counter}" :value="__('Tanggal Selesai (Bulan)')" />
+                                <x-dropdown.bulan-dropdown id="end_month_${counter}" name="experiences[${counter}][end_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                             </div>
                             <div>
-                                <x-input-label for="end_year_${counter}" :value="__('End Year')" />
-                                <x-text-input id="end_year_${counter}" name="experiences[${counter}][end_year]" type="number"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Example: 2023" />
+                                <x-input-label for="end_year_${counter}" :value="__('Tanggal Selesai (Tahun)')" />
+                                <x-dropdown.tahun-dropdown id="end_year_${counter}" :name="__('experiences[${counter}][end_year]')" class="mt-1 w-full text-sm 2xl:text-lg" />
                             </div>
                         </div>
 

@@ -10,7 +10,7 @@
             <!-- Menu Utama Desktop -->
             <div class="hidden md:flex items-center gap-5 font-semibold">
                 <x-navlink href="#">Tentang Kami</x-navlink>
-                <x-navlink href="#">Generate CV</x-navlink>
+                <x-navlink href="{{ route('cv.dashboard') }}">Generate CV</x-navlink>
 
                 <x-dropdown.nav-dropdown label="acara">
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100">Acara Saya</a>
