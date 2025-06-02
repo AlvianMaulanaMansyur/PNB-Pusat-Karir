@@ -43,13 +43,28 @@ class RegisteredUserController extends Controller
     // menyimpan data jobseeker ke database
     public function EmployerDataStore(Request $request): RedirectResponse
     {
+        // dd($request->all());
         $username = session('registered_username');
         $email = session('registered_email');
         $request->validate([
             'nameCompany' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*?&]/', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
+            'negara' => ['required', 'string',],
+            'kota' => ['required', 'string',],
+            'business_registration_number' => ['required', 'numeric', ],
+            'industry' => ['required', 'string',],
+            'website' => ['required', 'string', 'url'],
+            'organisasi' => ['required', 'string',],
+            'staff' => ['required', 'string',],
+            'profil_perusahaan' => ['required', 'string',],
+            'sapaan' => ['required', 'string',],
+            'nama_depan' => ['required', 'string',],
+            'nama_belakang' => ['required', 'string',],
+            'akhiran' => ['nullable', 'string',],
+            'pekerjaan' => ['required', 'string',],
+            'departemen' => ['required', 'string',],
 
         ]);
 
@@ -98,17 +113,19 @@ class RegisteredUserController extends Controller
     // menyimpan data jobseeker ke database
     public function JobSeekerDataStore(Request $request)
     {
+        // dd($request->all());
+        // mengambil data dari session
         $username = session('registered_username');
         $email = session('registered_email');
         $request->validate([
             // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             // 'username' => ['required', 'string', 'max:255', 'unique:' . User::class,],
-            'password' => ['required', 'confirmed', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/', 'regex:/[@$!%*?&]/', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
-            'photo_profile' => ['required'],
             'negara' => ['required', 'string',],
             'kota' => ['required', 'string',],
+            'education' => ['required', 'string'],
             'sapaan' => ['required', 'string',],
             'nama_depan' => ['required', 'string',],
             'nama_belakang' => ['required', 'string',],
@@ -120,11 +137,12 @@ class RegisteredUserController extends Controller
             'status' => ['required', 'string',],
             'tahun_pengalaman' => ['required', 'string',],
             'ketersediaan_bekerja' => ['required', 'string',],
+            'akhiran' => ['nullable', 'string'],
+
         ]);
         DB::beginTransaction();
 
         try {
-            // dd($request->all());
             $user = User::create([
                 'username' => $username,
                 'email' => $email,
@@ -160,7 +178,7 @@ class RegisteredUserController extends Controller
             // merollback jika terjadi error
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            dd($e->getMessage());
         }
     }
 
