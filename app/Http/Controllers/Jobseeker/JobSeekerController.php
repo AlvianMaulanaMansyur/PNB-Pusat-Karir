@@ -11,9 +11,9 @@ class JobSeekerController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $employerData = $user->dataEmployees; // relasi
+        $employeeData = $user->dataEmployees; // relasi
 
         // dd($employerData);
-        return view('jobseeker.index', compact( 'employerData'));
+        return view('jobseeker.index', compact( 'employeeData'));
     }
 }

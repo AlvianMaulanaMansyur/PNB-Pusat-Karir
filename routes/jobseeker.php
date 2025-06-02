@@ -7,6 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [JobSeekerController::class, 'index'])
     ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    ->name('employee.landing-page');
 ?>
 

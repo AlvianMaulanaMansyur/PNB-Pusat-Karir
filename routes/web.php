@@ -8,9 +8,9 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminauthController;
 use App\Http\Controllers\EmployerController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
@@ -18,11 +18,6 @@ Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.
 // Route::middleware('auth')->group(function () {
 //     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 // });
-
-
-
-
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -38,8 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/load-session-data/{slug}', [CvGeneratorController::class, 'loadSessionData'])
         ->name('load.session.data');
 
-
-
     // Route utama untuk menampilkan dashboard CV (dengan daftar CV)
     Route::get('/cv', [CvGeneratorController::class, 'index'])->name('cv.dashboard');
 
@@ -53,7 +46,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/upload-profile-photo', [CvGeneratorController::class, 'uploadProfilePhoto'])
         ->name('upload.profile.photo');
-
 
     // routes/web.php
     Route::post('/cv/{slug}/update-title', [CvGeneratorController::class, 'updateCvTitle'])
@@ -91,6 +83,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/cv/{cv:slug}/review', [CvGeneratorController::class, 'showReviewPage'])
         ->name('cv.review');
     Route::post('/cv/{slug}/download', [CvGeneratorController::class, 'downloadCv'])->name('cv.download');
+
+    
 });
 
 
