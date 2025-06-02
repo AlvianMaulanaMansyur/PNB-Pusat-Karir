@@ -12,6 +12,7 @@ class employers extends Model
 
     protected $fillable = [
         'user_id',
+        'slug',
         'company_name',
         'business_registration_number',
         'industry',
@@ -36,5 +37,8 @@ class employers extends Model
         'business_registration_number',
     ];
 
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 };

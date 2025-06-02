@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminauthController;
+use App\Http\Controllers\EmployerController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -94,7 +95,37 @@ Route::middleware('auth')->group(function () {
     Route::post('/cv/{slug}/download', [CvGeneratorController::class, 'downloadCv'])->name('cv.download');
 });
 
+// -------employer
+Route::get('/employer', function () {
+    return view('employer.dashboard');
+});
+// Tambah Lowongan
+Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
+    ->name('employer.tambahlowongan');
+Route::post('/employer/storelowongan', [EmployerController::class, 'storelowongan'])
+    ->name('employer.storelowongan');
 
+Route::get('/employer/manajemen-lowongan', [EmployerController::class, 'manajemenlowongan'])
+    ->name('employer.manajemen-lowongan');
+
+Route::delete('/employer/{slug}/destroy-lowongan', [EmployerController::class, 'destroylowongan'])
+    ->name('employer.destroy-lowongan');
+
+Route::get('/employer/edit-lowongan/{slug}', [EmployerController::class, 'editlowongan'])->name('employer.edit-lowongan');
+Route::put('/employer/update-lowongan/{slug}', [EmployerController::class, 'updatelowongan'])->name('employer.update-lowongan');
+
+Route::get('/employer/{slug}/edit-profile', [EmployerController::class, 'editprofile'])->name('employer.edit-profile');
+Route::put('/employer/{slug}', [EmployerController::class, 'update'])->name('employer.update');
+
+// manajemen pelamar
+Route::get('/employer/pelamar-lowongan', function () {
+    return view('employer.pelamar-lowongan');
+})->name('employer.pelamar-lowongan');
+
+// kelola-interview
+Route::get('/employer/kelola-interview', function () {
+    return view('employer.kelola-interview');
+})->name('employer.kelola-interview');
 
 
 require __DIR__ . '/auth.php';
