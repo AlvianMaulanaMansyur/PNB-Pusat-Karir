@@ -21,7 +21,7 @@
             </a>
 
             {{-- Ikon User --}}
-            <a href="{{ route('employer.edit-profile') }}" class="hover:text-blue-600 cursor-pointer" role="img" aria-label="User Icon" title="Edit Profile">
+            <a href="{{ route('employer.edit-profile', ['slug' => auth()->user()->employer->slug]) }}" class="hover:text-blue-600 cursor-pointer" role="img" aria-label="User Icon" title="Edit Profile">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 2xl:w-8 2xl:h-8" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round"

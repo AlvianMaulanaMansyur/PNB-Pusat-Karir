@@ -40,13 +40,13 @@
     {{-- Box Fungsional --}}
     <div class="mt-12 flex flex-wrap justify-center gap-8 px-10 lg:px-32">
         <!-- Tambah Lowongan -->
-        <a href="{{ url('/employer/tambah-lowongan') }}" class="group bg-green-500 hover:bg-green-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
+        <a href="{{ route('employer.tambahlowongan') }}" class="group bg-green-500 hover:bg-green-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
             <i class="fas fa-plus-circle text-3xl mb-2"></i>
             <h3 class="text-lg font-medium">Tambah Lowongan</h3>
         </a>
 
         <!-- Manajemen Lowongan -->
-        <a href="{{ url('/employer/manage-lowongan') }}" class="group bg-yellow-400 hover:bg-yellow-500 text-gray-800 w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
+        <a href="{{ route('employer.manajemen-lowongan') }}" class="group bg-yellow-400 hover:bg-yellow-500 text-gray-800 w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
             <i class="fas fa-tasks text-3xl mb-2"></i>
             <h3 class="text-lg font-medium">Manajemen Lowongan</h3>
         </a>

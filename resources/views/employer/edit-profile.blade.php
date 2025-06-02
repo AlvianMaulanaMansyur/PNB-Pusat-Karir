@@ -26,76 +26,149 @@
     </a>
 </div>
 
-{{-- Form Edit Profil Employer (Kosong) --}}
-<div class="w-full lg:w-2/3 bg-white p-6 mt-6 rounded-xl shadow-md border border-gray-200 mx-4 md:mx-10 lg:mx-20 lg:ml-28">
-    <form action="#" method="POST">
-        @csrf
-        @method('PUT')
+<!-- Wrapper dengan Grid 2 Kolom di Layar Lebar -->
+<div class="w-full flex justify-center mt-6 px-2 md:px-4">
+    <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        <!-- Nama -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="nama">
-                <i class="fas fa-building mr-2 text-blue-500"></i> Nama
-            </label>
-            <input type="text" name="nama" id="nama" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <!-- Form di Kiri (2/3 Kolom) -->
+        <div class="col-span-2 bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-gray-200">
+            <form method="POST" action="{{ route('employer.update', $employer->slug) }}">
+                @csrf
+                @method('PUT')
+
+                <!-- Nama Perusahaan -->
+                <div class="mb-4">
+                    <x-label-required for="company_name" :value="__('Nama Perusahaan')" />
+                    <x-text-input id="company_name" class="block mt-1 w-full" type="text" name="company_name"
+                        value="{{ old('company_name', $employer->company_name) }}" required />
+                </div>
+
+                <!-- No. Pendaftaran Bisnis -->
+                <div class="mb-4">
+                    <x-label-required for="business_registration_number" :value="__('No. Pendaftaran Bisnis')" />
+                    <x-text-input id="business_registration_number" class="block mt-1 w-full" type="text" name="business_registration_number"
+                        value="{{ old('business_registration_number', $employer->business_registration_number) }}" required />
+                </div>
+
+                <!-- Industri -->
+                <div class="mb-4">
+                    <x-label-required for="industry" :value="__('Industri')" />
+                    <x-dropdown.industry-dropdown name="industry" :selected="old('industry', $employer->industry)" class="block mt-1 w-full" />
+                </div>
+
+                <!-- Website Perusahaan -->
+                <div class="mb-4">
+                    <x-required-hint-label for="company_website" :value="__('Website Perusahaan')" :hint="__('Harus menyertakan https://')" />
+                    <x-text-input id="company_website" name="company_website" type="url" class="mt-1 block w-full"
+                        value="{{ old('company_website', $employer->company_website) }}" />
+                </div>
+
+                <!-- Jenis Organisasi -->
+                <div class="mb-4">
+                    <x-label-required for="organization_type" :value="__('Jenis Organisasi')" />
+                    <x-dropdown.organisasi-dropdown name="organization_type" :selected="old('organization_type', $employer->organization_type)" class="block mt-1 w-full" />
+                </div>
+
+                <!-- Kekuatan Staff -->
+                <div class="mb-4">
+                    <x-label-required for="staff_strength" :value="__('Kekuatan Staff')" />
+                    <x-dropdown.staff-strength-dropdown name="staff_strength" :selected="old('staff_strength', $employer->staff_strength)" class="block mt-1 w-full" />
+                </div>
+
+                <!-- Negara & Kota -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <x-label-required for="country" :value="__('Negara')" />
+                        <x-dropdown.negara-dropdown name="country" :selected=" old('country', $employer->country)" class="block mt-1 w-full" />
+                    </div>
+                    <div>
+                        <x-label-required for="city" :value="__('Kota')" />
+                        <x-dropdown.kota-dropdown name="city" :selected="old('city', $employer->city)" class="block mt-1 w-full" />
+                    </div>
+                </div>
+
+                <!-- Profil Perusahaan -->
+                <div class="mb-4">
+                    <x-label-required for="company_profile" :value="__('Profil Perusahaan')" />
+                    <textarea id="company_profile" name="company_profile" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">{{ old('company_profile', $employer->company_profile) }}</textarea>
+                </div>
+
+                <!-- Informasi Kontak -->
+                <div class="mb-4">
+                    <x-label-required for="salutation" :value="__('Sapaan')" />
+                    <x-dropdown.sapaan-dropdown name="salutation" :selected="old('salutation', $employer->salutation)" class="block mt-1 w-full" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <x-label-required for="first_name" :value="__('Nama Depan')" />
+                        <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full"
+                            value="{{ old('first_name', $employer->first_name) }}" />
+                    </div>
+                    <div>
+                        <x-input-label for="last_name" value="Nama Belakang" />
+                        <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full"
+                            value="{{ old('last_name', $employer->last_name) }}" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <x-input-label for="suffix" value="Akhiran" />
+                        <x-text-input id="suffix" name="suffix" type="text" class="mt-1 block w-full"
+                            value="{{ old('suffix', $employer->suffix) }}" />
+                    </div>
+                    <div>
+                        <x-label-required for="job_title" :value="__('Pekerjaan')" />
+                        <x-text-input id="job_title" name="job_title" type="text" class="mt-1 block w-full"
+                            value="{{ old('job_title', $employer->job_title) }}" />
+                    </div>
+                    <div>
+                        <x-input-label for="department" value="Departemen" />
+                        <x-text-input id="department" name="department" type="text" class="mt-1 block w-full"
+                            value="{{ old('department', $employer->department) }}" />
+                    </div>
+                </div>
+
+                <!-- Email, Phone, Username -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <x-label-required for="email" :value="__('Email')" />
+                        <x-text-input id="email" name="email" type="email" class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
+                            value="{{ old('email', $user->email) }}" readonly />
+                    </div>
+                    <div>
+                        <x-label-required for="phone" :value="__('No. Telepon')" />
+                        <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full"
+                            value="{{ old('phone', $employer->phone) }}" />
+                    </div>
+                    <div>
+                        <x-label-required for="username" :value="__('Username')" />
+                        <x-text-input id="username" name="username" type="text" class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
+                            value="{{ old('username', $user->username) }}" readonly />
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <x-primary-button class="hover:bg-blue-600 transition">Simpan Perubahan</x-primary-button>
+                </div>
+            </form>
         </div>
 
-        <!-- Nama Perusahaan -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="nama_perusahaan">
-                <i class="fas fa-building mr-2 text-blue-500"></i> Nama Perusahaan
-            </label>
-            <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <!-- Box Informasi di Kanan (1/3 Kolom) -->
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl shadow p-6 h-fit">
+            <h2 class="text-lg font-semibold text-blue-700 mb-4">🛈 Aturan Pengisian Form</h2>
+            <ul class="list-disc list-inside text-sm text-blue-800 space-y-2">
+                <li>Kolom bertanda * wajib diisi.</li>
+                <li>Gunakan format URL yang benar untuk kolom Website.</li>
+                <li>Pastikan data sesuai dengan dokumen resmi.</li>
+                <li>Gunakan angka untuk Kekuatan Staff.</li>
+                <li>Email harus aktif dan bisa dihubungi.</li>
+                <li>Username harus unik dan tidak mengandung spasi.</li>
+            </ul>
         </div>
 
-        <!-- Email Perusahaan -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="email">
-                <i class="fas fa-envelope mr-2 text-blue-500"></i> Email Perusahaan
-            </label>
-            <input type="email" name="email" id="email" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <!-- Deskripsi singkat Perusahaan -->
-        <div class="mb-6">
-            <label class="block text-gray-700 font-semibold mb-2" for="deskripsi">
-                <i class="fas fa-align-left mr-2 text-blue-500"></i> Deskripsi Singkat Perusahaan
-            </label>
-            <textarea name="deskripsi" id="deskripsi" rows="4" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-        </div>
-
-        <!-- Alamat -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="alamat">
-                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i> Alamat
-            </label>
-            <textarea name="alamat" id="alamat" rows="3" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-        </div>
-
-        <!-- Provinsi -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="Provinsi">
-                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i> Provinsi
-            </label>
-            <textarea name="Provinsi" id="Provinsi" rows="3" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-        </div>
-
-        <!-- kabupaten atau kota -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="kabupaten">
-                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i> Kabupaten/Kota
-            </label>
-            <textarea name="kabupaten" id="kabupaten" rows="3" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-        </div>
-
-
-        <!-- Tombol Simpan -->
-        <div class="text-right">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-300">
-                Simpan Perubahan
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
 

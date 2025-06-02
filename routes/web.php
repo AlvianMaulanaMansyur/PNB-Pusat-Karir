@@ -6,9 +6,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminauthController;
+use App\Http\Controllers\EmployerController;
 
-Route::get('/admin/login', [  AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
-Route::post('/admin/login', [ AdminauthController::class, 'login'])->name('admin.login.submit');
+Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
+Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -95,29 +96,32 @@ Route::get('/employer', function () {
     return view('employer.dashboard');
 });
 // Tambah Lowongan
-Route::get('/employer/tambah-lowongan', function () {
-    return view('employer.tambah-lowongan');
-});
-// manajemen Lowongan
-Route::get('/employer/manage-lowongan', function () {
-    return view('employer.manage-lowongan');
-});
-// manajemen Lowongan
-Route::get('/employer/edit-profile', function () {
-    return view('employer.edit-profile');
-})->name('employer.edit-profile');
+Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
+    ->name('employer.tambahlowongan');
+Route::post('/employer/storelowongan', [EmployerController::class, 'storelowongan'])
+    ->name('employer.storelowongan');
+
+Route::get('/employer/manajemen-lowongan', [EmployerController::class, 'manajemenlowongan'])
+    ->name('employer.manajemen-lowongan');
+
+Route::delete('/employer/{slug}/destroy-lowongan', [EmployerController::class, 'destroylowongan'])
+    ->name('employer.destroy-lowongan');
+
+Route::get('/employer/edit-lowongan/{slug}', [EmployerController::class, 'editlowongan'])->name('employer.edit-lowongan');
+Route::put('/employer/update-lowongan/{slug}', [EmployerController::class, 'updatelowongan'])->name('employer.update-lowongan');
+
+Route::get('/employer/{slug}/edit-profile', [EmployerController::class, 'editprofile'])->name('employer.edit-profile');
+Route::put('/employer/{slug}', [EmployerController::class, 'update'])->name('employer.update');
+
 // manajemen pelamar
 Route::get('/employer/pelamar-lowongan', function () {
     return view('employer.pelamar-lowongan');
 })->name('employer.pelamar-lowongan');
-// edit-lowongan
-Route::get('/employer/edit-lowongan', function () {
-    return view('employer.edit-lowongan');
-})->name('employer.edit-lowongan');
+
 // kelola-interview
 Route::get('/employer/kelola-interview', function () {
     return view('employer.kelola-interview');
 })->name('employer.kelola-interview');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

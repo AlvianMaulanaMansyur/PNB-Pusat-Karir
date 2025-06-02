@@ -20,76 +20,74 @@
 
     {{-- Form Tambah Lowongan --}}
     <div class="w-full lg:w-2/3 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <form action="#" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('employer.storelowongan') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <!-- Nama Lowongan -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2" for="nama_lowongan">
-                    <i class="fas fa-briefcase mr-2 text-blue-500"></i> Nama Lowongan
-                </label>
-                <input type="text" name="nama_lowongan" id="nama_lowongan" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            {{-- Nama Lowongan --}}
+            <div class="mb-5">
+                <x-label-required for="nama_lowongan" :value="__('Nama Lowongan')" />
+                <x-text-input id="nama_lowongan" name="nama_lowongan" type="text"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="Contoh: Staff Marketing" required />
             </div>
 
-            <!-- Deskripsi -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2" for="deskripsi">
-                    <i class="fas fa-align-left mr-2 text-blue-500"></i> Deskripsi Pekerjaan
-                </label>
-                <textarea name="deskripsi" id="deskripsi" rows="5" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+            {{-- Deskripsi --}}
+            <div class="mb-5">
+                <x-label-required for="deskripsi" :value="__('Deskripsi')" />
+                <x-text-area-input id="deskripsi" name="deskripsi"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    required />
             </div>
 
-            <!-- Posisi Lowongan -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2" for="posisi">
-                    <i class="fas fa-user-tie mr-2 text-blue-500"></i> Posisi Lowongan
-                </label>
-                <input type="text" name="posisi" id="posisi" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            {{-- Posisi --}}
+            <div class="mb-5">
+                <x-label-required for="posisi" :value="__('Posisi Lowongan')" />
+                <x-text-input id="posisi" name="posisi" type="text"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="Contoh: Admin Operasional" required />
             </div>
 
-            <!-- Kualifikasi -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2" for="kualifikasi">
-                    <i class="fas fa-graduation-cap mr-2 text-blue-500"></i> Kualifikasi
-                </label>
-                <input type="text" name="kualifikasi" id="kualifikasi" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            {{-- Kualifikasi --}}
+            <div class="mb-5">
+                <x-label-required for="kualifikasi" :value="__('Kualifikasi')" />
+                <x-dropdown.kualifikasi-pendidikan class="block mt-1 w-full text-sm" />
             </div>
 
-            <!-- Jenis Lowongan -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2" for="jenis">
-                    <i class="fas fa-clipboard-list mr-2 text-blue-500"></i> Jenis Lowongan
-                </label>
-                <input type="text" name="jenis" id="jenis" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            {{-- Jenis Lowongan --}}
+            <div class="mb-5">
+                <x-label-required for="jenislowongan" :value="__('Jenis Lowongan')" />
+                <x-dropdown.jenis-lowongan class="block mt-1 w-full text-sm" />
             </div>
 
-            <!-- Tanggal Deadline -->
+            {{-- Deadline --}}
             <div class="mb-6">
-                <label class="block text-gray-700 font-semibold mb-2" for="deadline">
-                    <i class="fas fa-calendar-alt mr-2 text-blue-500"></i> Batas Pendaftaran
-                </label>
-                <input type="date" name="deadline" id="deadline" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <x-label-required for="deadline" :value="__('Tenggat Pendaftaran')" />
+                <x-text-input id="deadline" name="deadline" type="date"
+                    :min="now()->toDateString()"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    required />
             </div>
 
-            <!-- Poster atau Flayer -->
+            {{-- Poster / Flayer --}}
             <div class="mb-6">
-                <label class="block text-gray-700 font-semibold mb-2" for="poster">
-                    <i class="fas fa-image mr-2 text-blue-500"></i> Poster atau Flayer
+                <label class="block text-sm font-medium text-gray-700 mb-2" for="poster">
+                    <i class="fas fa-image mr-1 text-blue-500"></i> Poster atau Flayer
                 </label>
-                <input type="file" name="poster" id="poster" accept="image/*" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="file" name="poster" id="poster" accept="image/*"
+                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
-            <!-- Tombol Submit -->
+            {{-- Tombol Submit --}}
             <div class="text-right">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-300">
+                <button type="submit"
+                    class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
                     Simpan Lowongan
                 </button>
             </div>
         </form>
     </div>
 
-
-    {{-- Box Informasi Tambahan --}}
+    {{-- Box Informasi Tambahan (pindahkan ke dalam wrapper flex) --}}
     <div class="w-full lg:w-1/3 bg-gradient-to-r from-blue-50 via-white to-blue-100 border border-blue-300 rounded-lg p-6 shadow-lg">
         <div class="text-3xl mb-3 text-blue-500">
             <i class="fas fa-info-circle"></i>
