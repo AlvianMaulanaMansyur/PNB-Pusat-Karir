@@ -21,40 +21,37 @@
                         required />
                 </div>
 
-                {{-- Tanggal Mulai --}}
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                 {{-- Tanggal Mulai --}}
+                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <x-input-label for="start_month_1" :value="__('Mulai Bulan')" />
-                        <x-text-input id="start_month_1" name="edukasi[1][start_month]" type="text"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: Agustus" required />
+                        <x-input-label for="start_month_1" :value="__('Tanggal Mulai (Bulan)')" />
+                        <x-dropdown.bulan-dropdown id="start_month_1" name="edukasi[1][start_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                     </div>
                     <div>
-                        <x-input-label for="start_year_1" :value="__('Mulai Tahun')" />
-                        <x-text-input id="start_year_1" name="edukasi[1][start_year]" type="number"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: 2018" required />
+                        <x-input-label for="start_year_1" :value="__('Tanggal Mulai (Tahun)')" />
+                        <x-dropdown.tahun-dropdown id="start_year_1" :name="__('edukasi[1][start_year]')"
+                            class="mt-1 w-full text-sm 2xl:text-lg" />
                     </div>
                 </div>
 
-                {{-- Tanggal Kelulusan --}}
+                {{-- Tanggal Selesai --}}
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <x-input-label for="graduation_month_1" :value="__('Kelulusan Bulan')" />
-                        <x-text-input id="graduation_month_1" name="edukasi[1][graduation_month]" type="text"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: Juni" required />
+                        <x-input-label for="graduation_month_1" :value="__('Tanggal Selesai (Bulan)')" />
+                        <x-dropdown.bulan-dropdown id="graduation_month_1" name="edukasi[1][graduation_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
+                        
                     </div>
                     <div>
-                        <x-input-label for="graduation_year_1" :value="__('Kelulusan Tahun')" />
-                        <x-text-input id="graduation_year_1" name="edukasi[1][graduation_year]" type="number"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: 2022" required />
+                        <x-input-label for="graduation_year_1" :value="__('Tanggal Selesai (Tahun)')" />
+                        <x-dropdown.tahun-dropdown id="graduation_year_1" :name="__('edukasi[1][graduation_year]')"
+                            class="mt-1 w-full text-sm 2xl:text-lg" />
                     </div>
                 </div>
 
                 {{-- Tingkat Pendidikan --}}
                 <div class="mb-4">
                     <x-input-label for="degree_level_1" :value="__('Tingkat Pendidikan')" />
-                    <x-text-input id="degree_level_1" name="edukasi[1][degree_level]" type="text"
-                        class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: S1 Teknik Informatika"
-                        required />
+                    <x-dropdown.pendidikan-dropdown :name="__('edukasi[1][degree_level]')" class="block mt-1 w-full text-sm 2xl:text-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" />
                 </div>
 
                 {{-- Deskripsi --}}
@@ -93,6 +90,7 @@
 
             </div>
         </div>
+
 
         <button type="button" id="tambah-edukasi"
             class="w-full border border-dashed border-indigo-500 text-indigo-600 px-4 py-2 rounded-md text-sm hover:bg-indigo-50">
@@ -151,41 +149,34 @@
                         {{-- Tanggal Mulai --}}
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <x-input-label for="start_month_${counter}" :value="__('Mulai Bulan')" />
-                                <x-text-input id="start_month_${counter}" name="edukasi[${counter}][start_month]" type="text"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: Agustus" required />
+                                <x-input-label for="start_month_${counter}" :value="__('Tanggal Mulai (Bulan)')" />
+                                <x-dropdown.bulan-dropdown id="start_month_${counter}" name="edukasi[${counter}][start_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                             </div>
                             <div>
-                                <x-input-label for="start_year_${counter}" :value="__('Mulai Tahun')" />
-                                <x-text-input id="start_year_${counter}" name="edukasi[${counter}][start_year]" type="number"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: 2018" required />
+                                <x-input-label for="start_year_${counter}" :value="__('Tanggal Mulai (Tahun)')" />
+                                <x-dropdown.tahun-dropdown id="start_year_${counter}" :name="__('edukasi[${counter}][start_year]')"
+                                    class="mt-1 w-full text-sm 2xl:text-lg" />
                             </div>
                         </div>
 
-                        {{-- Tanggal Kelulusan --}}
+                        {{-- Tanggal Selesai --}}
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                                <x-input-label for="graduation_month_${counter}" :value="__('Kelulusan Bulan')" />
-                                <x-text-input id="graduation_month_${counter}" name="edukasi[${counter}][graduation_month]" type="text"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: Juni" required />
+                                <x-input-label for="graduation_month_${counter}" :value="__('Tanggal Selesai (Bulan)')" />
+                                <x-dropdown.bulan-dropdown id="graduation_month_${counter}" name="edukasi[${counter}][graduation_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
+                                
                             </div>
                             <div>
-                                <x-input-label for="graduation_year_${counter}" :value="__('Kelulusan Tahun')" />
-                                <x-text-input id="graduation_year_${counter}" name="edukasi[${counter}][graduation_year]" type="number"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: 2022" required />
+                                <x-input-label for="graduation_year_${counter}" :value="__('Tanggal Selesai (Tahun)')" />
+                                <x-dropdown.tahun-dropdown id="graduation_year_${counter}" :name="__('edukasi[${counter}][graduation_year]')"
+                                    class="mt-1 w-full text-sm 2xl:text-lg" />
                             </div>
                         </div>
 
                         {{-- Tingkat Pendidikan --}}
                         <div class="mb-4">
                             <x-input-label for="degree_level_${counter}" :value="__('Tingkat Pendidikan')" />
-                            <x-text-input id="degree_level_${counter}" name="edukasi[${counter}][degree_level]" type="text"
-                                class="block mt-1 w-full text-sm 2xl:text-lg"
-                                placeholder="Contoh: S1 Teknik Informatika" required />
+                            <x-dropdown.pendidikan-dropdown :name="__('edukasi[${counter}][degree_level]')" class="block mt-1 w-full text-sm 2xl:text-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" />
                         </div>
 
                         {{-- Deskripsi --}}

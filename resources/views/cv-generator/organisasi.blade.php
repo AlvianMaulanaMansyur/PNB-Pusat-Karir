@@ -38,13 +38,12 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <x-input-label for="start_month_1" :value="__('Tanggal Mulai (Bulan)')" />
-                        <x-text-input id="start_month_1" name="organisasi[1][start_month]" type="text"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: Januari" />
+                        <x-dropdown.bulan-dropdown id="start_month_1" name="organisasi[1][start_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                     </div>
                     <div>
                         <x-input-label for="start_year_1" :value="__('Tanggal Mulai (Tahun)')" />
-                        <x-text-input id="start_year_1" name="organisasi[1][start_year]" type="number"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: 2020" />
+                        <x-dropdown.tahun-dropdown id="start_year_1" :name="__('organisasi[1][start_year]')"
+                            class="mt-1 w-full text-sm 2xl:text-lg" />
                     </div>
                 </div>
 
@@ -52,13 +51,13 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <x-input-label for="end_month_1" :value="__('Tanggal Selesai (Bulan)')" />
-                        <x-text-input id="end_month_1" name="organisasi[1][end_month]" type="text"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: Desember" />
+                        <x-dropdown.bulan-dropdown id="end_month_1" name="organisasi[1][end_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
+                        
                     </div>
                     <div>
                         <x-input-label for="end_year_1" :value="__('Tanggal Selesai (Tahun)')" />
-                        <x-text-input id="end_year_1" name="organisasi[1][end_year]" type="number"
-                            class="block mt-1 w-full text-sm 2xl:text-lg" placeholder="Contoh: 2023" />
+                        <x-dropdown.tahun-dropdown id="end_year_1" :name="__('organisasi[1][end_year]')"
+                            class="mt-1 w-full text-sm 2xl:text-lg" />
                     </div>
                 </div>
 
@@ -150,30 +149,22 @@
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <x-input-label for="start_month_${counter}" :value="__('Tanggal Mulai (Bulan)')" />
-                                <x-text-input id="start_month_${counter}" name="organisasi[${counter}][start_month]" type="text"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: Januari" />
+                                <x-dropdown.bulan-dropdown id="start_month_${counter}" name="organisasi[${counter}][start_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                             </div>
                             <div>
                                 <x-input-label for="start_year_${counter}" :value="__('Tanggal Mulai (Tahun)')" />
-                                <x-text-input id="start_year_${counter}" name="organisasi[${counter}][start_year]" type="number"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: 2020" />
+                                <x-dropdown.tahun-dropdown id="start_year_${counter}" :name="__('organisasi[${counter}][start_year]')" class="mt-1 w-full text-sm 2xl:text-lg" />
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <x-input-label for="end_month_${counter}" :value="__('Tanggal Selesai (Bulan)')" />
-                                <x-text-input id="end_month_${counter}" name="organisasi[${counter}][end_month]" type="text"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: Desember" />
+                                <x-dropdown.bulan-dropdown id="end_month_${counter}" name="organisasi[${counter}][end_month]" class="block mt-1 w-full text-sm 2xl:text-lg"/>
                             </div>
                             <div>
                                 <x-input-label for="end_year_${counter}" :value="__('Tanggal Selesai (Tahun)')" />
-                                <x-text-input id="end_year_${counter}" name="organisasi[${counter}][end_year]" type="number"
-                                    class="block mt-1 w-full text-sm 2xl:text-lg"
-                                    placeholder="Contoh: 2023" />
+                                <x-dropdown.tahun-dropdown id="end_year_${counter}" :name="__('organisasi[${counter}][end_year]')" class="mt-1 w-full text-sm 2xl:text-lg" />
                             </div>
                         </div>
 

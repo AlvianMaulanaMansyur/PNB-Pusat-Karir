@@ -10,7 +10,7 @@
             <!-- Menu Utama -->
             <div class="hidden md:flex items-center gap-5 font-semibold me-12">
                 <x-navlink href="#">Tentang Kami</x-navlink>
-                <x-navlink href="#">Generate CV</x-navlink>
+                <x-navlink href="{{ route('cv.dashboard') }}">Generate CV</x-navlink>
 
                 <x-dropdown.nav-dropdown label="acara">
                     <a href="#">acara saya</a>
@@ -43,7 +43,12 @@
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
                             Saya</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100">Logout</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                         @csrf
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100">
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

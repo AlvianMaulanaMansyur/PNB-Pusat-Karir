@@ -25,14 +25,8 @@
                 {{-- Tahun --}}
                 <div class="mb-4">
                     <x-input-label for="year_1" :value="__('Tahun')" />
-                    <select id="year_1" name="pengalaman_lain[1][year]"
-                        class="block mt-1 w-full text-sm 2xl:text-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                        required>
-                        <option value="">Pilih Tahun</option>
-                        @for ($i = date('Y'); $i >= 1990; $i--)
-                            <option value="{{ $i }}">{{ $i }}</option>
-                        @endfor
-                    </select>
+                    
+                    <x-dropdown.tahun-dropdown id="year_1" :name="__('pengalaman_lain[1][year]')" class="mt-1 w-full text-sm 2xl:text-lg" />
                 </div>
 
                 {{-- Deskripsi --}}
@@ -110,13 +104,7 @@
                         {{-- Tahun --}}
                         <div class="mb-4">
                             <x-input-label for="year_${counter}" :value="__('Tahun')" />
-                            <select id="year_${counter}" name="pengalaman_lain[${counter}][year]"
-                                class="block mt-1 w-full text-sm 2xl:text-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                                <option value="">Pilih Tahun</option>
-                                @for ($i = date('Y'); $i >= 1990; $i--)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
+                            <x-dropdown.tahun-dropdown id="year_${counter}" :name="__('pengalaman_lain[${counter}][year]')" class="mt-1 w-full text-sm 2xl:text-lg" />
                         </div>
 
                         {{-- Deskripsi --}}
