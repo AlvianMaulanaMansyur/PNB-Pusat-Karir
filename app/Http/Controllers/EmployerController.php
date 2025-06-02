@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\employers;
+use App\Models\JobApplication;
 use App\Models\JobListing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -214,7 +215,7 @@ class EmployerController extends Controller
 
             // Dapatkan data lama sebelum diupdate (opsional, tapi sangat berguna untuk audit trail)
             $oldData = $employer->getOriginal();
-            
+
             // Lakukan update
             $employer->update($validated);
 
@@ -226,7 +227,6 @@ class EmployerController extends Controller
             ]);
 
             return redirect()->route('employer.edit-profile', $employer->slug)->with('success', 'Profil berhasil diperbarui!');
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Log: Employer tidak ditemukan
             Log::warning('Upaya update gagal: Employer dengan slug "' . $slug . '" tidak ditemukan.', [
@@ -256,5 +256,44 @@ class EmployerController extends Controller
             ]);
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan sistem. Silakan coba lagi nanti.']);
         }
+    }
+    public function showApplicants($slug)
+    {
+        $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
+
+        // Cek jika employer punya job listing
+        if (!$employer->jobListings) {
+            return back()->with('error', 'Employer belum memiliki lowongan.');
+        }
+
+        $applications = JobApplication::with(['employee', 'job'])
+            ->whereIn('job_id', $employer->jobListings->pluck('id'))
+            ->orderBy('applied_at', 'desc')
+            ->get()
+            ->groupBy('job_id');
+
+        return view('employer.pelamar-lowongan', compact('applications'));
+    }
+
+    public function updateStatus(Request $request, $slug)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,reviewed,accepted,rejected',
+            'interview_date' => 'nullable|date',
+        ]);
+
+        // Cari berdasarkan slug, bukan ID
+        $application = JobApplication::where('slug', $slug)->firstOrFail();
+        $application->status = $request->status;
+
+        if ($request->status === 'reviewed') {
+            $application->interview_date = $request->interview_date;
+        } else {
+            $application->interview_date = null;
+        }
+
+        $application->save();
+
+        return back()->with('success', 'Status pelamar berhasil diperbarui.');
     }
 }

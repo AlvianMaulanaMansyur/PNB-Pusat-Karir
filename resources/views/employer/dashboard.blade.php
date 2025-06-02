@@ -52,7 +52,7 @@
         </a>
 
         <!-- Pelamar Lowongan -->
-        <a href="{{ url('/employer/pelamar-lowongan') }}" class="group bg-blue-500 hover:bg-blue-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
+        <a href="{{ route('employer.pelamar-lowongan', ['slug' => auth()->user()->employer->slug]) }}" class="group bg-blue-500 hover:bg-blue-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
             <i class="fas fa-users text-3xl mb-2"></i>
             <h3 class="text-lg font-medium">Pelamar Lowongan</h3>
         </a>

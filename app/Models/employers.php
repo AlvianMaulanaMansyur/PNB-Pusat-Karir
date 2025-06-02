@@ -41,4 +41,12 @@ class employers extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function jobs()
+    {
+        return $this->hasMany(JobListing::class, 'employer_id');
+    }
+    public function jobListings()
+    {
+        return $this->hasMany(JobListing::class, 'employer_id');
+    }
 };

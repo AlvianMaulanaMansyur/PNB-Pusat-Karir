@@ -12,8 +12,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/admin/login', [  AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
-Route::post('/admin/login', [ AdminauthController::class, 'login'])->name('admin.login.submit');
+Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
+Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -93,39 +93,45 @@ Route::middleware('auth')->group(function () {
     Route::get('/cv/{cv:slug}/review', [CvGeneratorController::class, 'showReviewPage'])
         ->name('cv.review');
     Route::post('/cv/{slug}/download', [CvGeneratorController::class, 'downloadCv'])->name('cv.download');
+
+
+
+    //============
+
+
+
+    // -------employer
+    Route::get('/employer', function () {
+        return view('employer.dashboard');
+    });
+    // Tambah Lowongan
+    Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
+        ->name('employer.tambahlowongan');
+    Route::post('/employer/storelowongan', [EmployerController::class, 'storelowongan'])
+        ->name('employer.storelowongan');
+
+    Route::get('/employer/manajemen-lowongan', [EmployerController::class, 'manajemenlowongan'])
+        ->name('employer.manajemen-lowongan');
+
+    Route::delete('/employer/{slug}/destroy-lowongan', [EmployerController::class, 'destroylowongan'])
+        ->name('employer.destroy-lowongan');
+
+    Route::get('/employer/edit-lowongan/{slug}', [EmployerController::class, 'editlowongan'])->name('employer.edit-lowongan');
+    Route::put('/employer/update-lowongan/{slug}', [EmployerController::class, 'updatelowongan'])->name('employer.update-lowongan');
+
+    Route::get('/employer/{slug}/edit-profile', [EmployerController::class, 'editprofile'])->name('employer.edit-profile');
+    Route::put('/employer/{slug}', [EmployerController::class, 'update'])->name('employer.update');
+
+    Route::get('/employer/{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
+    // web.php
+    Route::patch('/employer/pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
+
+    // kelola-interview
+    Route::get('/employer/kelola-interview', function () {
+        return view('employer.kelola-interview');
+    })->name('employer.kelola-interview');
+
 });
-
-// -------employer
-Route::get('/employer', function () {
-    return view('employer.dashboard');
-});
-// Tambah Lowongan
-Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
-    ->name('employer.tambahlowongan');
-Route::post('/employer/storelowongan', [EmployerController::class, 'storelowongan'])
-    ->name('employer.storelowongan');
-
-Route::get('/employer/manajemen-lowongan', [EmployerController::class, 'manajemenlowongan'])
-    ->name('employer.manajemen-lowongan');
-
-Route::delete('/employer/{slug}/destroy-lowongan', [EmployerController::class, 'destroylowongan'])
-    ->name('employer.destroy-lowongan');
-
-Route::get('/employer/edit-lowongan/{slug}', [EmployerController::class, 'editlowongan'])->name('employer.edit-lowongan');
-Route::put('/employer/update-lowongan/{slug}', [EmployerController::class, 'updatelowongan'])->name('employer.update-lowongan');
-
-Route::get('/employer/{slug}/edit-profile', [EmployerController::class, 'editprofile'])->name('employer.edit-profile');
-Route::put('/employer/{slug}', [EmployerController::class, 'update'])->name('employer.update');
-
-// manajemen pelamar
-Route::get('/employer/pelamar-lowongan', function () {
-    return view('employer.pelamar-lowongan');
-})->name('employer.pelamar-lowongan');
-
-// kelola-interview
-Route::get('/employer/kelola-interview', function () {
-    return view('employer.kelola-interview');
-})->name('employer.kelola-interview');
 
 
 require __DIR__ . '/auth.php';
