@@ -16,7 +16,14 @@ use App\Http\Controllers\AuthenticationChecker;
 use Illuminate\Support\Facades\Route;
 use phpDocumentor\Reflection\Location;
 
+
+Route::get('/get-countries', [LocationController::class, 'getCountries']);
+Route::get('/get-cities', [LocationController::class, 'getCities']);
+
+
 Route::middleware('guest')->group(function () {
+    Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
+    Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
     // route untuk menampilkan halaman register jobseeker
     Route::get('register-jobseeker', [RegisteredUserController::class, 'JobSeeker'])
         ->name('jobseeker-register');
@@ -49,9 +56,6 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-    // API untuk menampilkan dropdown negara dan kota
-    Route::get('/get-countries', [LocationController::class, 'getCountries']);
-    Route::get('/get-cities', [LocationController::class, 'getCities']);
 
     // API untuk mengecek username dan email terdaftar atau tidak
     Route::get('/AuthCheker', [AuthenticationChecker::class, 'CheckerShowForm'])->name('account-checker');
@@ -81,6 +85,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+
+
 });
 
 Route::get('/admin/login', [  AdminAuthController::class, 'showLoginForm'])->name('admin.adminLogin');

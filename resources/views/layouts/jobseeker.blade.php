@@ -12,15 +12,26 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    {{-- font Awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body>
-    <div class="min-h-screen">
-        @include('layouts.jobseeker.navigation-jobseeker')
-    </div>
+    <script src="//unpkg.com/alpinejs" defer></script>
 
-    
+</head>
+
+<body>
+    <nav>
+        @include('components.jobseeker.navigation-jobseeker')
+    </nav>
+    <main>
+        {{ $slot }}
+    </main>
+    <footer>
+        @include('layouts.footer')
+    </footer>
 
 </body>
+
 </html>

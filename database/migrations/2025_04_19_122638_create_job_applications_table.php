@@ -10,6 +10,8 @@ return new class extends Migration
     {
         Schema::create('job_applications', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
+
             $table->foreignId('job_id')->constrained('job_listings')->onDelete('cascade');
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->timestamp('applied_at')->useCurrent();
@@ -19,8 +21,8 @@ return new class extends Migration
             $table->text('employer_notes')->nullable();
             $table->enum('interview_status', ['not_scheduled', 'scheduled', 'completed'])->nullable();
             $table->timestamp('interview_date')->nullable();
-
-            $table->unique(['job_id', 'employee_id']);
+            $table->timestamps();
+            
         });
 
         Schema::create('application_logs', function (Blueprint $table) {

@@ -28,7 +28,19 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        switch ($user->role) {
+            case 'employer':
+                return redirect()->intended(route('', absolute: false));
+            case 'employee':
+                return redirect()->intended(route('employee.landing-page', absolute: false));
+            default:
+                Auth::logout();
+                return redirect()->route('login')->with([
+                'error' => 'Role tidak dikenali atau tidak memiliki akses ke dashboard.',
+                ]);
+        }
     }
 
     /**
