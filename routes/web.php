@@ -126,11 +126,10 @@ Route::middleware('auth')->group(function () {
     // web.php
     Route::patch('/employer/pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
 
-    // kelola-interview
-    Route::get('/employer/kelola-interview', function () {
-        return view('employer.kelola-interview');
-    })->name('employer.kelola-interview');
+    Route::get('/employer/{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
+    Route::patch('/employer/{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
 
+    Route::get('/employer/{slug}/pelamar-lowongan', [EmployerController::class, 'filterstatus'])->name('employer.pelamar-lowongan');
 });
 
 

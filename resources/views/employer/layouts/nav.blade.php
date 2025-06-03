@@ -13,7 +13,7 @@
         {{-- Kanan: Ikon Manage Lowongan + User + Logout --}}
         <div class="flex items-center gap-8 text-gray-700">
             {{-- Ikon Manage Lowongan --}}
-            <a href="{{ route('employer.kelola-interview') }}" class="hover:text-blue-600 cursor-pointer" title="Kelola Interview">
+            <a href="{{ route('employer.kelolawawancara', ['slug' => auth()->user()->employer->slug]) }}" class="hover:text-blue-600 cursor-pointer" title="Kelola Interview">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 2xl:w-8 2xl:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5h6m-6 4h6m-6 4h6m2 4a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2h10z" />

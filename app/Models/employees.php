@@ -31,4 +31,9 @@ class employees extends Model
         'years_of_experience',
         'availability',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
