@@ -20,6 +20,7 @@ class employees extends Model
         'last_name',
         'suffix',
         'phone',
+        'photo_profile',
         'country',
         'city',
         'highest_education',

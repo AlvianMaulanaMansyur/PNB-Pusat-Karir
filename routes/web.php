@@ -8,9 +8,9 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminauthController;
 use App\Http\Controllers\EmployerController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
@@ -18,13 +18,6 @@ Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.
 // Route::middleware('auth')->group(function () {
 //     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 // });
-
-
-Route::get('/dashboard', function () {
-    return view('layouts.jobseeker');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,8 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/load-session-data/{slug}', [CvGeneratorController::class, 'loadSessionData'])
         ->name('load.session.data');
 
-
-
     // Route utama untuk menampilkan dashboard CV (dengan daftar CV)
     Route::get('/cv', [CvGeneratorController::class, 'index'])->name('cv.dashboard');
 
@@ -55,7 +46,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/upload-profile-photo', [CvGeneratorController::class, 'uploadProfilePhoto'])
         ->name('upload.profile.photo');
-
 
     // routes/web.php
     Route::post('/cv/{slug}/update-title', [CvGeneratorController::class, 'updateCvTitle'])
@@ -94,16 +84,13 @@ Route::middleware('auth')->group(function () {
         ->name('cv.review');
     Route::post('/cv/{slug}/download', [CvGeneratorController::class, 'downloadCv'])->name('cv.download');
 
+    // Route::get('/employer', function () {
+    //     return view('employer.dashboard');
+    // });
 
+    Route::get('employer/dashboard', [EmployerController::class, 'index'])
+        ->name('employer.dashboard');
 
-    //============
-
-
-
-    // -------employer
-    Route::get('/employer', function () {
-        return view('employer.dashboard');
-    });
     // Tambah Lowongan
     Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
         ->name('employer.tambahlowongan');
@@ -130,7 +117,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/employer/{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
 
     Route::get('/employer/{slug}/pelamar-lowongan', [EmployerController::class, 'filterstatus'])->name('employer.pelamar-lowongan');
+    Route::get('/employer', function () {
+        return view('employer.dashboard');
+    });
 });
 
-
+require __DIR__ . '/jobseeker.php';
 require __DIR__ . '/auth.php';

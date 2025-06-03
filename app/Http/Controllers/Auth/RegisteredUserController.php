@@ -43,13 +43,28 @@ class RegisteredUserController extends Controller
     // menyimpan data jobseeker ke database
     public function EmployerDataStore(Request $request): RedirectResponse
     {
+        // dd($request->all());
         $username = session('registered_username');
         $email = session('registered_email');
         $request->validate([
             'nameCompany' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
+            'negara' => ['required', 'string',],
+            'kota' => ['required', 'string',],
+            'business_registration_number' => ['required', 'numeric', ],
+            'industry' => ['required', 'string',],
+            'website' => ['required', 'string', 'url'],
+            'organisasi' => ['required', 'string',],
+            'staff' => ['required', 'string',],
+            'profil_perusahaan' => ['required', 'string',],
+            'sapaan' => ['required', 'string',],
+            'nama_depan' => ['required', 'string',],
+            'nama_belakang' => ['required', 'string',],
+            'akhiran' => ['nullable', 'string',],
+            'pekerjaan' => ['required', 'string',],
+            'departemen' => ['required', 'string',],
 
         ]);
 
@@ -67,6 +82,7 @@ class RegisteredUserController extends Controller
             ]);
             $employer = employers::create([
                 'user_id' => $user->id,
+                'slug' => str('employer-'.substr($user->id, 0, 8)),
                 'company_name' => $request->nameCompany,
                 'business_registration_number' => $request->business_registration_number,
                 'industry' => $request->industry,
@@ -98,20 +114,23 @@ class RegisteredUserController extends Controller
     // menyimpan data jobseeker ke database
     public function JobSeekerDataStore(Request $request)
     {
+        // dd($request->all());
+        // mengambil data dari session
         $username = session('registered_username');
         $email = session('registered_email');
         $request->validate([
             // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             // 'username' => ['required', 'string', 'max:255', 'unique:' . User::class,],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
             'negara' => ['required', 'string',],
             'kota' => ['required', 'string',],
+            'education' => ['required', 'string'],
             'sapaan' => ['required', 'string',],
             'nama_depan' => ['required', 'string',],
             'nama_belakang' => ['required', 'string',],
-            'akhiran' => ['required', 'string',],
+            'akhiran' => ['nullable', 'string',],
             'bidang' => ['required', 'string',],
             'previous_industry' => ['required', 'string',],
             'jenis_pekerjaan' => ['required', 'string',],
@@ -119,11 +138,12 @@ class RegisteredUserController extends Controller
             'status' => ['required', 'string',],
             'tahun_pengalaman' => ['required', 'string',],
             'ketersediaan_bekerja' => ['required', 'string',],
+            // 'akhiran' => ['nullable', 'string'],
+
         ]);
         DB::beginTransaction();
 
         try {
-            // dd($request->all()); 
             $user = User::create([
                 'username' => $username,
                 'email' => $email,
@@ -138,6 +158,7 @@ class RegisteredUserController extends Controller
                 'last_name' => $request->nama_belakang,
                 'suffix' => $request->akhiran,
                 'phone' => $request->phone,
+                'photo_profile' => '/images/profile.png',
                 'country' => $request->negara,
                 'city' => $request->kota,
                 'highest_education' => $request->education,
@@ -158,7 +179,16 @@ class RegisteredUserController extends Controller
             // merollback jika terjadi error
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            dd($e->getMessage());
         }
+    }
+
+    public function messages(): array
+    {
+        return [
+            'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
+            'password.min' => 'Password minimal harus 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ];
     }
 }

@@ -35,8 +35,8 @@
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
-                        <img src="{{ asset('images/profile.png') }}" alt="Profile"
-                            class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
+                        <img src=""
+                            alt="Profile" class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
                         <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-200"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -100,7 +100,7 @@
                             <button @click= "submenuOpen = !submenuOpen"
                                 class="flex  justify-between items-center w-full  px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
                                 <div class="flex items-center ">
-                                    <img src="{{ asset('images/profile.png') }}" alt="Profile"
+                                    <img src="" alt="Profile"
                                         class="rounded-full w-10 h-10 object-cover border-2 border-gray-200 mr-3" />
                                     <span class="text-gray-700 font-medium">Nama Pengguna</span>
                                 </div>
