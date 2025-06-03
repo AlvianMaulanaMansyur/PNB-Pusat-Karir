@@ -84,8 +84,67 @@ Route::middleware('auth')->group(function () {
         ->name('cv.review');
     Route::post('/cv/{slug}/download', [CvGeneratorController::class, 'downloadCv'])->name('cv.download');
 
-    
+    // Route::get('/employer', function () {
+    //     return view('employer.dashboard');
+    // });
+
+    Route::get('employer/dashboard', [EmployerController::class, 'index'])
+        ->name('employer.dashboard');
+
+    // Tambah Lowongan
+    Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
+        ->name('employer.tambahlowongan');
+    Route::post('/employer/storelowongan', [EmployerController::class, 'storelowongan'])
+        ->name('employer.storelowongan');
+
+    Route::get('/employer/manajemen-lowongan', [EmployerController::class, 'manajemenlowongan'])
+        ->name('employer.manajemen-lowongan');
+
+    Route::delete('/employer/{slug}/destroy-lowongan', [EmployerController::class, 'destroylowongan'])
+        ->name('employer.destroy-lowongan');
+
+    Route::get('/employer/edit-lowongan/{slug}', [EmployerController::class, 'editlowongan'])->name('employer.edit-lowongan');
+    Route::put('/employer/update-lowongan/{slug}', [EmployerController::class, 'updatelowongan'])->name('employer.update-lowongan');
+
+    Route::get('/employer/{slug}/edit-profile', [EmployerController::class, 'editprofile'])->name('employer.edit-profile');
+    Route::put('/employer/{slug}', [EmployerController::class, 'update'])->name('employer.update');
+
+    Route::get('/employer/{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
+    // web.php
+    Route::patch('/employer/pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
+
+    Route::get('/employer/{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
+    Route::patch('/employer/{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
+
+    Route::get('/employer', function () {
+        return view('employer.dashboard');
+    });
 });
+
+// Tambah Lowongan
+Route::get('/employer/tambahlowongan', [EmployerController::class, 'tambahlowongan'])
+    ->name('employer.tambahlowongan');
+Route::post('/employer/storelowongan', [EmployerController::class, 'storelowongan'])
+    ->name('employer.storelowongan');
+
+Route::get('/employer/manajemen-lowongan', [EmployerController::class, 'manajemenlowongan'])
+    ->name('employer.manajemen-lowongan');
+
+Route::delete('/employer/{slug}/destroy-lowongan', [EmployerController::class, 'destroylowongan'])
+    ->name('employer.destroy-lowongan');
+
+Route::get('/employer/edit-lowongan/{slug}', [EmployerController::class, 'editlowongan'])->name('employer.edit-lowongan');
+Route::put('/employer/update-lowongan/{slug}', [EmployerController::class, 'updatelowongan'])->name('employer.update-lowongan');
+
+Route::get('/employer/{slug}/edit-profile', [EmployerController::class, 'editprofile'])->name('employer.edit-profile');
+Route::put('/employer/{slug}', [EmployerController::class, 'update'])->name('employer.update');
+
+Route::get('/employer/{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
+// web.php
+Route::patch('/employer/pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
+
+Route::get('/employer/{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
+Route::patch('/employer/{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
 
 
 

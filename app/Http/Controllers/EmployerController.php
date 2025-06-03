@@ -14,6 +14,14 @@ use Illuminate\Support\Str;
 
 class EmployerController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        $employerData = $user->dataEmployers; // relasi
+
+        // dd($employerData);
+        return view('employer.dashboard', compact('user'));
+    }
     public function tambahlowongan()
     {
         return view('employer.tambah-lowongan');

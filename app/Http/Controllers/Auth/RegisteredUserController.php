@@ -82,6 +82,7 @@ class RegisteredUserController extends Controller
             ]);
             $employer = employers::create([
                 'user_id' => $user->id,
+                'slug' => str('employer-'.substr($user->id, 0, 8)),
                 'company_name' => $request->nameCompany,
                 'business_registration_number' => $request->business_registration_number,
                 'industry' => $request->industry,
@@ -129,7 +130,7 @@ class RegisteredUserController extends Controller
             'sapaan' => ['required', 'string',],
             'nama_depan' => ['required', 'string',],
             'nama_belakang' => ['required', 'string',],
-            'akhiran' => ['required', 'string',],
+            'akhiran' => ['nullable', 'string',],
             'bidang' => ['required', 'string',],
             'previous_industry' => ['required', 'string',],
             'jenis_pekerjaan' => ['required', 'string',],
@@ -137,7 +138,7 @@ class RegisteredUserController extends Controller
             'status' => ['required', 'string',],
             'tahun_pengalaman' => ['required', 'string',],
             'ketersediaan_bekerja' => ['required', 'string',],
-            'akhiran' => ['nullable', 'string'],
+            // 'akhiran' => ['nullable', 'string'],
 
         ]);
         DB::beginTransaction();
