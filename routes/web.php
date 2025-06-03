@@ -58,7 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/cv/{slug}/work-experiences', [CvGeneratorController::class, 'showWorkExperienceForm'])
         ->name('cv.experiences');
 
-
     Route::post('/cv/{cv:slug}/work-experiences', [CvGeneratorController::class, 'storeWorkExperiences'])->name('cv.pengalaman_kerja.store');
     Route::get('/cv/{cv:slug}/work-experiences/load', [CvGeneratorController::class, 'loadWorkExperiences'])->name('cv.pengalaman_kerja.load');
 
