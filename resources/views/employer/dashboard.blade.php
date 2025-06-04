@@ -1,12 +1,10 @@
 @extends('employer.layouts.app')
 
 @section('content')
+    {{--  notifikasi error session --}}
+    <x-alert.session-alert type="error" :message="session('error')" />
+
     {{-- Konten Utama --}}
-    <x-alert.sessionAlert type="error" :message="session('error')" />
-
-
-
-
     <div class="flex flex-col lg:flex-row items-center justify-between mt-20 2xl:mt-32 gap-12 px-10 lg:px-32">
 
         <div class="w-full lg:w-3/5 space-y-6">

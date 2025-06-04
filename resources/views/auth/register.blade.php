@@ -142,6 +142,15 @@
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
+            <!-- telephone Address -->
+            <div class="mt-4 lg:col-span-6 md:grid-col-2">
+                <x-label-required for="Alamat" :value="__('Alamar Perusahaan')" />
+                <x-text-input id="alamat_perusahaan" name="alamat_perusahaan" type="text"
+                    class="block mt-1 w-full" :value="old('alamat_perusahaan')" required />
+                <x-input-error :messages="$errors->get('alamat_perusahaan')" class="mt-2" />
+            </div>
+
+
             <!-- Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password" :value="__('Password')" />

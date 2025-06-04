@@ -21,4 +21,10 @@ class JobSeekerController extends Controller
         // dd($employerData);
         return view('jobseeker.index', compact( 'employeeData', 'jobs'));
     }
+
+    public function detailLowongan($id)
+    {
+        $job = JobListing::with('employer')->findOrFail($id);
+        return view('jobseeker.detail-lowongan', compact('job'));
+    }
 }

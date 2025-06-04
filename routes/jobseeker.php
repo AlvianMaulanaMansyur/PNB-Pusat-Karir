@@ -9,6 +9,8 @@ Route::middleware(['auth','role:employee', 'verified'])->group(function () {
     Route::get('/', [JobSeekerController::class, 'index'])
         ->name('employee.landing-page');
 
+    Route::get('/job-detail/{id}', [JobSeekerController::class, 'detailLowongan'])->name('job.detail');
+
 });
 
 
