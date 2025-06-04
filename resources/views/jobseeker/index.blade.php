@@ -1,9 +1,11 @@
 <x-jobseeker-layout>
 
+    <x-alert.session-alert type="error" :message="session('error')" />
     <div class="border-b py-10 w-full max-w-screen">
         @include('components.jobseeker.searchBar')
     </div>
     <div class="w-full max-w-screen-xl mx-auto mt-10">
+        <x-alert type="success" :message="session('success')" />
         <div x-data="{ selectedJob: null }" class="grid grid-cols-2 min-h-screen">
             {{-- Kolom 1: daftar lowongan --}}
             <div class="p-4 space-y-4 ">
