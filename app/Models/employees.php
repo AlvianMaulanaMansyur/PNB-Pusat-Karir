@@ -31,6 +31,7 @@ class employees extends Model
         'employment_status',
         'years_of_experience',
         'availability',
+        'photo_profile',
     ];
 
     public function user()

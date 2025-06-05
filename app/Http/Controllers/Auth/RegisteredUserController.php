@@ -48,6 +48,7 @@ class RegisteredUserController extends Controller
         $email = session('registered_email');
         $request->validate([
             'nameCompany' => ['required', 'string', 'max:255'],
+            'alamat_perusahaan' => ['required', 'string', 'max:255'],
             'password' => ['required', Rules\Password::defaults()],
             'password_confirmation' => ['required', 'string', 'same:password',],
             'phone' => ['required', 'numeric',],
@@ -83,6 +84,8 @@ class RegisteredUserController extends Controller
             $employer = employers::create([
                 'user_id' => $user->id,
                 'slug' => str('employer-'.substr($user->id, 0, 8)),
+                'photo_profile' => '/images/default_employer.png',
+                'alamat_perusahaan' => $request->alamat_perusahaan,
                 'company_name' => $request->nameCompany,
                 'business_registration_number' => $request->business_registration_number,
                 'industry' => $request->industry,

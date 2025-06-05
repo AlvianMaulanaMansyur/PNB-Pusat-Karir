@@ -353,4 +353,5 @@ class EmployerController extends Controller
 
         return view('employer.pelamar-lowongan', compact('applications'));
     }
+    
 }

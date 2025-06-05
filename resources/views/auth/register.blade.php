@@ -21,7 +21,8 @@
             <!-- Industri -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="industry" :value="__('Industri')" />
-                <x-dropdown.industry-dropdown name="industry" :value="old('industry')" class="block mt-1 w-full" />
+                <x-dropdown.industry-dropdown name="industry" :value="old('industry')" class="block mt-1 w-full"
+                    :selected="old('industry')" />
                 <x-input-error :messages="$errors->get('industry')" class="mt-2" />
             </div>
 
@@ -36,28 +37,28 @@
             <!-- Jenis Organisasi Perusahaan -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="organisasi" :value="__('Jenis Organisasi')" />
-                <x-dropdown.organisasi-dropdown name="organisasi" :value="old('organisasi')" class="block mt-1 w-full" />
+                <x-dropdown.organisasi-dropdown name="organisasi" :selected="old('organisasi')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('organisasi')" class="mt-2" />
             </div>
 
             {{-- Kekuatan Staff --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="staff" :value="__('Kekuatan Staff')" />
-                <x-dropdown.staff-strength-dropdown name="staff" :value="old('staff')" class="block mt-1 w-full" />
+                <x-dropdown.staff-strength-dropdown name="staff" :selected="old('staff')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('staff')" class="mt-2" />
             </div>
 
             {{-- Negara --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="negara" :value="__('Negara')" />
-                <x-dropdown.negara-dropdown name="negara" :value="old('negara')" class="block mt-1 w-full" />
+                <x-dropdown.negara-dropdown name="negara" :selected="old('negara')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('negara')" class="mt-2" />
             </div>
 
             {{-- Kota --}}
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="kota" :value="__('Kota')" />
-                <x-dropdown.kota-dropdown name="kota" :value="old('kota')" class="block mt-1 w-full" />
+                <x-dropdown.kota-dropdown name="kota" :selected="old('kota')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('kota')" class="mt-2" />
             </div>
 
@@ -73,7 +74,7 @@
             <!-- sapaan -->
             <div class="mt-4  lg:grid-col-1">
                 <x-label-required for="sapaan" :value="__('Sapaan')" />
-                <x-dropdown.sapaan-dropdown name="sapaan" :value="old('sapaan')" class="block mt-1 w-full" />
+                <x-dropdown.sapaan-dropdown name="sapaan" :selected="old('sapaan')" class="block mt-1 w-full" />
                 <x-input-error :messages="$errors->get('sapaan')" class="mt-2" />
             </div>
 
@@ -121,7 +122,7 @@
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="email" :value="__('Alamat Email')" />
                 <x-text-input id="email" class="block mt-1 w-full opacity-50" type="email" name="email"
-                    value="{{ session('registered_email') }}" required  readonly/>
+                    value="{{ session('registered_email') }}" required readonly />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
@@ -141,10 +142,20 @@
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
+            <!-- telephone Address -->
+            <div class="mt-4 lg:col-span-6 md:grid-col-2">
+                <x-label-required for="Alamat" :value="__('Alamar Perusahaan')" />
+                <x-text-input id="alamat_perusahaan" name="alamat_perusahaan" type="text"
+                    class="block mt-1 w-full" :value="old('alamat_perusahaan')" required />
+                <x-input-error :messages="$errors->get('alamat_perusahaan')" class="mt-2" />
+            </div>
+
+
             <!-- Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password" :value="__('Password')" />
-                <x-input-password id="password" class="block mt-1 w-full" type="password" name="password" required />
+                <x-input-password id="password" class="block mt-1 w-full" type="password" name="password"
+                    required />
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
