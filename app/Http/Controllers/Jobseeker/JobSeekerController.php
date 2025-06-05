@@ -16,7 +16,7 @@ class JobSeekerController extends Controller
         $employeeData = $user->dataEmployees; // relasi
 
         // mengambil data lowongan kerja dengan relasi employer
-        $jobs = JobListing::with('employer')->latest()->get();
+        $jobs = JobListing::with('employer')->latest()->paginate(5);
 
         // dd($employerData);
         return view('jobseeker.index', compact( 'employeeData', 'jobs'));
