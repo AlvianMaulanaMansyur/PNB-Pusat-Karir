@@ -14,7 +14,11 @@ return new class extends Migration {
             $table->string('nama_lowongan');
             $table->text('deskripsi');
             $table->string('posisi');
+            $table->string('gaji');
             $table->string('kualifikasi');
+            $table->string('benefit');
+            $table->string('responsibility');
+            $table->string('detailkualifikasi');
             $table->string('jenislowongan'); // Contoh: Full Time, Freelance, dsb
             $table->date('deadline');
             $table->string('poster')->nullable(); // Path ke file poster

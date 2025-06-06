@@ -36,27 +36,58 @@
                 <x-label-required for="deskripsi" :value="__('Deskripsi')" />
                 <x-text-area-input id="deskripsi" name="deskripsi"
                     class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
-                    required />
+                    placeholder="Masukkan ringkasan pekerjaan yang jelas dan menarik." required />
             </div>
 
-            {{-- Posisi --}}
-            <div class="mb-5">
-                <x-label-required for="posisi" :value="__('Posisi Lowongan')" />
-                <x-text-input id="posisi" name="posisi" type="text"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
-                    placeholder="Contoh: Admin Operasional" required />
-            </div>
-
-            {{-- Kualifikasi --}}
-            <div class="mb-5">
-                <x-label-required for="kualifikasi" :value="__('Kualifikasi')" />
-                <x-dropdown.kualifikasi-pendidikan class="block mt-1 w-full text-sm" />
-            </div>
-
-            {{-- Jenis Lowongan --}}
+            {{-- Jenis Pekerjaan --}}
             <div class="mb-5">
                 <x-label-required for="jenislowongan" :value="__('Jenis Lowongan')" />
                 <x-dropdown.jenis-lowongan class="block mt-1 w-full text-sm" />
+            </div>
+
+            {{-- Posisi Jabatan--}}
+            <div class="mb-5">
+                <x-label-required for="posisi" :value="__('Posisi Lowongan')" />
+                <x-dropdown.tingkat-posisi class="block mt-1 w-full text-sm" />
+            </div>
+
+            {{-- Responsibility --}}
+            <div class="mb-5">
+                <x-label-required for="responsibility" :value="__('Responsibility')" />
+                <x-text-area-input id="responsibility" name="responsibility"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="Tulis tanggung jawab utama posisi ini, misalnya: mengatur jadwal, menyusun laporan, dll." required />
+            </div>
+
+            {{-- Kualifikasi Pendidikan --}}
+            <div class="mb-5">
+                <x-label-required for="kualifikasi" :value="__('Kualifikasi Pendidikan')" />
+                <x-dropdown.kualifikasi-pendidikan class="block mt-1 w-full text-sm" />
+            </div>
+
+            {{-- Detail Kualifikasi --}}
+            <div class="mb-5">
+                <x-label-required for="detailkualifikasi" :value="__('Detail Kualifikasi')" />
+                <x-text-area-input id="detailkualifikasi" name="detailkualifikasi"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="Contoh: Minimal lulusan S1 Teknik Informatika atau jurusan terkait." required />
+            </div>
+
+            {{-- Gaji --}}
+            <div class="mb-5">
+                <x-label-required for="gaji" :value="__('Gaji')" />
+                <x-text-input id="gaji" name="gaji" type="text"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="Contoh: 5000000" value="{{ old('gaji', $job->gaji ?? '') }}" required />
+                <p class="text-xs text-gray-500 mt-1">Masukkan nominal angka saja, tanpa titik atau simbol. Misal: 5000000</p>
+            </div>
+
+            {{-- Benefit --}}
+            <div class="mb-5">
+                <x-label-required for="benefit" :value="__('Benefit')" />
+                <x-text-area-input id="benefit" name="benefit"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="Tulis benefit seperti asuransi, bonus, cuti tambahan, jenjang karir, dll." required />
             </div>
 
             {{-- Deadline --}}
@@ -187,4 +218,20 @@
         form.submit();
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const gajiInput = document.getElementById('gaji');
+
+        gajiInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Hapus semua selain angka
+            if (value) {
+                e.target.value = 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
+            } else {
+                e.target.value = '';
+            }
+        });
+    });
+</script>
+
+
 @endsection

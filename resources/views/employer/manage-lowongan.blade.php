@@ -57,15 +57,16 @@
 {{-- Tabel Daftar Lowongan --}}
 <div class="flex flex-col w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-20 lg:ml-28 mt-6 mb-12">
     <div class="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
-        <table class="min-w-full text-sm text-left text-gray-700">
+        <table class="min-w-full text-sm text-left text-gray-700 table-auto">
             <thead class="bg-gray-100 border-b border-gray-200">
                 <tr>
-                    <th class="px-5 py-3 font-medium">Poster</th>
-                    <th class="px-5 py-3 font-medium">Nama Lowongan</th>
-                    <th class="px-5 py-3 font-medium">Posisi</th>
-                    <th class="px-5 py-3 font-medium">Jenis</th>
-                    <th class="px-5 py-3 font-medium">Deadline</th>
-                    <th class="px-5 py-3 font-medium text-center">Aksi</th>
+                    <th class="px-5 py-3 font-medium w-20">Poster</th>
+                    <th class="px-5 py-3 font-medium w-1/4 max-w-xs">Nama Lowongan</th>
+                    <th class="px-5 py-3 font-medium w-1/6">Posisi</th>
+                    <th class="px-5 py-3 font-medium w-1/6">Jenis</th>
+                    <th class="px-5 py-3 font-medium w-1/6">Gaji</th>
+                    <th class="px-5 py-3 font-medium w-1/6">Deadline</th>
+                    <th class="px-5 py-3 font-medium text-center w-32">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 bg-white">
@@ -78,38 +79,50 @@
                         <span class="text-gray-400 italic">Tidak ada</span>
                         @endif
                     </td>
-                    <td class="px-5 py-4 font-semibold text-gray-800">{{ $lowongan->nama_lowongan }}</td>
-                    <td class="px-5 py-4">{{ $lowongan->posisi }}</td>
-                    <td class="px-5 py-4">{{ $lowongan->jenislowongan }}</td>
-                    <td class="px-5 py-4">{{ \Carbon\Carbon::parse($lowongan->deadline)->format('d M Y') }}</td>
-                    <td class="px-5 py-4 text-center space-x-2">
-                        {{-- Tombol Edit --}}
-                        <a href="{{ route('employer.edit-lowongan', $lowongan->slug) }}"
-                            class="inline-block px-3 py-1 text-xs font-semibold text-gray-800 bg-[#FACC15] rounded hover:bg-yellow-400 transition">
-                            Edit
-                        </a>
+                    <td class="px-5 py-4 font-semibold text-gray-800 truncate max-w-xs" title="{{ $lowongan->nama_lowongan }}">
+                        {{ $lowongan->nama_lowongan }}
+                    </td>
+                    <td class="px-5 py-4 truncate max-w-[150px]">
+                        {{ $lowongan->posisi }}
+                    </td>
+                    <td class="px-5 py-4 truncate">
+                        {{ $lowongan->jenislowongan }}
+                    </td>
+                    <td class="px-5 py-4 text-green-600 font-medium">
+                        {{ 'Rp ' . number_format((int) str_replace('.', '', $lowongan->gaji), 0, ',', '.') }}
+                    </td>
+                    <td class="px-5 py-4 whitespace-nowrap">
+                        {{ \Carbon\Carbon::parse($lowongan->deadline)->format('d M Y') }}
+                    </td>
+                    <td class="px-5 py-4">
+                        <div class="flex justify-center items-center gap-2 flex-wrap">
+                            <a href="{{ route('employer.edit-lowongan', $lowongan->slug) }}"
+                                class="px-3 py-1 text-xs font-semibold text-gray-800 bg-yellow-300 rounded hover:bg-yellow-400 transition">
+                                Edit
+                            </a>
 
-                        {{-- Tombol Hapus dengan class btn-delete --}}
-                        <form action="{{ route('employer.destroy-lowongan', $lowongan->slug) }}" method="POST" class="inline-block">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button"
-                                onclick="showDeleteModal(this.closest('form'))"
-                                class="inline-block px-3 py-1 text-xs text-white bg-[#E02D3C] rounded hover:opacity-90 transition">
-                                Hapus
-                            </button>
-                        </form>
+                            <form action="{{ route('employer.destroy-lowongan', $lowongan->slug) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                    onclick="showDeleteModal(this.closest('form'))"
+                                    class="px-3 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700 transition">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-5 py-4 text-center text-gray-500">Belum ada lowongan ditambahkan.</td>
+                    <td colspan="7" class="px-5 py-4 text-center text-gray-500">Belum ada lowongan ditambahkan.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 </div>
+
 
 {{-- Modal Konfirmasi Hapus --}}
 <div id="confirm-modal" tabindex="-1"
