@@ -121,7 +121,7 @@
 
     {{-- Benefit --}}
     <div class="mb-4">
-        <x-label-required for="benefit" :value="__('Detail Kualifikasi')" />
+        <x-label-required for="benefit" :value="__('Benefit')" />
         <textarea name="benefit" id="benefit" rows="4"
             class="block mt-1 w-full rounded-md border-black-300 focus:ring-2 focus:ring-blue-500 text-sm"
             required>{{ old('benefit', $lowongan->benefit) }}</textarea>

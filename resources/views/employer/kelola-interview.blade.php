@@ -211,32 +211,5 @@
     });
 </script>
 
-<script>
-    const confirmModal = document.getElementById('confirm-modal');
-    const openConfirmBtn = document.getElementById('open-confirm');
-    const confirmSubmitBtn = document.getElementById('confirm-submit');
-
-    // Form yang ingin kita submit nanti
-    const formInterview = document.querySelector('#modal-{{ $app->slug }} form');
-
-    // Fungsi buka modal konfirmasi
-    function showModal() {
-        confirmModal.classList.remove('hidden');
-    }
-
-    // Fungsi tutup modal konfirmasi
-    function hideModal() {
-        confirmModal.classList.add('hidden');
-    }
-
-    openConfirmBtn.addEventListener('click', function() {
-        showModal();
-    });
-
-    confirmSubmitBtn.addEventListener('click', function() {
-        formInterview.submit();
-    });
-</script>
-
 
 @endsection
