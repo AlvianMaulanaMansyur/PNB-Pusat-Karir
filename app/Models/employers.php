@@ -45,10 +45,10 @@ class employers extends Model
     }
     public function jobs()
     {
-        return $this->hasMany(JobListing::class, 'employer_id');
+        return $this->hasMany(JobListing::class, 'user_id');
     }
     public function jobListings()
     {
-        return $this->hasMany(JobListing::class, 'employer_id');
+        return $this->hasMany(JobListing::class, 'user_id', 'user_id');
     }
 };

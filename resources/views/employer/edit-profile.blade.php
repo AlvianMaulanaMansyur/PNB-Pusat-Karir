@@ -137,7 +137,7 @@
 
                     <!-- Informasi Kontak -->
                     <div class="mb-4">
-                        <x-label-required for="salutation" :value="__('Sapaan')" />
+                        <x-input-label for="salutation" value="Sapaan" />
                         <x-dropdown.sapaan-dropdown name="salutation" :selected="old('salutation', $employer->salutation)" class="block mt-1 w-full" />
                     </div>
 
@@ -145,12 +145,12 @@
                         <div>
                             <x-label-required for="first_name" :value="__('Nama Depan')" />
                             <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full"
-                                value="{{ old('first_name', $employer->first_name) }}" />
+                                value="{{ old('first_name', $employer->first_name) }}" required/>
                         </div>
                         <div>
-                            <x-input-label for="last_name" value="Nama Belakang" />
+                            <x-label-required for="last_name" :value="__('Nama Belakang')" />
                             <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full"
-                                value="{{ old('last_name', $employer->last_name) }}" />
+                                value="{{ old('last_name', $employer->last_name) }}"  required/>
                         </div>
                     </div>
 
@@ -163,10 +163,10 @@
                         <div>
                             <x-label-required for="job_title" :value="__('Pekerjaan')" />
                             <x-text-input id="job_title" name="job_title" type="text" class="mt-1 block w-full"
-                                value="{{ old('job_title', $employer->job_title) }}" />
+                                value="{{ old('job_title', $employer->job_title) }}"  required/>
                         </div>
                         <div>
-                            <x-input-label for="department" value="Departemen" />
+                            <x-label-required for="department" :value="__('Departemen')" />
                             <x-text-input id="department" name="department" type="text" class="mt-1 block w-full"
                                 value="{{ old('department', $employer->department) }}" />
                         </div>
@@ -183,7 +183,7 @@
                         <div>
                             <x-label-required for="phone" :value="__('No. Telepon')" />
                             <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full"
-                                value="{{ old('phone', $employer->phone) }}" />
+                                value="{{ old('phone', $employer->phone) }}" required/>
                         </div>
                         <div>
                             <x-label-required for="email" :value="__('Email')" />
@@ -201,7 +201,7 @@
 
                     <!-- Foto Profil Perusahaan (Minimalis dan Elegan) -->
                     <div class="mb-6">
-                        <x-label-required for="photo_profile" :value="__('Foto Profil Perusahaan')" />
+                        <x-input-label for="photo_profile" value="Foto Profile" />
 
                         <div class="flex flex-col items-start gap-3 mt-2">
                             <!-- Gambar profil atau default -->

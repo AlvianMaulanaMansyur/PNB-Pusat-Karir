@@ -58,14 +58,12 @@ class EmployerController extends Controller
 
             // Ambil employer_id dari user yang login
             $userId = Auth::id();
-            $employer = employers::where('user_id', $userId)->first();
 
-            if (!$employer) {
+            if (!$userId) {
                 Log::warning('Employer tidak ditemukan untuk user yang login.', ['user_id' => $userId]);
                 return redirect()->back()->withErrors(['error' => 'Employer tidak ditemukan untuk user ini.']);
             }
 
-            Log::info('Employer ditemukan.', ['employer_id' => $employer->id, 'user_id' => $userId]);
 
             // Simpan poster jika ada
             if ($request->hasFile('poster')) {
@@ -77,7 +75,7 @@ class EmployerController extends Controller
             }
 
             // Tambahkan employer_id ke data
-            $validated['employer_id'] = $employer->id;
+            $validated['user_id'] = $userId;
 
             // Generate slug unik dari nama_lowongan
             $slug = Str::slug($validated['nama_lowongan']);
@@ -98,7 +96,7 @@ class EmployerController extends Controller
 
             Log::info('Lowongan berhasil disimpan ke database.', [
                 'nama_lowongan' => $validated['nama_lowongan'],
-                'employer_id'   => $employer->id,
+                'user_id'   => $userId,
                 'slug'          => $slug,
             ]);
 
@@ -124,9 +122,9 @@ class EmployerController extends Controller
 
     public function manajemenlowongan()
     {
-        $employerId = employers::where('user_id', Auth::id())->value('id');
+        $userId =  Auth::id();
 
-        $job_listings = JobListing::where('employer_id', $employerId)->latest()->get();
+        $job_listings = JobListing::where('user_id', $userId)->latest()->get();
         return view('employer.manage-lowongan', ['joblisting' => $job_listings]);
     }
     public function editlowongan($slug)
@@ -366,15 +364,13 @@ class EmployerController extends Controller
     {
         $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
-        // Validasi apakah employer memiliki lowongan
         if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
             return back()->with('error', 'Employer belum memiliki lowongan.');
         }
 
-        // Ambil pelamar dengan status reviewed atau interview
         $applications = JobApplication::with(['employee', 'job'])
             ->whereIn('job_id', $employer->jobListings->pluck('id'))
-            ->whereIn('status', ['interview']) // Filter status
+            ->whereIn('status', ['interview'])
             ->orderBy('applied_at', 'desc')
             ->get()
             ->groupBy('job_id');

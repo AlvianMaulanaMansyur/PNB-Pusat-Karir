@@ -128,7 +128,7 @@ class EmployerSeeder extends Seeder
 
         $jobListings = [
             [
-                'employer_id' => 1,
+                'user_id' => 2,
                 'slug' => Str::slug('Software Engineer'),
                 'nama_lowongan' => 'Software Engineer',
                 'deskripsi' => 'Kami mencari Software Engineer yang handal dan berpengalaman.',
@@ -145,7 +145,7 @@ class EmployerSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'employer_id' => 1,
+                'user_id' => 2,
                 'slug' => Str::slug('Marketing Specialist'),
                 'nama_lowongan' => 'Marketing Specialist',
                 'deskripsi' => 'Posisi Marketing Specialist untuk mengembangkan strategi pemasaran.',
