@@ -6,6 +6,8 @@
         <p class="text-gray-700">{{ $job->employer->company_name }}</p>
         <p class="text-gray-500">{{ $job->employer->alamat_perusahaan }}</p>
         <div class="mt-4 text-sm text-gray-600">{{ $job->jenislowongan }}</div>
+        {{-- <div class="mt-4 text-sm text-gray-600">{{ $job->deskripsi }}</div> --}}
+
 
         <div class="mt-6 text-sm text-gray-400">Deskripsi lengkap lowongan...</div>
         <div class="h-[600px] bg-gray-100 rounded-md mt-4"></div>
