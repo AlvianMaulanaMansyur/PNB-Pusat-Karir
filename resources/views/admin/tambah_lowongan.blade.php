@@ -1,17 +1,7 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
 <div class="flex">
-    {{-- Sidebar --}}
-    <aside class="w-64 h-screen bg-blue-900 text-white p-6 space-y-6">
-        <div class="text-xl font-bold mb-6">🎓 PNB Pusat Karir</div>
-        <nav class="space-y-4">
-            <a href="#" class="flex items-center gap-2 hover:text-yellow-300">🏠 DASHBOARD</a>
-            <a href="#" class="flex items-center gap-2 hover:text-yellow-300">🔒 VERIFIKASI AKUN EMPLOYER</a>
-            <a href="#" class="flex items-center gap-2 text-yellow-300 font-semibold">📄 MANAJEMEN LOWONGAN</a>
-            <a href="#" class="flex items-center gap-2 hover:text-yellow-300">📅 MANAJEMEN EVENT</a>
-        </nav>
-    </aside>
 
     {{-- Main Content --}}
     <main class="flex-1 bg-gray-100 p-8">

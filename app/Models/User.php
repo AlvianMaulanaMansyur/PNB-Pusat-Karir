@@ -53,8 +53,8 @@ class User extends Authenticatable
         return $this->hasOne(employers::class);
     }
 
-    public function dataEmployees ()
+    public function employee ()
     {
-        return $this->hasOne(Employees::class);
+        return $this->hasOne(employees::class);
     }
 }

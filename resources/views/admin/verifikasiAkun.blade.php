@@ -1,53 +1,12 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<main class="p-6 space-y-6">
-    <!-- Info Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Card 1 -->
-        @php
-        $verifiedCount = $users->where('is_active', 1)->count();
-        @endphp
 
-        <div class="bg-blue-900 text-white p-4 rounded-md shadow flex flex-col items-center">
-            <p class="uppercase text-sm font-semibold">Akun Terverifikasi</p>
-            <div class="flex items-center gap-2 mt-2">
-                <span class="text-4xl font-bold">{{ $verifiedCount }}</span>
-                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M16.707 9.293a1 1 0 00-1.414 0L11 13.586 8.707 11.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l5-5a1 1 0 000-1.414z"/>
-                </svg>
-            </div>
-        </div>
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">VERIFIKASI AKUN</h1>
 
-
-        <!-- Card 2 -->
-        <div class="bg-blue-900 text-white p-4 rounded-md shadow flex flex-col items-center">
-            <p class="uppercase text-sm font-semibold">Lowongan Aktif</p>
-            <div class="flex items-center gap-2 mt-2">
-                <span class="text-4xl font-bold">25</span>
-                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.42 0-8 2.015-8 4.5V20h16v-1.5c0-2.485-3.58-4.5-8-4.5z"/>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="bg-blue-900 text-white p-4 rounded-md shadow flex flex-col items-center">
-            <p class="uppercase text-sm font-semibold">Event Aktif</p>
-            <div class="flex items-center gap-2 mt-2">
-                <span class="text-4xl font-bold">10</span>
-                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.293 6.293L10 14.586l-2.293-2.293-1.414 1.414L10 17.414l8-8-1.414-1.414z"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-
-    <!-- Table Verifikasi -->
-    <div class="bg-white p-4 rounded-md shadow border border-gray-300">
-        <h2 class="text-lg font-bold uppercase border-b pb-2 mb-4">Verifikasi Akun Employer</h2>
-        <div class="overflow-x-auto">
-            <table class="w-full table-auto text-sm">
+    <div class="overflow-hidden rounded-lg shadow"> <!-- Tambahkan wrapper rounded -->
+        <table class="w-full table-auto text-sm">
             <thead class="bg-blue-900 text-white">
                 <tr>
                     <th class="px-4 py-2 text-left">NAMA</th>
@@ -118,17 +77,7 @@
                 @endforeach
             </tbody>
         </table>
-        </div>
     </div>
+</div>
 
-    <!-- CTA Button -->
-    <div class="text-right">
-        <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 flex items-center gap-2 uppercase font-semibold">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/>
-            </svg>
-            Tambah Baru
-        </button>
-    </div>
-</main>
 @endsection

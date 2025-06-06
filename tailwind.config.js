@@ -8,6 +8,7 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/**/*.blade.php',
+        "./node_modules/flowbite/**/*.js", // <-- Tambahkan ini
     ],
 
     theme: {
@@ -25,5 +26,5 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [forms, require('flowbite/plugin')],
 };
