@@ -20,6 +20,7 @@ class employees extends Model
         'last_name',
         'suffix',
         'phone',
+        'photo_profile',
         'country',
         'city',
         'highest_education',
@@ -30,5 +31,11 @@ class employees extends Model
         'employment_status',
         'years_of_experience',
         'availability',
+        'photo_profile',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

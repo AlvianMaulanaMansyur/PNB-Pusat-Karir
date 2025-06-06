@@ -17,15 +17,23 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="//unpkg.com/alpinejs" defer></script>
+
 </head>
 
 <body>
-    <div class="min-h-screen">
-        @include('layouts.jobseeker.navigation-jobseeker')
-    </div>
-    <div class="">
+    <nav>
+        @include('components.jobseeker.navigation-jobseeker')
+    </nav>
+    <main>
+        {{ $slot }} 
+    </main>
+    <footer>
         @include('layouts.footer')
-    </div>
+    </footer>
+
+    <script src="//unpkg.com/alpinejs" defer></script>
+
 </body>
 
 </html>

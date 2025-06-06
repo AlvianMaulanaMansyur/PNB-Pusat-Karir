@@ -15,12 +15,12 @@
     </div>
 </div>
 
-{{-- Konten Utama: Form + Box Info --}}
+{{-- Form dan layout sama seperti milikmu --}}
 <div class="flex flex-col lg:flex-row justify-start mt-10 mx-4 md:mx-10 lg:mx-20 lg:ml-28 gap-8">
 
     {{-- Form Tambah Lowongan --}}
     <div class="w-full lg:w-2/3 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <form action="{{ route('employer.storelowongan') }}" method="POST" enctype="multipart/form-data">
+        <form id="form-lowongan" action="{{ route('employer.storelowongan') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
 
             {{-- Nama Lowongan --}}
@@ -77,9 +77,9 @@
                     class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
-            {{-- Tombol Submit --}}
+            {{-- Tombol Simpan: ubah jadi type button supaya tidak langsung submit --}}
             <div class="text-right">
-                <button type="submit"
+                <button id="btn-simpan" type="button"
                     class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
                     Simpan Lowongan
                 </button>
@@ -87,7 +87,7 @@
         </form>
     </div>
 
-    {{-- Box Informasi Tambahan (pindahkan ke dalam wrapper flex) --}}
+    {{-- Box Informasi Tambahan --}}
     <div class="w-full lg:w-1/3 bg-gradient-to-r from-blue-50 via-white to-blue-100 border border-blue-300 rounded-lg p-6 shadow-lg">
         <div class="text-3xl mb-3 text-blue-500">
             <i class="fas fa-info-circle"></i>
@@ -98,6 +98,41 @@
             <br><br>
             Pastikan seluruh data yang dimasukkan benar agar dapat membantu pencari kerja menemukan lowongan Anda dengan mudah.
         </p>
+    </div>
+</div>
+
+{{-- Modal Konfirmasi --}}
+<div id="confirm-modal" tabindex="-1"
+    class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-sm">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-xl shadow-xl border border-gray-200">
+            <button type="button"
+                class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition rounded-full w-8 h-8 flex items-center justify-center"
+                data-modal-hide="confirm-modal" aria-label="Tutup" onclick="hideModal()">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 14 14">
+                    <path d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <div class="p-6 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" fill="none" viewBox="0 0 20 20">
+                    <path d="M10 11V6m0 0h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <h3 class="mb-5 text-lg font-medium text-gray-700">Apakah kamu yakin ingin menyimpan lowongan ini?</h3>
+
+                <button type="button" id="confirm-submit"
+                    class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
+                    Ya, Simpan
+                </button>
+
+                <button type="button" onclick="hideModal()"
+                    class="ml-3 px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                    Batal
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -116,6 +151,40 @@
     window.addEventListener('scroll', () => {
         const btn = document.getElementById('backToTop');
         btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+    });
+</script>
+
+{{-- Script --}}
+<script>
+    const btnSimpan = document.getElementById('btn-simpan');
+    const form = document.getElementById('form-lowongan');
+    const modal = document.getElementById('confirm-modal');
+    const btnConfirmSubmit = document.getElementById('confirm-submit');
+
+    // Fungsi tampilkan modal
+    function showModal() {
+        modal.classList.remove('hidden');
+    }
+
+    // Fungsi sembunyikan modal
+    function hideModal() {
+        modal.classList.add('hidden');
+    }
+
+    btnSimpan.addEventListener('click', () => {
+        // cek validasi form
+        if (form.checkValidity()) {
+            // semua valid, tampilkan modal konfirmasi
+            showModal();
+        } else {
+            // tidak valid, trigger validasi browser tampil
+            form.reportValidity();
+        }
+    });
+
+    btnConfirmSubmit.addEventListener('click', () => {
+        // submit form saat user klik konfirmasi
+        form.submit();
     });
 </script>
 @endsection

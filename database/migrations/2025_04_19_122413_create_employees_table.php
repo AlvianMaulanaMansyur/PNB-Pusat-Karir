@@ -28,7 +28,7 @@ return new class extends Migration
             $table->integer('years_of_experience')->nullable();
             $table->string('availability')->nullable();
             $table->timestamps();
-
+            
             // $table->string('nim', 20)->unique();
             // $table->string('major', 100)->nullable();
             // $table->string('username', 100);
@@ -43,6 +43,6 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('employees');
-        
+
     }
 };

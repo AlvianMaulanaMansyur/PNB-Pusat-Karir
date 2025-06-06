@@ -20,4 +20,9 @@ class JobListing extends Model
         'deadline',
         'poster',
     ];
+
+    public function employer()
+    {
+        return $this->belongsTo(employers::class, 'employer_id');
+    }
 }

@@ -37,16 +37,16 @@
             <!-- Username -->
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
                 <x-label-required for="username" :value="__('Username')" />
-                <x-text-input id="username" class="block mt-1 w-full opacity-50 cursor-not-allowed" type="text" name="username" readonly  value="{{ session('registered_username') }}"
-                    required />
+                <x-text-input id="username" class="block mt-1 w-full opacity-50 cursor-not-allowed" type="text"
+                    name="username" readonly value="{{ session('registered_username') }}" required />
                 <x-input-error :messages="$errors->get('username')" class="mt-2" />
             </div>
 
             <!-- Email Address -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="email" :value="__('Alamat Email')" />
-                <x-text-input id="email" class="block mt-1 w-full cursor-not-allowed opacity-50" type="email" name="email" readonly value="{{ session('registered_email') }}"
-                    required />
+                <x-text-input id="email" class="block mt-1 w-full cursor-not-allowed opacity-50" type="email"
+                    name="email" readonly value="{{ session('registered_email') }}" required />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
@@ -61,14 +61,14 @@
             <!-- Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password" :value="__('Password')" />
-                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+                <x-input-password id="password" class="block mt-1 w-full" type="password" name="password" required />
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <!-- Confirm Password -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2">
                 <x-label-required for="password_confirmation" :value="__('Confirm Password')" />
-                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
+                <x-input-password id="password_confirmation" class="block mt-1 w-full" type="password"
                     name="password_confirmation" required />
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>

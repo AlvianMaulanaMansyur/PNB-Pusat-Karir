@@ -14,6 +14,7 @@ class employers extends Model
         'user_id',
         'slug',
         'company_name',
+        'alamat_perusahaan',
         'business_registration_number',
         'industry',
         'company_website',
@@ -28,7 +29,7 @@ class employers extends Model
         'suffix',
         'job_title',
         'department',
-        // 'email',
+        'photo_profile',
         'phone',
         // 'password',
     ];
