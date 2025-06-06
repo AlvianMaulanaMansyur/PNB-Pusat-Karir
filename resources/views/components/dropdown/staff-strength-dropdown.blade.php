@@ -17,7 +17,7 @@
 @endphp
 
 <div>
-    <select name="{{ $name }}" id="{{ $name }}"
+    <select name="{{ $name }}" id="{{ $name }}" required
         {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
         <option value="">-</option>
         @foreach ($kekuatan as $key => $value)

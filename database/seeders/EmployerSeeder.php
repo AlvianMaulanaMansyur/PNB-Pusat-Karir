@@ -52,13 +52,14 @@ class EmployerSeeder extends Seeder
             ],
         ]);
 
-        
+
         $slug = 'employer-' . substr(md5(2), 0, 8);
-        
+
         DB::table('employers')->insert([
             'user_id' => 2,
             'slug' => $slug,
             'company_name' => 'PT Maju Jaya Abadi',
+            'alamat_perusahaan' => 'hhh',
             'business_registration_number' => '1234567890',
             'industry' => 'Teknologi Informasi',
             'company_website' => 'https://majujaya.co.id',
@@ -74,6 +75,7 @@ class EmployerSeeder extends Seeder
             'job_title' => 'HR Manager',
             'department' => 'Human Resource',
             'phone' => '081234567890',
+            'photo_profile' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -126,12 +128,16 @@ class EmployerSeeder extends Seeder
 
         $jobListings = [
             [
-                'employer_id' => 1,
+                'user_id' => 2,
                 'slug' => Str::slug('Software Engineer'),
                 'nama_lowongan' => 'Software Engineer',
                 'deskripsi' => 'Kami mencari Software Engineer yang handal dan berpengalaman.',
                 'posisi' => 'admin',
                 'kualifikasi' => 'Admin',
+                'gaji' => '',
+                'benefit'          => '',
+                'responsibility'   => '',
+                'detailkualifikasi' => '',
                 'jenislowongan' => 'Full Time',
                 'deadline' => Carbon::now()->addMonth()->toDateString(),
                 'poster' => null,
@@ -139,12 +145,16 @@ class EmployerSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'employer_id' => 1,
+                'user_id' => 2,
                 'slug' => Str::slug('Marketing Specialist'),
                 'nama_lowongan' => 'Marketing Specialist',
                 'deskripsi' => 'Posisi Marketing Specialist untuk mengembangkan strategi pemasaran.',
                 'posisi' => 'admin',
                 'kualifikasi' => 'admin',
+                'gaji' => '',
+                'benefit'          => '',
+                'responsibility'   => '',
+                'detailkualifikasi' => '',
                 'jenislowongan' => 'Freelance',
                 'deadline' => Carbon::now()->addWeeks(3)->toDateString(),
                 'poster' => null,
@@ -162,7 +172,7 @@ class EmployerSeeder extends Seeder
         $slug = 'app-' . substr(md5(2), 0, 8);
         $applications = [
 
-            
+
             [
                 'job_id' => 1,
                 'slug' => 'app-' . substr(md5('1-1'), 0, 8),
@@ -202,7 +212,5 @@ class EmployerSeeder extends Seeder
         ];
 
         DB::table('job_applications')->insert($applications);
-
-        
     }
 }

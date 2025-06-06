@@ -5,7 +5,54 @@
 
 @php
 $kualifikasi = [
-'Programmer / Developer' => 'Programmer / Developer',
+'SMP (Sekolah Menengah Pertama)' => 'SMP (Sekolah Menengah Pertama)',
+'SMA/SMK (Sekolah Menengah Atas/Kejuruan)' => 'SMA/SMK (Sekolah Menengah Atas/Kejuruan)',
+'Diploma 2 (D2)' => 'Diploma 2 (D2)',
+'Diploma 3 (D3)' => 'Diploma 3 (D3)',
+'Diploma 4 (D4) / Sarjana Terapan' => 'Diploma 4 (D4) / Sarjana Terapan',
+];
+@endphp
+<div>
+    <select name="{{ $name }}" id="{{ $name }}"
+        {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
+        <option value="">-</option>
+        @foreach ($kualifikasi as $key => $value)
+        <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>{{ $value }}</option>
+        @endforeach
+    </select>
+</div>
+<!-- <div>
+    <select id="kualifikasi-select" name="{{ $name }}"
+        {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
+        <option value="">-</option>
+        @foreach ($kualifikasi as $key => $value)
+        <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>{{ $value }}</option>
+        @endforeach
+    </select>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new TomSelect('#kualifikasi-select', {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    });
+</script> -->
+<!-- <div>
+    <select name="{{ $name }}" id="{{ $name }}"
+        {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
+        <option value="">-</option>
+        @foreach ($kualifikasi as $key => $value)
+        <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>{{ $value }}</option>
+        @endforeach
+    </select>
+</div> -->
+
+<!-- 'Programmer / Developer' => 'Programmer / Developer',
 'IT Support' => 'IT Support',
 'UI/UX Designer' => 'UI/UX Designer',
 'Cyber Security' => 'Cyber Security',
@@ -40,38 +87,4 @@ $kualifikasi = [
 'Tour Guide' => 'Tour Guide',
 'Resepsionis Hotel' => 'Resepsionis Hotel',
 'Chef / Cook' => 'Chef / Cook',
-'Housekeeping' => 'Housekeeping',
-
-
-];
-@endphp
-<div>
-    <select id="kualifikasi-select" name="{{ $name }}"
-        {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
-        <option value="">-</option>
-        @foreach ($kualifikasi as $key => $value)
-        <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>{{ $value }}</option>
-        @endforeach
-    </select>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        new TomSelect('#kualifikasi-select', {
-            create: false,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            }
-        });
-    });
-</script>
-<!-- <div>
-    <select name="{{ $name }}" id="{{ $name }}"
-        {{ $attributes->merge(['class' => 'border-gray-700  focus:border-[#7397EA] focus:ring-[#7397EA] rounded-md shadow-sm']) }}>
-        <option value="">-</option>
-        @foreach ($kualifikasi as $key => $value)
-        <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>{{ $value }}</option>
-        @endforeach
-    </select>
-</div> -->
+'Housekeeping' => 'Housekeeping', -->

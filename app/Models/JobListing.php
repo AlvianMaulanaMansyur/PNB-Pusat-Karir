@@ -11,11 +11,15 @@ class JobListing extends Model
 
     protected $fillable = [
         'slug',
-        'employer_id',
+        'user_id',
         'nama_lowongan',
         'deskripsi',
         'posisi',
+        'gaji',
         'kualifikasi',
+        'benefit',
+        'responsibility',
+        'detailkualifikasi',
         'jenislowongan',
         'deadline',
         'poster',
@@ -23,6 +27,6 @@ class JobListing extends Model
 
     public function employer()
     {
-        return $this->belongsTo(employers::class, 'employer_id');
+        return $this->belongsTo(employers::class, 'user_id', 'user_id');
     }
 }

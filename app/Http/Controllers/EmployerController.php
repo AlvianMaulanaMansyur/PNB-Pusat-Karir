@@ -33,27 +33,37 @@ class EmployerController extends Controller
         try {
             // Validasi input
             $validated = $request->validate([
-                'nama_lowongan' => 'required|string|max:255',
-                'deskripsi'     => 'required|string',
-                'posisi'        => 'required|string|max:255',
-                'kualifikasi'   => 'required|string|max:255',
-                'jenislowongan' => 'required|string|max:100',
-                'deadline'      => 'required|date',
-                'poster'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'nama_lowongan'    => 'required|string|max:255',
+                'deskripsi'        => 'required|string',
+                'posisi'           => 'required|string|max:255',
+                'kualifikasi'      => 'required|string|max:255',
+                'gaji'             => 'required|string|max:255',
+                'benefit'          => 'required|string|max:255',
+                'responsibility'   => 'required|string|max:255',
+                'detailkualifikasi' => 'required|string|max:255',
+                'jenislowongan'    => 'required|string|max:100',
+                'deadline'         => 'required|date',
+                'poster'           => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
+
+            // Bersihkan nilai gaji
+            $cleanedGaji = preg_replace('/\D/', '', $validated['gaji']);
+            if (!$cleanedGaji) {
+                return redirect()->back()->withErrors(['gaji' => 'Nilai gaji tidak valid.'])->withInput();
+            }
+            $validated['gaji'] = $cleanedGaji;
+
 
             Log::debug('Data input berhasil divalidasi.', ['validated_data' => $validated]);
 
             // Ambil employer_id dari user yang login
             $userId = Auth::id();
-            $employer = employers::where('user_id', $userId)->first();
 
-            if (!$employer) {
+            if (!$userId) {
                 Log::warning('Employer tidak ditemukan untuk user yang login.', ['user_id' => $userId]);
                 return redirect()->back()->withErrors(['error' => 'Employer tidak ditemukan untuk user ini.']);
             }
 
-            Log::info('Employer ditemukan.', ['employer_id' => $employer->id, 'user_id' => $userId]);
 
             // Simpan poster jika ada
             if ($request->hasFile('poster')) {
@@ -65,7 +75,7 @@ class EmployerController extends Controller
             }
 
             // Tambahkan employer_id ke data
-            $validated['employer_id'] = $employer->id;
+            $validated['user_id'] = $userId;
 
             // Generate slug unik dari nama_lowongan
             $slug = Str::slug($validated['nama_lowongan']);
@@ -86,7 +96,7 @@ class EmployerController extends Controller
 
             Log::info('Lowongan berhasil disimpan ke database.', [
                 'nama_lowongan' => $validated['nama_lowongan'],
-                'employer_id'   => $employer->id,
+                'user_id'   => $userId,
                 'slug'          => $slug,
             ]);
 
@@ -109,11 +119,12 @@ class EmployerController extends Controller
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan sistem. Silakan coba lagi nanti.']);
         }
     }
+
     public function manajemenlowongan()
     {
-        $employerId = employers::where('user_id', Auth::id())->value('id');
+        $userId =  Auth::id();
 
-        $job_listings = JobListing::where('employer_id', $employerId)->latest()->get();
+        $job_listings = JobListing::where('user_id', $userId)->latest()->get();
         return view('employer.manage-lowongan', ['joblisting' => $job_listings]);
     }
     public function editlowongan($slug)
@@ -122,19 +133,35 @@ class EmployerController extends Controller
 
         return view('employer.edit-lowongan', compact('lowongan'));
     }
+
     public function updatelowongan(Request $request, $slug)
     {
         $lowongan = JobListing::where('slug', $slug)->firstOrFail();
 
         $validated = $request->validate([
-            'nama_lowongan' => 'required|string|max:255',
-            'deskripsi'     => 'required|string',
-            'posisi'        => 'required|string|max:255',
-            'kualifikasi'   => 'required|string|max:255',
-            'jenislowongan' => 'required|string|max:100',
-            'deadline'      => 'required|date',
-            'poster'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nama_lowongan'     => 'required|string|max:255',
+            'deskripsi'         => 'required|string',
+            'posisi'            => 'required|string|max:255',
+            'kualifikasi'       => 'required|string|max:255',
+            'gaji'              => 'required|string|max:255',
+            'benefit'           => 'required|string|max:255',
+            'responsibility'    => 'required|string|max:255',
+            'detailkualifikasi' => 'required|string|max:255',
+            'jenislowongan'     => 'required|string|max:100',
+            'deadline'          => 'required|date',
+            'poster'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $request->merge([
+            'gaji' => str_replace(['Rp', '.', ' '], '', $request->gaji),
+        ]);
+
+        // Bersihkan nilai gaji
+        $cleanedGaji = preg_replace('/\D/', '', $validated['gaji']);
+        if (!$cleanedGaji) {
+            return redirect()->back()->withErrors(['gaji' => 'Nilai gaji tidak valid.'])->withInput();
+        }
+        $validated['gaji'] = $cleanedGaji;
 
         // Jika nama lowongan berubah, update slug juga
         if ($lowongan->nama_lowongan !== $validated['nama_lowongan']) {
@@ -146,6 +173,7 @@ class EmployerController extends Controller
             }
         }
 
+        // Update poster jika diunggah ulang
         if ($request->hasFile('poster')) {
             $posterPath = $request->file('poster')->store('posters', 'public');
             $validated['poster'] = $posterPath;
@@ -185,14 +213,13 @@ class EmployerController extends Controller
         // Log: Memulai proses update profil employer
         Log::info('Memulai proses update profil employer.', [
             'slug' => $slug,
-            'user_id' => Auth::check() ? Auth::id() : 'guest' // Melacak user jika login
+            'user_id' => Auth::check() ? Auth::id() : 'guest'
         ]);
 
         try {
             // Cari employer berdasarkan slug
             $employer = employers::where('slug', $slug)->firstOrFail();
 
-            // Log: Employer ditemukan
             Log::info('Employer ditemukan untuk update.', [
                 'employer_id' => $employer->id,
                 'current_company_name' => $employer->company_name
@@ -210,41 +237,69 @@ class EmployerController extends Controller
                 'city' => 'nullable|string|max:255',
                 'company_profile' => 'nullable|string',
                 'salutation' => 'nullable|string|max:255',
+                'alamat_perusahaan' => 'nullable|string|max:255',
                 'first_name' => 'nullable|string|max:255',
                 'last_name' => 'nullable|string|max:255',
                 'suffix' => 'nullable|string|max:50',
                 'job_title' => 'nullable|string|max:255',
                 'department' => 'nullable|string|max:255',
                 'phone' => 'nullable|string|max:20',
+                'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
-            // Log: Data input yang berhasil divalidasi
             Log::debug('Data input berhasil divalidasi untuk update.', ['validated_data' => $validated]);
 
-            // Dapatkan data lama sebelum diupdate (opsional, tapi sangat berguna untuk audit trail)
+            // Hapus foto profil jika diminta
+            if ($request->has('remove_photo') && $employer->photo_profile) {
+                if (Storage::disk('public')->exists($employer->photo_profile)) {
+                    Storage::disk('public')->delete($employer->photo_profile);
+                }
+
+                $validated['photo_profile'] = null;
+
+                Log::info('Foto profil employer dihapus.', [
+                    'employer_id' => $employer->id,
+                    'deleted_photo' => $employer->photo_profile
+                ]);
+            }
+
+            // Handle upload foto profil baru
+            if ($request->hasFile('photo_profile')) {
+                $path = $request->file('photo_profile')->store('employer_profiles', 'public');
+                $validated['photo_profile'] = $path;
+
+                if ($employer->photo_profile && Storage::disk('public')->exists($employer->photo_profile)) {
+                    Storage::disk('public')->delete($employer->photo_profile);
+                }
+
+                Log::info('Foto profil employer diperbarui.', [
+                    'employer_id' => $employer->id,
+                    'new_photo_path' => $path
+                ]);
+            }
+
+            // Simpan data lama sebelum update (opsional)
             $oldData = $employer->getOriginal();
 
             // Lakukan update
             $employer->update($validated);
 
-            // Log: Data baru setelah diupdate
             Log::info('Profil employer berhasil diupdate.', [
                 'employer_id' => $employer->id,
-                'old_data' => $oldData, // Data sebelum update
-                'new_data' => $employer->fresh()->toArray() // Data setelah update
+                'old_data' => $oldData,
+                'new_data' => $employer->fresh()->toArray()
             ]);
 
-            return redirect()->route('employer.edit-profile', $employer->slug)->with('success', 'Profil berhasil diperbarui!');
+            return redirect()->route('employer.edit-profile', $employer->slug)
+                ->with('success', 'Profil berhasil diperbarui!');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Log: Employer tidak ditemukan
-            Log::warning('Upaya update gagal: Employer dengan slug "' . $slug . '" tidak ditemukan.', [
+            Log::warning('Upaya update gagal: Employer tidak ditemukan.', [
                 'slug' => $slug,
                 'user_id' => Auth::check() ? Auth::id() : 'guest',
                 'error' => $e->getMessage()
             ]);
             return redirect()->back()->withErrors(['error' => 'Profil employer tidak ditemukan.']);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Log: Gagal validasi input
             Log::error('Gagal validasi input saat update profil employer.', [
                 'slug' => $slug,
                 'user_id' => Auth::check() ? Auth::id() : 'guest',
@@ -253,7 +308,6 @@ class EmployerController extends Controller
             ]);
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Log: Terjadi kesalahan tak terduga
             Log::critical('Terjadi kesalahan tak terduga saat update profil employer.', [
                 'slug' => $slug,
                 'user_id' => Auth::check() ? Auth::id() : 'guest',
@@ -265,6 +319,7 @@ class EmployerController extends Controller
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan sistem. Silakan coba lagi nanti.']);
         }
     }
+
     public function showApplicants($slug)
     {
         $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
@@ -309,15 +364,13 @@ class EmployerController extends Controller
     {
         $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
-        // Validasi apakah employer memiliki lowongan
         if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
             return back()->with('error', 'Employer belum memiliki lowongan.');
         }
 
-        // Ambil pelamar dengan status reviewed atau interview
         $applications = JobApplication::with(['employee', 'job'])
             ->whereIn('job_id', $employer->jobListings->pluck('id'))
-            ->whereIn('status', ['interview']) // Filter status
+            ->whereIn('status', ['interview'])
             ->orderBy('applied_at', 'desc')
             ->get()
             ->groupBy('job_id');
@@ -327,16 +380,85 @@ class EmployerController extends Controller
 
     public function updateInterviewDate(Request $request, $slug)
     {
-        $request->validate([
-            'interview_date' => 'nullable|date',
+        // Log: Memulai proses update tanggal interview
+        Log::info('Memulai proses updateInterviewDate.', [
+            'slug_aplikasi' => $slug,
+            'user_id' => Auth::check() ? Auth::id() : 'guest' // Melacak user yang melakukan update
         ]);
 
-        $application = JobApplication::where('slug', $slug)->firstOrFail();
-        $application->interview_date = $request->interview_date;
-        $application->status = $request->interview_date ? 'interview' : 'reviewed'; // optional: update status otomatis
-        $application->save();
+        try {
+            // Validasi input
+            $request->validate([
+                'interview_date' => 'nullable|date',
+            ]);
 
-        return back()->with('success', 'Tanggal interview berhasil diperbarui.');
+            // Log: Data input validasi
+            Log::debug('Data input untuk update interview date berhasil divalidasi.', [
+                'interview_date_input' => $request->interview_date
+            ]);
+
+            // Cari aplikasi berdasarkan slug
+            $application = JobApplication::where('slug', $slug)->firstOrFail();
+
+            // Log: Aplikasi ditemukan
+            Log::info('Aplikasi lamaran ditemukan untuk update tanggal interview.', [
+                'application_id' => $application->id,
+                'current_status' => $application->status,
+                'current_interview_date' => $application->interview_date
+            ]);
+
+            // Simpan data lama sebelum diupdate
+            $oldInterviewDate = $application->interview_date;
+            $oldStatus = $application->status;
+
+            // Update tanggal interview
+            $application->interview_date = $request->interview_date;
+
+            // Update status otomatis berdasarkan tanggal interview
+            $application->status = $request->interview_date ? 'interview' : 'reviewed';
+
+            $application->save();
+
+            // Log: Tanggal interview dan status berhasil diperbarui
+            Log::info('Tanggal interview dan status aplikasi berhasil diperbarui.', [
+                'application_id' => $application->id,
+                'old_interview_date' => $oldInterviewDate,
+                'new_interview_date' => $application->interview_date,
+                'old_status' => $oldStatus,
+                'new_status' => $application->status,
+                'updated_by_user_id' => Auth::check() ? Auth::id() : 'guest'
+            ]);
+
+            return back()->with('success', 'Tanggal interview berhasil diperbarui.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Log: Aplikasi tidak ditemukan
+            Log::warning('Upaya update tanggal interview gagal: Aplikasi dengan slug "' . $slug . '" tidak ditemukan.', [
+                'slug_aplikasi' => $slug,
+                'user_id' => Auth::check() ? Auth::id() : 'guest',
+                'error' => $e->getMessage()
+            ]);
+            return back()->withErrors(['error' => 'Aplikasi lamaran tidak ditemukan.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Log: Gagal validasi input
+            Log::error('Gagal validasi input saat update tanggal interview.', [
+                'slug_aplikasi' => $slug,
+                'user_id' => Auth::check() ? Auth::id() : 'guest',
+                'errors' => $e->errors(),
+                'input' => $request->all()
+            ]);
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            // Log: Terjadi kesalahan tak terduga
+            Log::critical('Terjadi kesalahan tak terduga saat update tanggal interview.', [
+                'slug_aplikasi' => $slug,
+                'user_id' => Auth::check() ? Auth::id() : 'guest',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withErrors(['error' => 'Terjadi kesalahan sistem. Silakan coba lagi nanti.']);
+        }
     }
 
     public function filterstatus(Request $request)
@@ -353,5 +475,4 @@ class EmployerController extends Controller
 
         return view('employer.pelamar-lowongan', compact('applications'));
     }
-    
 }

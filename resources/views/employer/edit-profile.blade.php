@@ -27,143 +27,218 @@
     </a>
 </div>
 
+@if (session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Memproses...',
+            text: 'Silakan tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        // Setelah 1.5 detik, tutup loading lalu tampilkan alert sukses
+        setTimeout(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                confirmButtonText: 'OK'
+            });
+        }, 1500);
+    });
+</script>
+@endif
+
 <!-- Wrapper dengan Grid 2 Kolom di Layar Lebar -->
 <div class="w-full flex justify-center mt-6 px-2 md:px-4">
     <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Konten Kiri (2/3 Kolom) -->
+        <div class="col-span-2">
+            <!-- FORMULIR -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Profile Perusahaan</h2>
+                <form method="POST" action="{{ route('employer.update', $employer->slug) }}" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
 
-        <!-- Form di Kiri (2/3 Kolom) -->
-        <div class="col-span-2 bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-gray-200">
-            <form method="POST" action="{{ route('employer.update', $employer->slug) }}">
-                @csrf
-                @method('PUT')
-
-                <!-- Nama Perusahaan -->
-                <div class="mb-4">
-                    <x-label-required for="company_name" :value="__('Nama Perusahaan')" />
-                    <x-text-input id="company_name" class="block mt-1 w-full" type="text" name="company_name"
-                        value="{{ old('company_name', $employer->company_name) }}" required />
-                </div>
-
-                <!-- No. Pendaftaran Bisnis -->
-                <div class="mb-4">
-                    <x-label-required for="business_registration_number" :value="__('No. Pendaftaran Bisnis')" />
-                    <x-text-input id="business_registration_number" class="block mt-1 w-full" type="text"
-                        name="business_registration_number"
-                        value="{{ old('business_registration_number', $employer->business_registration_number) }}"
-                        required />
-                </div>
-
-                <!-- Industri -->
-                <div class="mb-4">
-                    <x-label-required for="industry" :value="__('Industri')" />
-                    <x-dropdown.industry-dropdown name="industry" :selected="old('industry', $employer->industry)" class="block mt-1 w-full" />
-                </div>
-
-                <!-- Website Perusahaan -->
-                <div class="mb-4">
-                    <x-required-hint-label for="company_website" :value="__('Website Perusahaan')" :hint="__('Harus menyertakan https://')" />
-                    <x-text-input id="company_website" name="company_website" type="url" class="mt-1 block w-full"
-                        value="{{ old('company_website', $employer->company_website) }}" />
-                </div>
-
-                <!-- Jenis Organisasi -->
-                <div class="mb-4">
-                    <x-label-required for="organization_type" :value="__('Jenis Organisasi')" />
-                    <x-dropdown.organisasi-dropdown name="organization_type" :selected="old('organization_type', $employer->organization_type)"
-                        class="block mt-1 w-full" />
-                </div>
-
-                <!-- Kekuatan Staff -->
-                <div class="mb-4">
-                    <x-label-required for="staff_strength" :value="__('Kekuatan Staff')" />
-                    <x-dropdown.staff-strength-dropdown name="staff_strength" :selected="old('staff_strength', $employer->staff_strength)"
-                        class="block mt-1 w-full" />
-                </div>
-
-                <!-- Negara & Kota -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <x-label-required for="country" :value="__('Negara')" />
-                        <x-dropdown.negara-dropdown name="country" :selected="old('country', $employer->country)" class="block mt-1 w-full" />
+                    <!-- FOTO PROFIL DI DALAM FORM -->
+                    <div class="flex justify-center mb-4">
+                        <img
+                            src="{{ $employer->photo_profile ? asset('storage/' . $employer->photo_profile) : asset('images/default_employer.png') }}"
+                            alt="Foto Profil"
+                            class="w-32 h-32 object-cover rounded-full border border-gray-300 shadow" />
                     </div>
-                    <div>
-                        <x-label-required for="city" :value="__('Kota')" />
-                        <x-dropdown.kota-dropdown name="city" :selected="old('city', $employer->city)" class="block mt-1 w-full" />
-                    </div>
-                </div>
 
-                <!-- Profil Perusahaan -->
-                <div class="mb-4">
-                    <x-label-required for="company_profile" :value="__('Profil Perusahaan')" />
-                    <textarea id="company_profile" name="company_profile" rows="4"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">{{ old('company_profile', $employer->company_profile) }}</textarea>
-                </div>
 
-                <!-- Informasi Kontak -->
-                <div class="mb-4">
-                    <x-label-required for="salutation" :value="__('Sapaan')" />
-                    <x-dropdown.sapaan-dropdown name="salutation" :selected="old('salutation', $employer->salutation)" class="block mt-1 w-full" />
-                </div>
+                    <!-- Nama Perusahaan -->
+                    <div class="mb-4">
+                        <x-label-required for="company_name" :value="__('Nama Perusahaan')" />
+                        <x-text-input id="company_name" class="block mt-1 w-full" type="text" name="company_name"
+                            value="{{ old('company_name', $employer->company_name) }}" required />
+                    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <x-label-required for="first_name" :value="__('Nama Depan')" />
-                        <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full"
-                            value="{{ old('first_name', $employer->first_name) }}" />
+                    <!-- No. Pendaftaran Bisnis -->
+                    <div class="mb-4">
+                        <x-label-required for="business_registration_number" :value="__('No. Pendaftaran Bisnis')" />
+                        <x-text-input id="business_registration_number" class="block mt-1 w-full" type="text"
+                            name="business_registration_number"
+                            value="{{ old('business_registration_number', $employer->business_registration_number) }}"
+                            required />
                     </div>
-                    <div>
-                        <x-input-label for="last_name" value="Nama Belakang" />
-                        <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full"
-                            value="{{ old('last_name', $employer->last_name) }}" />
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <x-input-label for="suffix" value="Akhiran" />
-                        <x-text-input id="suffix" name="suffix" type="text" class="mt-1 block w-full"
-                            value="{{ old('suffix', $employer->suffix) }}" />
+                    <!-- Industri -->
+                    <div class="mb-4">
+                        <x-label-required for="industry" :value="__('Industri')" />
+                        <x-dropdown.industry-dropdown name="industry" :selected="old('industry', $employer->industry)" class="block mt-1 w-full" />
                     </div>
-                    <div>
-                        <x-label-required for="job_title" :value="__('Pekerjaan')" />
-                        <x-text-input id="job_title" name="job_title" type="text" class="mt-1 block w-full"
-                            value="{{ old('job_title', $employer->job_title) }}" />
-                    </div>
-                    <div>
-                        <x-input-label for="department" value="Departemen" />
-                        <x-text-input id="department" name="department" type="text" class="mt-1 block w-full"
-                            value="{{ old('department', $employer->department) }}" />
-                    </div>
-                </div>
 
-                <!-- Email, Phone, Username -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <x-label-required for="email" :value="__('Email')" />
-                        <x-text-input id="email" name="email" type="email"
-                            class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
-                            value="{{ old('email', $user->email) }}" readonly />
+                    <!-- Website Perusahaan -->
+                    <div class="mb-4">
+                        <x-required-hint-label for="company_website" :value="__('Website Perusahaan')" :hint="__('Harus menyertakan https://')" />
+                        <x-text-input id="company_website" name="company_website" type="url" class="mt-1 block w-full"
+                            value="{{ old('company_website', $employer->company_website) }}" />
                     </div>
-                    <div>
-                        <x-label-required for="phone" :value="__('No. Telepon')" />
-                        <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full"
-                            value="{{ old('phone', $employer->phone) }}" />
-                    </div>
-                    <div>
-                        <x-label-required for="username" :value="__('Username')" />
-                        <x-text-input id="username" name="username" type="text"
-                            class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
-                            value="{{ old('username', $user->username) }}" readonly />
-                    </div>
-                </div>
 
-                <div class="flex justify-end mt-6">
-                    <button type="button" onclick="showModal()"
-                        class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </form>
+                    <!-- Jenis Organisasi -->
+                    <div class="mb-4">
+                        <x-label-required for="organization_type" :value="__('Jenis Organisasi')" />
+                        <x-dropdown.organisasi-dropdown name="organization_type" :selected="old('organization_type', $employer->organization_type)"
+                            class="block mt-1 w-full" />
+                    </div>
+
+                    <!-- Kekuatan Staff -->
+                    <div class="mb-4">
+                        <x-label-required for="staff_strength" :value="__('Kekuatan Staff')" />
+                        <x-dropdown.staff-strength-dropdown name="staff_strength" :selected="old('staff_strength', $employer->staff_strength)"
+                            class="block mt-1 w-full" />
+                    </div>
+
+                    <!-- Negara & Kota -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <x-label-required for="country" :value="__('Negara')" />
+                            <x-dropdown.negara-dropdown name="country" :selected="old('country', $employer->country)" class="block mt-1 w-full" />
+                        </div>
+                        <div>
+                            <x-label-required for="city" :value="__('Kota')" />
+                            <x-dropdown.kota-dropdown name="city" :selected="old('city', $employer->city)" class="block mt-1 w-full" />
+                        </div>
+                    </div>
+
+                    <!-- Profil Perusahaan -->
+                    <div class="mb-4">
+                        <x-label-required for="company_profile" :value="__('Profil Perusahaan')" />
+                        <textarea id="company_profile" name="company_profile" rows="4"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">{{ old('company_profile', $employer->company_profile) }}</textarea>
+                    </div>
+
+                    <!-- Informasi Kontak -->
+                    <div class="mb-4">
+                        <x-input-label for="salutation" value="Sapaan" />
+                        <x-dropdown.sapaan-dropdown name="salutation" :selected="old('salutation', $employer->salutation)" class="block mt-1 w-full" />
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <x-label-required for="first_name" :value="__('Nama Depan')" />
+                            <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full"
+                                value="{{ old('first_name', $employer->first_name) }}" required/>
+                        </div>
+                        <div>
+                            <x-label-required for="last_name" :value="__('Nama Belakang')" />
+                            <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full"
+                                value="{{ old('last_name', $employer->last_name) }}"  required/>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <x-input-label for="suffix" value="Akhiran" />
+                            <x-text-input id="suffix" name="suffix" type="text" class="mt-1 block w-full"
+                                value="{{ old('suffix', $employer->suffix) }}" />
+                        </div>
+                        <div>
+                            <x-label-required for="job_title" :value="__('Pekerjaan')" />
+                            <x-text-input id="job_title" name="job_title" type="text" class="mt-1 block w-full"
+                                value="{{ old('job_title', $employer->job_title) }}"  required/>
+                        </div>
+                        <div>
+                            <x-label-required for="department" :value="__('Departemen')" />
+                            <x-text-input id="department" name="department" type="text" class="mt-1 block w-full"
+                                value="{{ old('department', $employer->department) }}" />
+                        </div>
+                    </div>
+                    <!-- Alamat Perusahaan -->
+                    <div class="mb-4">
+                        <x-label-required for="alamat_perusahaan" :value="__('Alamat Perusahaan')" />
+                        <x-text-input id="alamat_perusahaan" class="block mt-1 w-full" type="text" name="alamat_perusahaan"
+                            value="{{ old('alamat_perusahaan', $employer->alamat_perusahaan) }}" required />
+                    </div>
+
+                    <!-- Email, Phone, Username -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <x-label-required for="phone" :value="__('No. Telepon')" />
+                            <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full"
+                                value="{{ old('phone', $employer->phone) }}" required/>
+                        </div>
+                        <div>
+                            <x-label-required for="email" :value="__('Email')" />
+                            <x-text-input id="email" name="email" type="email"
+                                class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
+                                value="{{ old('email', $user->email) }}" readonly />
+                        </div>
+                        <div>
+                            <x-label-required for="username" :value="__('Username')" />
+                            <x-text-input id="username" name="username" type="text"
+                                class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
+                                value="{{ old('username', $user->username) }}" readonly />
+                        </div>
+                    </div>
+
+                    <!-- Foto Profil Perusahaan (Minimalis dan Elegan) -->
+                    <div class="mb-6">
+                        <x-input-label for="photo_profile" value="Foto Profile" />
+
+                        <div class="flex flex-col items-start gap-3 mt-2">
+                            <!-- Gambar profil atau default -->
+                            <img
+                                src="{{ $employer->photo_profile ? asset('storage/' . $employer->photo_profile) : asset('images/default_employer.png') }}"
+                                alt="Foto Profil"
+                                class="w-24 h-24 object-cover rounded-full border border-gray-300 shadow-sm">
+
+                            <!-- Tombol hapus hanya jika foto profil ada -->
+                            @if ($employer->photo_profile)
+                            <button type="submit" name="remove_photo" value="1"
+                                class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-md hover:bg-red-100 transition text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Hapus Foto
+                            </button>
+                            @endif
+
+                            <!-- Input file -->
+                            <x-text-input id="photo_profile" name="photo_profile" type="file"
+                                class="block w-full text-sm file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:rounded-md file:text-sm file:text-gray-700 file:cursor-pointer hover:file:bg-gray-200 transition" />
+                        </div>
+                    </div>
+
+
+                    <!-- tombol simpan -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit"
+                            class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Box Informasi di Kanan (1/3 Kolom) -->
@@ -178,43 +253,9 @@
                 <li>Username harus unik dan tidak mengandung spasi.</li>
             </ul>
         </div>
-
-        {{-- Modal Konfirmasi --}}
-        <div id="confirm-modal" tabindex="-1"
-            class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-sm">
-            <div class="relative w-full max-w-md max-h-full">
-                <div class="relative bg-white rounded-xl shadow-xl border border-gray-200">
-                    <button type="button"
-                        class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition rounded-full w-8 h-8 flex items-center justify-center"
-                        onclick="hideModal()">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 14 14">
-                            <path d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-
-                    <div class="p-6 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" fill="none" viewBox="0 0 20 20">
-                            <path d="M10 11V6m0 0h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <h3 class="mb-5 text-lg font-medium text-gray-700">Apakah kamu yakin ingin menyimpan perubahan profil ini?</h3>
-
-                        <button type="button" onclick="submitForm()"
-                            class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
-                            Ya, Simpan
-                        </button>
-
-                        <button type="button" onclick="hideModal()"
-                            class="ml-3 px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                            Batal
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+
 
 
 <!-- Tombol Kembali ke Atas -->
@@ -276,21 +317,6 @@
             });
         });
     });
-</script>
-
-<script>
-    function showModal() {
-        document.getElementById('confirm-modal').classList.remove('hidden');
-    }
-
-    function hideModal() {
-        document.getElementById('confirm-modal').classList.add('hidden');
-    }
-
-    function submitForm() {
-        hideModal();
-        document.querySelector('form').submit();
-    }
 </script>
 
 @endsection

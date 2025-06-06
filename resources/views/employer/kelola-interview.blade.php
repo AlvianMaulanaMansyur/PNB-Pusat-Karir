@@ -148,11 +148,10 @@
                             </button>
 
                             <!-- Modal -->
-                            <!-- Modal -->
                             <div id="modal-{{ $app->slug }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
                                 <div class="bg-white rounded-lg shadow p-6 w-full max-w-md">
                                     <h2 class="text-lg font-semibold mb-4">Atur Ulang Tanggal Interview</h2>
-                                    <form action="{{ route('employer.updateInterviewDate', $app->slug) }}" method="POST">
+                                    <form action="{{ route('employer.updateInterviewDate', ['slug' => $app->slug]) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
                                         <label class="block mb-2 text-sm font-medium text-gray-700">Tanggal & Waktu Interview</label>
@@ -172,7 +171,7 @@
                                             <button type="button" onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')" class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
                                                 Batal
                                             </button>
-                                            <button type="button" id="open-confirm"
+                                            <button type="submit"
                                                 class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
                                                 Simpan
                                             </button>
@@ -193,40 +192,6 @@
         </div>
     </div>
 </div>
-{{-- Modal Konfirmasi --}}
-<div id="confirm-modal" tabindex="-1"
-    class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-sm">
-    <div class="relative w-full max-w-md max-h-full">
-        <div class="relative bg-white rounded-xl shadow-xl border border-gray-200">
-            <button type="button"
-                class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition rounded-full w-8 h-8 flex items-center justify-center"
-                aria-label="Tutup" onclick="hideModal()">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 14 14">
-                    <path d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-
-            <div class="p-6 text-center">
-                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" fill="none" viewBox="0 0 20 20">
-                    <path d="M10 11V6m0 0h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <h3 class="mb-5 text-lg font-medium text-gray-700">Apakah kamu yakin ingin menyimpan jadwal interview ini?</h3>
-
-                <button type="button" id="confirm-submit"
-                    class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
-                    Ya, Simpan
-                </button>
-
-                <button type="button" onclick="hideModal()"
-                    class="ml-3 px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                    Batal
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 {{-- Tombol Kembali ke Atas --}}
 <button id="backToTop"
@@ -243,33 +208,6 @@
     window.addEventListener('scroll', () => {
         const btn = document.getElementById('backToTop');
         btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-    });
-</script>
-
-<script>
-    const confirmModal = document.getElementById('confirm-modal');
-    const openConfirmBtn = document.getElementById('open-confirm');
-    const confirmSubmitBtn = document.getElementById('confirm-submit');
-
-    // Form yang ingin kita submit nanti
-    const formInterview = document.querySelector('#modal-{{ $app->slug }} form');
-
-    // Fungsi buka modal konfirmasi
-    function showModal() {
-        confirmModal.classList.remove('hidden');
-    }
-
-    // Fungsi tutup modal konfirmasi
-    function hideModal() {
-        confirmModal.classList.add('hidden');
-    }
-
-    openConfirmBtn.addEventListener('click', function() {
-        showModal();
-    });
-
-    confirmSubmitBtn.addEventListener('click', function() {
-        formInterview.submit();
     });
 </script>
 
