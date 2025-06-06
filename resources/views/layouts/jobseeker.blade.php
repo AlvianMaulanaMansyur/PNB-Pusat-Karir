@@ -26,11 +26,13 @@
         @include('components.jobseeker.navigation-jobseeker')
     </nav>
     <main>
-        {{ $slot }}
+        {{ $slot }} 
     </main>
     <footer>
         @include('layouts.footer')
     </footer>
+
+    <script src="//unpkg.com/alpinejs" defer></script>
 
 </body>
 

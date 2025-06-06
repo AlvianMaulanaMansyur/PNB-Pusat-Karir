@@ -25,7 +25,8 @@
         </a>
     </div>
 </div>
-<form action="{{ route('employer.update-lowongan', $lowongan->slug) }}" method="POST" enctype="multipart/form-data" class="w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-20 lg:ml-28 bg-white p-6 rounded-lg shadow-md">
+<form id="form-update-lowongan" action="{{ route('employer.update-lowongan', $lowongan->slug) }}" method="POST" enctype="multipart/form-data"
+    class="w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-20 lg:ml-28 bg-white p-6 rounded-lg shadow-md" novalidate>
     @csrf
     @method('PUT')
 
@@ -34,7 +35,7 @@
         <x-label-required for="nama_lowongan" :value="__('Nama Lowongan')" />
         <x-text-input id="nama_lowongan" name="nama_lowongan" type="text"
             :value="old('nama_lowongan', $lowongan->nama_lowongan)"
-            class="block mt-1 w-full text-sm" />
+            class="block mt-1 w-full text-sm" required />
         @error('nama_lowongan')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
@@ -45,7 +46,7 @@
         <x-label-required for="posisi" :value="__('Posisi')" />
         <x-text-input id="posisi" name="posisi" type="text"
             :value="old('posisi', $lowongan->posisi)"
-            class="block mt-1 w-full text-sm" />
+            class="block mt-1 w-full text-sm" required />
         @error('posisi')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
@@ -68,7 +69,7 @@
         <x-text-input id="deadline" name="deadline" type="date"
             :value="old('deadline', $lowongan->deadline)"
             min="{{ date('Y-m-d') }}"
-            class="block mt-1 w-full text-sm" />
+            class="block mt-1 w-full text-sm" required />
         @error('deadline')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
@@ -89,7 +90,7 @@
     <div class="mb-4">
         <x-label-required for="deskripsi" :value="__('Deskripsi')" />
         <textarea name="deskripsi" id="deskripsi" rows="4"
-            class="block mt-1 w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('deskripsi', $lowongan->deskripsi) }}</textarea>
+            class="block mt-1 w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>{{ old('deskripsi', $lowongan->deskripsi) }}</textarea>
         @error('deskripsi')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
@@ -115,15 +116,49 @@
         @enderror
     </div>
 
-    {{-- Tombol Submit --}}
+    {{-- Tombol Submit (ubah jadi button untuk intercept) --}}
     <div class="flex justify-end">
-        <button type="submit"
+        <button type="button" id="btn-submit-update"
             class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
             Simpan Perubahan
         </button>
     </div>
 </form>
 
+{{-- Modal Konfirmasi --}}
+<div id="modal-confirm-update" tabindex="-1"
+    class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-sm">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-xl shadow-xl border border-gray-200">
+            <button type="button"
+                class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition rounded-full w-8 h-8 flex items-center justify-center"
+                aria-label="Tutup" onclick="hideModalUpdate()">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 14 14">
+                    <path d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <div class="p-6 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" fill="none" viewBox="0 0 20 20">
+                    <path d="M10 11V6m0 0h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <h3 class="mb-5 text-lg font-medium text-gray-700">Apakah kamu yakin ingin menyimpan perubahan lowongan ini?</h3>
+
+                <button type="button" id="confirm-update"
+                    class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
+                    Ya, Simpan
+                </button>
+
+                <button type="button" onclick="hideModalUpdate()"
+                    class="ml-3 px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Tombol Kembali ke Atas -->
 <button id="backToTop"
@@ -143,4 +178,30 @@
     });
 </script>
 
+<script>
+    const btnSubmitUpdate = document.getElementById('btn-submit-update');
+    const formUpdate = document.getElementById('form-update-lowongan');
+    const modalUpdate = document.getElementById('modal-confirm-update');
+    const btnConfirmUpdate = document.getElementById('confirm-update');
+
+    function showModalUpdate() {
+        modalUpdate.classList.remove('hidden');
+    }
+
+    function hideModalUpdate() {
+        modalUpdate.classList.add('hidden');
+    }
+
+    btnSubmitUpdate.addEventListener('click', () => {
+        if (formUpdate.checkValidity()) {
+            showModalUpdate();
+        } else {
+            formUpdate.reportValidity();
+        }
+    });
+
+    btnConfirmUpdate.addEventListener('click', () => {
+        formUpdate.submit();
+    });
+</script>
 @endsection

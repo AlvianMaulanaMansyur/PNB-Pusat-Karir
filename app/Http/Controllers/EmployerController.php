@@ -14,6 +14,14 @@ use Illuminate\Support\Str;
 
 class EmployerController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        $employerData = $user->dataEmployers; // relasi
+
+        // dd($employerData);
+        return view('employer.dashboard', compact('user'));
+    }
     public function tambahlowongan()
     {
         return view('employer.tambah-lowongan');
@@ -278,7 +286,7 @@ class EmployerController extends Controller
     public function updateStatus(Request $request, $slug)
     {
         $request->validate([
-            'status' => 'required|in:pending,reviewed,accepted,rejected',
+            'status' => 'required|in:pending,reviewed,interview,accepted,rejected',
             'interview_date' => 'nullable|date',
         ]);
 
@@ -286,7 +294,7 @@ class EmployerController extends Controller
         $application = JobApplication::where('slug', $slug)->firstOrFail();
         $application->status = $request->status;
 
-        if ($request->status === 'reviewed') {
+        if ($request->status === 'interview') {
             $application->interview_date = $request->interview_date;
         } else {
             $application->interview_date = null;
@@ -296,4 +304,54 @@ class EmployerController extends Controller
 
         return back()->with('success', 'Status pelamar berhasil diperbarui.');
     }
+
+    public function showInterviewApplicants($slug)
+    {
+        $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
+
+        // Validasi apakah employer memiliki lowongan
+        if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
+            return back()->with('error', 'Employer belum memiliki lowongan.');
+        }
+
+        // Ambil pelamar dengan status reviewed atau interview
+        $applications = JobApplication::with(['employee', 'job'])
+            ->whereIn('job_id', $employer->jobListings->pluck('id'))
+            ->whereIn('status', ['interview']) // Filter status
+            ->orderBy('applied_at', 'desc')
+            ->get()
+            ->groupBy('job_id');
+
+        return view('employer.kelola-interview', compact('applications'));
+    }
+
+    public function updateInterviewDate(Request $request, $slug)
+    {
+        $request->validate([
+            'interview_date' => 'nullable|date',
+        ]);
+
+        $application = JobApplication::where('slug', $slug)->firstOrFail();
+        $application->interview_date = $request->interview_date;
+        $application->status = $request->interview_date ? 'interview' : 'reviewed'; // optional: update status otomatis
+        $application->save();
+
+        return back()->with('success', 'Tanggal interview berhasil diperbarui.');
+    }
+
+    public function filterstatus(Request $request)
+    {
+        $statusFilter = $request->query('status');
+
+        $applications = \App\Models\JobApplication::with('job', 'employee')
+            ->when($statusFilter, function ($query) use ($statusFilter) {
+                $query->where('status', $statusFilter);
+            })
+            ->orderBy('applied_at', 'desc')
+            ->get()
+            ->groupBy('job_id'); // Penting untuk tampilan di view
+
+        return view('employer.pelamar-lowongan', compact('applications'));
+    }
+    
 }

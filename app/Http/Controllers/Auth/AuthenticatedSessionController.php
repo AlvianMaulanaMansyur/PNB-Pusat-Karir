@@ -30,11 +30,12 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+
         switch ($user->role) {
             case 'employer':
-                return redirect()->intended(route('', absolute: false));
+                return redirect()->route('employer.dashboard');
             case 'employee':
-                return redirect()->intended(route('employee.landing-page', absolute: false));
+                return redirect()->route('employee.landing-page');
             default:
                 Auth::logout();
                 return redirect()->route('login')->with([
@@ -54,7 +55,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('login');
     }
 
 
