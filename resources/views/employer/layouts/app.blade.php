@@ -24,7 +24,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen">
+    <div class="min-h-screen mb-12">
         @include('employer.layouts.nav')
 
 

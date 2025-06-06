@@ -31,6 +31,7 @@ class employers extends Model
         'department',
         'photo_profile',
         'phone',
+        'photo_profile',
         // 'password',
     ];
 

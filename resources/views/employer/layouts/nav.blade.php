@@ -23,13 +23,24 @@
             </a>
 
             {{-- Ikon User --}}
+            {{-- Foto User atau Ikon --}}
             <a href="{{ route('employer.edit-profile', ['slug' => auth()->user()->employer->slug]) }}"
-                class="hover:text-blue-600 cursor-pointer" role="img" aria-label="User Icon" title="Edit Profile">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 2xl:w-8 2xl:h-8" fill="none"
+                class="hover:opacity-80 cursor-pointer" title="Edit Profile">
+                @php
+                $photo = auth()->user()->employer->photo_profile;
+                @endphp
+
+                @if ($photo)
+                <img src="{{ asset('storage/' . $photo) }}"
+                    alt="Foto Profil"
+                    class="w-8 h-8 2xl:w-10 2xl:h-10 rounded-full object-cover border border-gray-300 shadow-sm" />
+                @else
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 2xl:w-8 2xl:h-8 text-gray-700" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 0115 0" />
                 </svg>
+                @endif
             </a>
 
             {{-- Ikon Logout --}}

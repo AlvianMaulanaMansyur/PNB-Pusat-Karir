@@ -41,24 +41,91 @@
         @enderror
     </div>
 
-    {{-- Posisi --}}
+    {{-- Deskripsi --}}
     <div class="mb-4">
-        <x-label-required for="posisi" :value="__('Posisi')" />
-        <x-text-input id="posisi" name="posisi" type="text"
-            :value="old('posisi', $lowongan->posisi)"
-            class="block mt-1 w-full text-sm" required />
+        <x-label-required for="deskripsi" :value="__('Deskripsi')" />
+        <textarea name="deskripsi" id="deskripsi" rows="4"
+            class="block mt-1 w-full rounded-md border-black-300 focus:ring-2 focus:ring-blue-500 text-sm"
+            required>{{ old('deskripsi', $lowongan->deskripsi) }}</textarea>
+        @error('deskripsi')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- Jenis Pekerjaan --}}
+    <div class="mb-4">
+        <x-label-required for="jenislowongan" :value="__('Jenis Lowongan')" />
+        <x-dropdown.jenis-lowongan 
+            :selected="old('jenislowongan', $lowongan->jenislowongan)"
+            class="block mt-1 w-full text-sm border-black-300" />
+        @error('jenislowongan')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- Posisi Jabatan --}}
+    <div class="mb-4">
+        <x-label-required for="posisi" :value="__('Posisi Jabatan')" />
+        <x-dropdown.tingkat-posisi
+            :selected="old('posisi', $lowongan->posisi)"
+            class="block mt-1 w-full text-sm border-gray-300" />
         @error('posisi')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    {{-- Jenis Lowongan --}}
+    {{-- Responsibility --}}
     <div class="mb-4">
-        <x-label-required for="jenislowongan" :value="__('Jenis Lowongan')" />
-        <x-dropdown.jenis-lowongan
-            :selected="old('jenislowongan', $lowongan->jenislowongan)"
-            class="block mt-1 w-full text-sm border-gray-300" />
-        @error('jenislowongan')
+        <x-label-required for="responsibility" :value="__('Responsibility')" />
+        <textarea name="responsibility" id="responsibility" rows="4"
+            class="block mt-1 w-full rounded-md border-black-300 focus:ring-2 focus:ring-blue-500 text-sm"
+            required>{{ old('responsibility', $lowongan->responsibility) }}</textarea>
+        @error('responsibility')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- Kualifikasi Pendidikan --}}
+    <div class="mb-4">
+        <x-label-required for="kualifikasi" :value="__('Kualifikasi')" />
+        <x-dropdown.kualifikasi-pendidikan 
+            :selected="old('kualifikasi', $lowongan->kualifikasi)"
+            class="block mt-1 w-full text-sm" />
+        @error('kualifikasi')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- Detail Kualifikasi --}}
+    <div class="mb-4">
+        <x-label-required for="detailkualifikasi" :value="__('Detail Kualifikasi')" />
+        <textarea name="detailkualifikasi" id="detailkualifikasi" rows="4"
+            class="block mt-1 w-full rounded-md border-black-300 focus:ring-2 focus:ring-blue-500 text-sm"
+            required>{{ old('detailkualifikasi', $lowongan->detailkualifikasi) }}</textarea>
+        @error('detailkualifikasi')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- gaji --}}
+    <div class="mb-4">
+        <x-label-required for="gaji" :value="__('Gaji')" />
+        <x-text-input id="gaji" name="gaji" type="text"
+            :value="old('gaji', 'Rp ' . number_format((int) preg_replace('/[^0-9]/', '', $lowongan->gaji), 0, ',', '.'))"
+            class="block mt-1 w-full text-sm" required />
+        <p class="text-xs text-gray-500 mt-1">Masukkan nominal gaji. Contoh: Rp 5.000.000</p>
+        @error('gaji')
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- Benefit --}}
+    <div class="mb-4">
+        <x-label-required for="benefit" :value="__('Detail Kualifikasi')" />
+        <textarea name="benefit" id="benefit" rows="4"
+            class="block mt-1 w-full rounded-md border-black-300 focus:ring-2 focus:ring-blue-500 text-sm"
+            required>{{ old('benefit', $lowongan->benefit) }}</textarea>
+        @error('benefit')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
@@ -69,29 +136,8 @@
         <x-text-input id="deadline" name="deadline" type="date"
             :value="old('deadline', $lowongan->deadline)"
             min="{{ date('Y-m-d') }}"
-            class="block mt-1 w-full text-sm" required />
+            class="block mt-1 w-full text-sm border-gray-300" required />
         @error('deadline')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-        @enderror
-    </div>
-
-    {{-- Kualifikasi --}}
-    <div class="mb-4">
-        <x-label-required for="kualifikasi" :value="__('Kualifikasi')" />
-        <x-dropdown.kualifikasi-pendidikan
-            :selected="old('kualifikasi', $lowongan->kualifikasi)"
-            class="block mt-1 w-full text-sm" />
-        @error('kualifikasi')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-        @enderror
-    </div>
-
-    {{-- Deskripsi --}}
-    <div class="mb-4">
-        <x-label-required for="deskripsi" :value="__('Deskripsi')" />
-        <textarea name="deskripsi" id="deskripsi" rows="4"
-            class="block mt-1 w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>{{ old('deskripsi', $lowongan->deskripsi) }}</textarea>
-        @error('deskripsi')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
@@ -160,6 +206,8 @@
     </div>
 </div>
 
+
+
 <!-- Tombol Kembali ke Atas -->
 <button id="backToTop"
     onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
@@ -204,4 +252,33 @@
         formUpdate.submit();
     });
 </script>
+<script>
+    document.getElementById('gaji').addEventListener('input', function(e) {
+        this.value = this.value.replace(/\D/g, '');
+    });
+</script>
+<script>
+    const gajiInput = document.getElementById('gaji');
+
+    gajiInput.addEventListener('input', function(e) {
+        // Hilangkan semua karakter non-digit
+        let value = this.value.replace(/[^0-9]/g, '');
+
+        if (value) {
+            // Format jadi ribuan
+            let formatted = new Intl.NumberFormat('id-ID').format(value);
+            this.value = 'Rp ' + formatted;
+        } else {
+            this.value = '';
+        }
+    });
+
+    // Saat submit form, bersihkan Rp dan titik agar hanya angka tersimpan
+    document.getElementById('form-update-lowongan').addEventListener('submit', function() {
+        let cleanValue = gajiInput.value.replace(/[^0-9]/g, '');
+        gajiInput.value = cleanValue;
+    });
+</script>
+
+
 @endsection
