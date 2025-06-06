@@ -51,6 +51,7 @@ class EmployerSeeder extends Seeder
                 'last_login' => null,
             ],
         ]);
+        
         $slug = 'employer-' . substr(md5(2), 0, 8);
         
         DB::table('employers')->insert([

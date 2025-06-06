@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('cvs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // CV milik user
-            $table->string('slug'); // Optional: nama CV atau posisi dilamar
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->string('slug')->unique(); // Optional: nama CV atau posisi dilamar
             $table->string('title')->nullable(); // Optional: nama CV atau posisi dilamar
             $table->string('status')->default('draft'); // 'draft', 'completed', etc.
 

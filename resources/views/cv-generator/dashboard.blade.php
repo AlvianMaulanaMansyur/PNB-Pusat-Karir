@@ -1,4 +1,4 @@
-<x-app-layout> {{-- Sesuaikan dengan layout utama Anda --}}
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Resume Saya') }}
@@ -47,15 +47,56 @@
                     </div>
                 @endif
 
-                <a href="{{ $canCreateNewCv ? route('cv.create-new') : '#' }}"
+                {{-- Ganti link dengan button untuk trigger modal --}}
+                <button type="button" id="create-cv-button"
                     class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-md font-semibold text-base text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150
-                          {{ !$canCreateNewCv ? 'opacity-50 cursor-not-allowed' : '' }}">
+                          {{ !$canCreateNewCv ? 'opacity-50 cursor-not-allowed' : '' }}"
+                    {{ !$canCreateNewCv ? 'disabled' : '' }}>
                     <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     Buat CV Baru
-                </a>
+                </button>
+            </div>
+
+            {{-- Modal untuk input judul CV --}}
+            <div id="create-cv-modal" tabindex="-1" aria-hidden="true"
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black bg-opacity-50">
+                <div class="relative p-4 w-full max-w-md max-h-full">
+                    <div class="relative bg-white rounded-lg shadow">
+                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                            <h3 class="text-xl font-semibold text-gray-900">
+                                Beri Judul CV Baru
+                            </h3>
+                            <button type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                                data-modal-hide="create-cv-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <div class="p-4 md:p-5">
+                            <form id="create-cv-form" action="{{ route('cv.create-new') }}" method="POST">
+                                @csrf
+                                <div class="mb-4">
+                                    <label for="cv-title" class="block mb-2 text-sm font-medium text-gray-900">Judul CV</label>
+                                    <input type="text" name="title" id="cv-title"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                                        placeholder="Misal: CV Software Engineer" required />
+                                </div>
+                                <button type="submit"
+                                    class="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                    Buat CV Baru
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {{-- Resume Saya --}}
@@ -64,9 +105,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @forelse ($userCvs as $cv)
                         <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                            {{-- Placeholder gambar CV --}}
                             <div class="h-48 bg-gray-100 flex items-center justify-center text-gray-400">
-                                {{-- Jika Anda punya gambar preview CV, gunakan di sini --}}
                                 <img src="{{ asset('storage/cv_previews/default.png') }}" alt="CV Preview"
                                     class="w-full h-full object-cover">
                             </div>
@@ -79,7 +118,6 @@
                                         class="text-green-500 font-bold mr-2">{{ $cv->status === 'completed' ? 'Selesai' : ucfirst($cv->status) }}</span>
                                 </div>
                                 <div class="flex space-x-2">
-                                    {{-- Edit Link --}}
                                     <a href="{{ route('cv.edit', $cv->slug) }}"
                                         class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-3 rounded-md text-center text-sm">
                                         <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
@@ -93,10 +131,7 @@
 
                                     <form action="{{ route('cv.download', $cv->slug) }}" method="POST">
                                         @csrf
-
                                         <div class="flex justify-center">
-
-                                            {{-- Save & Continue Button --}}
                                             <div class="flex justify-end">
                                                 <button type="submit"
                                                     class="flex-1 bg-gray-700 hover:bg-gray-800 text-white py-2 px-3 rounded-md text-center text-sm">
@@ -139,7 +174,6 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        {{-- Delete Form --}}
                                         <form id="delete-cv-{{ $cv->id }}-form"
                                             action="{{ route('cv.destroy', $cv->slug) }}" method="POST"
                                             class="hidden">
@@ -159,35 +193,82 @@
 
         </div>
     </div>
-</x-app-layout>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('[data-dropdown-toggle]').forEach(button => {
-            const dropdownId = button.getAttribute('data-dropdown-toggle');
-            const dropdownEl = document.getElementById(dropdownId);
-            if (dropdownEl) {
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Mencegah klik menyebar ke document
-                    document.querySelectorAll('.z-10.hidden').forEach(otherDropdown => {
-                        if (otherDropdown.id !== dropdownId) {
-                            otherDropdown.classList.add('hidden');
-                        }
-                    });
-                    dropdownEl.classList.toggle('hidden');
-                });
-            }
-        });
-
-        document.addEventListener('click', (event) => {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle dropdowns
             document.querySelectorAll('[data-dropdown-toggle]').forEach(button => {
                 const dropdownId = button.getAttribute('data-dropdown-toggle');
                 const dropdownEl = document.getElementById(dropdownId);
-                if (dropdownEl && !dropdownEl.contains(event.target) && !button.contains(event
-                        .target)) {
-                    dropdownEl.classList.add('hidden');
+                if (dropdownEl) {
+                    button.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        document.querySelectorAll('.z-10.hidden').forEach(otherDropdown => {
+                            if (otherDropdown.id !== dropdownId) {
+                                otherDropdown.classList.add('hidden');
+                            }
+                        });
+                        dropdownEl.classList.toggle('hidden');
+                    });
                 }
             });
+
+            document.addEventListener('click', (event) => {
+                document.querySelectorAll('[data-dropdown-toggle]').forEach(button => {
+                    const dropdownId = button.getAttribute('data-dropdown-toggle');
+                    const dropdownEl = document.getElementById(dropdownId);
+                    if (dropdownEl && !dropdownEl.contains(event.target) && !button.contains(event.target)) {
+                        dropdownEl.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Handle CV creation modal
+            const createCvButton = document.getElementById('create-cv-button');
+            const modal = document.getElementById('create-cv-modal');
+            const form = document.getElementById('create-cv-form');
+            
+            // Open modal when button is clicked
+            if (createCvButton) {
+                createCvButton.addEventListener('click', () => {
+                    if (!createCvButton.disabled) {
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                });
+            }
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.classList.remove('overflow-hidden');
+                }
+            });
+
+            // Close modal when close button is clicked
+            const closeButtons = document.querySelectorAll('[data-modal-hide="create-cv-modal"]');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.classList.remove('overflow-hidden');
+                });
+            });
+
+            // Handle form submission
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const titleInput = document.getElementById('cv-title');
+                    if (!titleInput.value.trim()) {
+                        e.preventDefault();
+                        alert('Judul CV tidak boleh kosong');
+                        titleInput.focus();
+                    }
+                });
+            }
         });
-    });
-</script>
+    </script>
+</x-app-layout>

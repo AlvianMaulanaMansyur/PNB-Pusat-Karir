@@ -10,7 +10,7 @@ class Cv extends Model
 
     protected $table = 'cvs';
 
-    protected $fillable = ['user_id', 'title', 'status', 'slug'];
+    protected $fillable = ['employee_id', 'title', 'status', 'slug'];
 
     public function personalInformation()
     {

@@ -13,13 +13,20 @@ class CvDataSeeder extends Seeder
     public function run()
     {
         // Create or get existing user
-        $userId = DB::table('users')->where('email', 'employee1@example.com')->value('id');
+        $userId = DB::table('users')
+            ->where('email', 'employee1@example.com')
+            ->value('id');
+
+        // Dapatkan employee_id dari tabel employees
+        $employeeId = DB::table('employees')
+            ->where('user_id', $userId) // Asumsi ada kolom user_id di tabel employees
+            ->value('id');
 
         // Insert CVs
-        $cv1Id = DB::table('cvs')->insertGetId([
-            'user_id' => $userId,
+        $cv1Id = DB::table(table: 'cvs')->insertGetId([
+            'employee_id' => $employeeId,
             'title' => 'CV Web Developer Profesional',
-            'slug' => Str::slug('CV Web Developer Profesional').'-'.uniqid(),
+            'slug' => Str::slug('CV Web Developer Profesional') . '-' . uniqid(),
             'status' => 'completed',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

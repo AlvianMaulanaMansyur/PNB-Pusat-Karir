@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cv', [CvGeneratorController::class, 'index'])->name('cv.dashboard');
 
     // web.php
-    Route::get('/cv/create-new', [CvGeneratorController::class, 'createNewCV'])->name('cv.create-new');
+    Route::post('/cv/create-new', [CvGeneratorController::class, 'createNewCV'])->name('cv.create-new');
 
     Route::get('/cv/{slug}/personal-information', [CvGeneratorController::class, 'showPersonalInformationForm'])->name('cv.personal-info');
     // Route untuk menyimpan informasi pribadi ke database (seperti yang sudah kita buat sebelumnya)

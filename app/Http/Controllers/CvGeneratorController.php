@@ -26,12 +26,14 @@ class CvGeneratorController extends Controller
 
         Log::info('----- Memulai index (CvController) - Menampilkan daftar CV pengguna -----');
 
-        $userId = auth()->id(); // Ambil ID user yang sedang login
+        $user = auth()->user();
+
+        $employeeId = $user->employee->id; // Ambil ID user yang sedang login
         $userCvs = [];
 
-        if ($userId) {
+        if ($employeeId) {
             // Mengambil daftar CV yang sudah dibuat oleh user ini
-            $userCvs = Cv::where('user_id', $userId)->orderBy('updated_at', 'desc')->get();
+            $userCvs = Cv::where('employee_id', $employeeId)->orderBy('updated_at', 'desc')->get();
         } else {
             // Jika tidak ada user yang login, Anda bisa memutuskan apakah akan menampilkan CV yang disimpan di sesi
             // Untuk kesederhanaan, kita anggap hanya user login yang bisa melihat daftar CV.
@@ -40,7 +42,7 @@ class CvGeneratorController extends Controller
 
         // Batas maksimal CV (contoh: 2)
         $maxCvLimit = 2; // Sesuaikan dengan logika paket berlangganan Anda jika ada
-        $canCreateNewCv = $userId && ($userCvs->count() < $maxCvLimit); // Hanya bisa buat jika login dan belum mencapai limit
+        $canCreateNewCv = $employeeId && ($userCvs->count() < $maxCvLimit); // Hanya bisa buat jika login dan belum mencapai limit
 
         // Mendapatkan pesan dari session
         $sessionMessage = $request->session()->get('status');
@@ -67,9 +69,10 @@ class CvGeneratorController extends Controller
 
             // Dapatkan CV berdasarkan slug
             $cv = Cv::where('slug', $slug)->firstOrFail();
+            $employeeId = auth()->user()->employee->id;
 
             // Validasi kepemilikan
-            if ($cv->user_id !== auth()->id()) {
+            if ($cv->employee_id !== $employeeId) {
                 return response()->json([
                     'error' => 'Anda tidak memiliki izin untuk mengupdate CV ini'
                 ], 403);
@@ -98,15 +101,28 @@ class CvGeneratorController extends Controller
     // CvController.php
     public function createNewCV(Request $request)
     {
-        $userId = auth()->id();
+        // Validasi input 'title'
+        $request->validate([
+            'title' => 'required|string|max:255',
+        ]);
 
+        $user = auth()->user();
+        
         // Validasi user sudah login
-        if (!$userId) {
+        if (!$user) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
         }
+        
+        // Cek apakah user memiliki data employee
+        if (!$user->employee) {
+            return redirect()->route('cv.dashboard')
+                ->with('error', 'Data employee tidak ditemukan!');
+        }
+        
+        $employeeId = $user->employee->id; // Ambil ID user yang sedang login
 
         // Cek limit CV
-        $currentCvCount = Cv::where('user_id', $userId)->count();
+        $currentCvCount = Cv::where('employee_id', $employeeId)->count();
         $maxCvLimit = 2;
 
         if ($currentCvCount >= $maxCvLimit) {
@@ -114,26 +130,22 @@ class CvGeneratorController extends Controller
                 ->with('error', "Anda sudah mencapai batas maksimal $maxCvLimit CV");
         }
 
-        // Buat CV baru
+        // Buat CV baru dengan employee_id dan title dari request
         $newCV = Cv::create([
-            'user_id' => $userId,
-            'title' => 'CV Tanpa Judul',
+            'employee_id' => $user->employee->id,
+            'title' => $request->title, // Gunakan title dari hasil validasi
             'slug' => Str::uuid(),
             'status' => 'draft'
         ]);
-
-
-        // Simpan ke session
-        $request->session()->put('current_cv_id', $newCV->id);
 
         return redirect()->route('cv.personal-info', ['slug' => $newCV->slug]);
     }
 
     public function showPersonalInformationForm(Request $request, $slug)
     {
-        $userId = auth()->id();
+        $employeeId = auth()->user()->employee->id;
 
-        if (!$userId) {
+        if (!$employeeId) {
             return redirect()->route('login');
         }
 
@@ -142,7 +154,7 @@ class CvGeneratorController extends Controller
                 ->where('slug', $slug)
                 ->first();
 
-            if (!$cv || $cv->user_id !== $userId) {
+            if (!$cv || $cv->employee_id !== $employeeId) {
                 return redirect()->route('cv.dashboard')
                     ->with('error', 'CV tidak ditemukan atau tidak memiliki akses');
             }
@@ -277,12 +289,14 @@ class CvGeneratorController extends Controller
 
     public function showWorkExperienceForm(Request $request, $slug)
     {
+
         try {
             // Dapatkan CV berdasarkan slug
             $cv = Cv::where('slug', $slug)->firstOrFail();
+            $employeeId = auth()->user()->employee->id;
 
             // Validasi kepemilikan CV
-            if ($cv->user_id !== auth()->id()) {
+            if ($cv->employee_id !== $employeeId) {
                 abort(403, 'Anda tidak memiliki akses ke CV ini');
             }
 
@@ -516,7 +530,7 @@ class CvGeneratorController extends Controller
             $existingData = $request->session()->get($sessionKey, null);
 
             // Generate nama file unik
-            $filename = 'profile_' . auth()->id() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'profile_' . $employeeId . '_' . time() . '.' . $file->getClientOriginalExtension();
 
             // Simpan file ke storage
             $path = Storage::disk('public')->putFileAs('profile_photos', $file, $filename);
@@ -573,9 +587,10 @@ class CvGeneratorController extends Controller
         try {
             // Dapatkan CV berdasarkan slug
             $cv = Cv::where('slug', $slug)->firstOrFail();
+            $employeeId = auth()->user()->employee->id;
 
             // Validasi kepemilikan CV
-            if ($cv->user_id !== auth()->id()) {
+            if ($cv->employee_id !== $employeeId) {
                 abort(403, 'Anda tidak memiliki akses ke CV ini');
             }
 
@@ -682,9 +697,10 @@ class CvGeneratorController extends Controller
         try {
             // Dapatkan CV berdasarkan slug
             $cv = Cv::where('slug', $slug)->firstOrFail();
+            $employeeId = auth()->user()->employee->id;
 
             // Validasi kepemilikan CV
-            if ($cv->user_id !== auth()->id()) {
+            if ($cv->employee_id !== $employeeId) {
                 abort(403, 'Anda tidak memiliki akses ke CV ini');
             }
 
@@ -756,9 +772,10 @@ class CvGeneratorController extends Controller
         try {
             // Dapatkan CV berdasarkan slug
             $cv = Cv::where('slug', $slug)->firstOrFail();
+            $employeeId = auth()->user()->employee->id;
 
             // Validasi kepemilikan CV
-            if ($cv->user_id !== auth()->id()) {
+            if ($cv->employee_id !== $employeeId) {
                 abort(403, 'Anda tidak memiliki akses ke CV ini');
             }
 
@@ -985,9 +1002,10 @@ class CvGeneratorController extends Controller
     public function edit($slug)
     {
         $cv = Cv::where('slug', $slug)->firstOrFail();
+        $employeeId = auth()->user()->employee->id;
 
         // Validasi kepemilikan CV
-        if ($cv->user_id !== auth()->id()) {
+        if ($cv->employee_id !== $employeeId) {
             abort(403, 'Anda tidak memiliki akses ke CV ini');
         }
 
@@ -998,8 +1016,9 @@ class CvGeneratorController extends Controller
     public function destroy($slug)
     {
         $cv = Cv::where('slug', $slug)->firstOrFail();
+        $employeeId = auth()->user()->employee->id;
 
-        if ($cv->user_id !== auth()->id()) {
+        if ($cv->employee_id !== $employeeId) {
             abort(403);
         }
 
@@ -1012,8 +1031,9 @@ class CvGeneratorController extends Controller
     public function download($slug)
     {
         $cv = Cv::where('slug', $slug)->firstOrFail();
+        $employeeId = auth()->user()->employee->id;
 
-        if ($cv->user_id !== auth()->id()) {
+        if ($cv->employee_id !== $employeeId) {
             abort(403);
         }
 
