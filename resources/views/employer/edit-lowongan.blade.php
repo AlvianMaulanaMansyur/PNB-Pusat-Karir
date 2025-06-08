@@ -25,6 +25,21 @@
         </a>
     </div>
 </div>
+{{-- Tampilkan pesan success --}}
+@if (session('success'))
+<x-alert.session-alert type="success" :message="session('success')" />
+@endif
+
+{{-- Tampilkan pesan error umum --}}
+@if (session('error'))
+<x-alert.session-alert type="error" :message="session('error')" />
+@endif
+
+{{-- Tampilkan error validasi (opsional, tampilkan error pertama) --}}
+@if ($errors->any())
+<x-alert.session-alert type="error" :message="$errors->first()" />
+@endif
+
 <form id="form-update-lowongan" action="{{ route('employer.update-lowongan', $lowongan->slug) }}" method="POST" enctype="multipart/form-data"
     class="w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-20 lg:ml-28 bg-white p-6 rounded-lg shadow-md" novalidate>
     @csrf
@@ -55,7 +70,7 @@
     {{-- Jenis Pekerjaan --}}
     <div class="mb-4">
         <x-label-required for="jenislowongan" :value="__('Jenis Lowongan')" />
-        <x-dropdown.jenis-lowongan 
+        <x-dropdown.jenis-lowongan
             :selected="old('jenislowongan', $lowongan->jenislowongan)"
             class="block mt-1 w-full text-sm border-black-300" />
         @error('jenislowongan')
@@ -88,7 +103,7 @@
     {{-- Kualifikasi Pendidikan --}}
     <div class="mb-4">
         <x-label-required for="kualifikasi" :value="__('Kualifikasi')" />
-        <x-dropdown.kualifikasi-pendidikan 
+        <x-dropdown.kualifikasi-pendidikan
             :selected="old('kualifikasi', $lowongan->kualifikasi)"
             class="block mt-1 w-full text-sm" />
         @error('kualifikasi')

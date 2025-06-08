@@ -26,6 +26,20 @@
         <i class="fas fa-arrow-left mr-2"></i> Kembali ke Halaman Utama
     </a>
 </div>
+{{-- Tampilkan pesan success --}}
+@if (session('success'))
+<x-alert.session-alert type="success" :message="session('success')" />
+@endif
+
+{{-- Tampilkan pesan error umum --}}
+@if (session('error'))
+<x-alert.session-alert type="error" :message="session('error')" />
+@endif
+
+{{-- Tampilkan error validasi (opsional, tampilkan error pertama) --}}
+@if ($errors->any())
+<x-alert.session-alert type="error" :message="$errors->first()" />
+@endif
 
 @if (session('success'))
 <script>
@@ -145,12 +159,12 @@
                         <div>
                             <x-label-required for="first_name" :value="__('Nama Depan')" />
                             <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full"
-                                value="{{ old('first_name', $employer->first_name) }}" required/>
+                                value="{{ old('first_name', $employer->first_name) }}" required />
                         </div>
                         <div>
                             <x-label-required for="last_name" :value="__('Nama Belakang')" />
                             <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full"
-                                value="{{ old('last_name', $employer->last_name) }}"  required/>
+                                value="{{ old('last_name', $employer->last_name) }}" required />
                         </div>
                     </div>
 
@@ -163,7 +177,7 @@
                         <div>
                             <x-label-required for="job_title" :value="__('Pekerjaan')" />
                             <x-text-input id="job_title" name="job_title" type="text" class="mt-1 block w-full"
-                                value="{{ old('job_title', $employer->job_title) }}"  required/>
+                                value="{{ old('job_title', $employer->job_title) }}" required />
                         </div>
                         <div>
                             <x-label-required for="department" :value="__('Departemen')" />
@@ -183,7 +197,7 @@
                         <div>
                             <x-label-required for="phone" :value="__('No. Telepon')" />
                             <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full"
-                                value="{{ old('phone', $employer->phone) }}" required/>
+                                value="{{ old('phone', $employer->phone) }}" required />
                         </div>
                         <div>
                             <x-label-required for="email" :value="__('Email')" />
