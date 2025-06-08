@@ -11,8 +11,8 @@ Route::middleware(['auth','role:employee', 'verified'])->group(function () {
 
     Route::get('/job-detail/{id}', [JobSeekerController::class, 'detailLowongan'])->name('job.detail');
 
+    Route::prefix('/id')->group(function (){
+
+        Route::get('/apply-job/{id}', [JobSeekerController::class, 'applyJob'])->name('job-apply');
+    });
 });
-
-
-
-
