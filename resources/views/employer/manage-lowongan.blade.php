@@ -28,6 +28,21 @@
     </div>
 </div>
 
+{{-- Tampilkan pesan success --}}
+@if (session('success'))
+<x-alert.session-alert type="success" :message="session('success')" />
+@endif
+
+{{-- Tampilkan pesan error umum --}}
+@if (session('error'))
+<x-alert.session-alert type="error" :message="session('error')" />
+@endif
+
+{{-- Tampilkan error validasi (opsional, tampilkan error pertama) --}}
+@if ($errors->any())
+<x-alert.session-alert type="error" :message="$errors->first()" />
+@endif
+
 @if (session('success'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {

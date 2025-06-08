@@ -27,4 +27,13 @@ class JobSeekerController extends Controller
         $job = JobListing::with('employer')->findOrFail($id);
         return view('jobseeker.detail-lowongan', compact('job'));
     }
+
+
+    public function applyJob($id)
+    {
+        $job = JobListing::with('employer')->findOrFail($id);
+        $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+        return view('jobseeker.apply', compact('job', 'employeeData'));
+    }
 }
