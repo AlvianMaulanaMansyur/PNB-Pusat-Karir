@@ -26,6 +26,7 @@ class EmployerController extends Controller
     {
         return view('employer.tambah-lowongan');
     }
+
     public function storelowongan(Request $request)
     {
         Log::info('Memulai proses storelowongan.', ['user_id' => Auth::id()]);
@@ -33,26 +34,33 @@ class EmployerController extends Controller
         try {
             // Validasi input
             $validated = $request->validate([
-                'nama_lowongan'    => 'required|string|max:255',
-                'deskripsi'        => 'required|string',
-                'posisi'           => 'required|string|max:255',
-                'kualifikasi'      => 'required|string|max:255',
-                'gaji'             => 'required|string|max:255',
-                'benefit'          => 'required|string|max:255',
-                'responsibility'   => 'required|string|max:255',
-                'detailkualifikasi' => 'required|string|max:255',
-                'jenislowongan'    => 'required|string|max:100',
-                'deadline'         => 'required|date',
-                'poster'           => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'nama_lowongan'     => 'required|string|max:255',
+                'deskripsi'         => 'required|string',
+                'posisi'            => 'required|string|max:255',
+                'kualifikasi'       => 'required|string|max:255',
+                'gaji'              => 'required|string|max:255',  // tetap string karena ada format Rp
+                'benefit'           => 'required|string|',
+                'responsibility'    => 'required|string|',
+                'detailkualifikasi' => 'required|string|',
+                'jenislowongan'     => 'required|string|max:100',
+                'deadline'          => 'required|date',
+                'poster'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
-            // Bersihkan nilai gaji
+            // Bersihkan nilai gaji: hapus semua selain angka
             $cleanedGaji = preg_replace('/\D/', '', $validated['gaji']);
-            if (!$cleanedGaji) {
-                return redirect()->back()->withErrors(['gaji' => 'Nilai gaji tidak valid.'])->withInput();
-            }
-            $validated['gaji'] = $cleanedGaji;
 
+            // Jika hasil bersih kosong, cek apakah input asli berupa '0' (atau 'Rp 0')
+            if ($cleanedGaji === '') {
+                $checkZero = trim(str_replace(['Rp', '.', ',', ' '], '', $validated['gaji']));
+                if ($checkZero === '0') {
+                    $cleanedGaji = '0';
+                } else {
+                    return redirect()->back()->with('error', 'Nilai gaji tidak valid.')->withInput();
+                }
+            }
+
+            $validated['gaji'] = $cleanedGaji;
 
             Log::debug('Data input berhasil divalidasi.', ['validated_data' => $validated]);
 
@@ -61,9 +69,8 @@ class EmployerController extends Controller
 
             if (!$userId) {
                 Log::warning('Employer tidak ditemukan untuk user yang login.', ['user_id' => $userId]);
-                return redirect()->back()->withErrors(['error' => 'Employer tidak ditemukan untuk user ini.']);
+                return redirect()->back()->with('error', 'Employer tidak ditemukan untuk user ini.');
             }
-
 
             // Simpan poster jika ada
             if ($request->hasFile('poster')) {
@@ -96,7 +103,7 @@ class EmployerController extends Controller
 
             Log::info('Lowongan berhasil disimpan ke database.', [
                 'nama_lowongan' => $validated['nama_lowongan'],
-                'user_id'   => $userId,
+                'user_id'       => $userId,
                 'slug'          => $slug,
             ]);
 
@@ -116,7 +123,7 @@ class EmployerController extends Controller
                 'line'    => $e->getLine(),
                 'trace'   => $e->getTraceAsString()
             ]);
-            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan sistem. Silakan coba lagi nanti.']);
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi nanti.');
         }
     }
 
@@ -144,23 +151,27 @@ class EmployerController extends Controller
             'posisi'            => 'required|string|max:255',
             'kualifikasi'       => 'required|string|max:255',
             'gaji'              => 'required|string|max:255',
-            'benefit'           => 'required|string|max:255',
-            'responsibility'    => 'required|string|max:255',
-            'detailkualifikasi' => 'required|string|max:255',
+            'benefit'           => 'required|string|',
+            'responsibility'    => 'required|string|',
+            'detailkualifikasi' => 'required|string|',
             'jenislowongan'     => 'required|string|max:100',
             'deadline'          => 'required|date',
             'poster'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $request->merge([
-            'gaji' => str_replace(['Rp', '.', ' '], '', $request->gaji),
-        ]);
-
-        // Bersihkan nilai gaji
+        // Bersihkan nilai gaji: hapus semua selain angka
         $cleanedGaji = preg_replace('/\D/', '', $validated['gaji']);
-        if (!$cleanedGaji) {
-            return redirect()->back()->withErrors(['gaji' => 'Nilai gaji tidak valid.'])->withInput();
+
+        // Jika hasil bersih kosong, cek apakah input asli berupa '0' (atau 'Rp 0')
+        if ($cleanedGaji === '') {
+            $checkZero = trim(str_replace(['Rp', '.', ',', ' '], '', $validated['gaji']));
+            if ($checkZero === '0') {
+                $cleanedGaji = '0';
+            } else {
+                return redirect()->back()->withErrors(['gaji' => 'Nilai gaji tidak valid.'])->withInput();
+            }
         }
+
         $validated['gaji'] = $cleanedGaji;
 
         // Jika nama lowongan berubah, update slug juga

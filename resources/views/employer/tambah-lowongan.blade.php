@@ -15,6 +15,21 @@
     </div>
 </div>
 
+{{-- Tampilkan pesan success --}}
+@if (session('success'))
+<x-alert.session-alert type="success" :message="session('success')" />
+@endif
+
+{{-- Tampilkan pesan error umum --}}
+@if (session('error'))
+<x-alert.session-alert type="error" :message="session('error')" />
+@endif
+
+{{-- Tampilkan error validasi (opsional, tampilkan error pertama) --}}
+@if ($errors->any())
+<x-alert.session-alert type="error" :message="$errors->first()" />
+@endif
+
 {{-- Form dan layout sama seperti milikmu --}}
 <div class="flex flex-col lg:flex-row justify-start mt-10 mx-4 md:mx-10 lg:mx-20 lg:ml-28 gap-8">
 
@@ -224,8 +239,8 @@
 
         gajiInput.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, ''); // Hapus semua selain angka
-            if (value) {
-                e.target.value = 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
+            if (value !== '') {
+                e.target.value = 'Rp ' + new Intl.NumberFormat('id-ID').format(Number(value));
             } else {
                 e.target.value = '';
             }

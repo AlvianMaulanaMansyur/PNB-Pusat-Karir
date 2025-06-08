@@ -22,7 +22,22 @@
                 </svg>
             </a>
 
-            {{-- Ikon User --}}
+            {{-- Ikon Notifikasi --}}
+            <a href="#" class="relative hover:text-blue-600 cursor-pointer" title="Notifikasi">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6 2xl:w-8 2xl:h-8 text-gray-700"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M13.73 21a2 2 0 01-3.46 0" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+
+                {{-- Optional: Badge notifikasi --}}
+                <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5">
+                    3
+                </span>
+            </a>
+
+
             {{-- Foto User atau Ikon --}}
             <a href="{{ route('employer.edit-profile', ['slug' => auth()->user()->employer->slug]) }}"
                 class="hover:opacity-80 cursor-pointer" title="Edit Profile">

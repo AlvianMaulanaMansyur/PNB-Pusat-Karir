@@ -5,11 +5,11 @@
 
 @php
 $kualifikasi = [
-'SMP (Sekolah Menengah Pertama)' => 'SMP (Sekolah Menengah Pertama)',
-'SMA/SMK (Sekolah Menengah Atas/Kejuruan)' => 'SMA/SMK (Sekolah Menengah Atas/Kejuruan)',
+'SMP' => 'SMP',
+'SMA/SMK' => 'SMA/SMK',
 'Diploma 2 (D2)' => 'Diploma 2 (D2)',
 'Diploma 3 (D3)' => 'Diploma 3 (D3)',
-'Diploma 4 (D4) / Sarjana Terapan' => 'Diploma 4 (D4) / Sarjana Terapan',
+'Diploma 4 (D4)' => 'Diploma 4 (D4)',
 ];
 @endphp
 <div>
