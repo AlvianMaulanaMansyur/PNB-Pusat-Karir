@@ -35,7 +35,7 @@
         {{-- Garis Horizontal --}}
         <div class="absolute top-5 left-0 right-0 h-0.5 z-0">
             <div class="w-full h-full bg-gray-300"></div>
-            <div class="absolute top-0 left-0 h-full bg-blue-600 transition-all duration-300"
+            <div class="absolute top-0 left-0 h-full bg-primaryColor transition-all duration-300"
                 style="width: {{ (($current - 1) / (count($steps) - 1)) * 100 }}%;">
             </div>
         </div>
@@ -45,13 +45,13 @@
                 {{-- Circle --}}
                 <div
                     class="flex items-center justify-center w-10 h-10 rounded-full border-2
-                    {{ $step <= $current ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300' }}">
+                    {{ $step <= $current ? 'bg-primaryColor text-white border-primaryColor' : 'bg-white text-gray-600 border-gray-300' }}">
                     {!! $data['icon'] !!}
                 </div>
                 {{-- Label --}}
                 <div
                     class="mt-2 text-sm font-medium text-center whitespace-nowrap
-                    {{ $step <= $current ? 'text-blue-600' : 'text-gray-500' }}">
+                    {{ $step <= $current ? 'text-primaryColor' : 'text-gray-500' }}">
                     {{ $data['label'] }}
                 </div>
             </div>

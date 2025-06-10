@@ -1,4 +1,6 @@
 <x-jobseeker-layout>
+    <x-alert.session-alert type="error" :message="session('error')" />
+
     <x-jobseeker.stepper :current="1" />
 
     {{-- tujuan lamaran --}}

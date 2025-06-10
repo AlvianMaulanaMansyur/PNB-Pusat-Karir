@@ -21,8 +21,6 @@ Route::middleware(['auth','role:employee', 'verified'])->group(function () {
         Route::get('/apply-job/{id}/file-preview', [JobSeekerController::class, 'showPreview'])
             ->name('file-preview');
 
-        Route::get('/test', [JobSeekerController::class, 'test'])
-            ->name('test');
     });
 
 });
