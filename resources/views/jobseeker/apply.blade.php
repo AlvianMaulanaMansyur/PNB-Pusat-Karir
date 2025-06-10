@@ -68,7 +68,7 @@
     {{-- lamaran --}}
     <section class="py-4">
         <div class="container max-w-3xl mx-auto border-2 border-gray-300 p-6 rounded-lg shadow-md bg-white">
-            <form action="POST">
+            <form action="{{ route('job-apply.step-one', ['id' => $job->id]) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div>
                     <x-input-label id="suratLamaran" :value="__('Surat Lamaran')" />
