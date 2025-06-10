@@ -2,7 +2,7 @@
     <x-jobseeker.stepper :current="1" />
 
     {{-- tujuan lamaran --}}
-    <section class="py-6">
+    <section class="py-4">
         <div class="container max-w-3xl mx-auto border-2 border-gray-300 p-6 rounded-lg shadow-md bg-white">
             <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
@@ -18,43 +18,77 @@
     </section>
 
     {{-- data diri --}}
-    <section class="">
+    <section class="py-4">
         <div class="container max-w-3xl mx-auto border-2 border-gray-300 p-6 rounded-lg shadow-md bg-white">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Pribadi</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Nama Lengkap -->
                 <div>
-                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                    <input type="text" id="nama" name="nama"
-                        value="{{ $employeeData->first_name }} {{ $employeeData->last_name }}"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <x-input-label for="nama" :value="'Nama Lengkap'" />
+                    <x-text-input :disabled="true" required readonly id="nama" name="nama" type="text"
+                        :value="$employeeData->first_name . ' ' . $employeeData->last_name" class="mt-1 block w-full cursor-not-allowed opacity-70" />
                 </div>
 
+                <!-- Akhiran -->
                 <div>
-                    <label for="akhiran" class="block text-sm font-medium text-gray-700">Akhiran</label>
-                    <input type="text" id="akhiran" name="akhiran" value="{{ $employeeData->suffix }}"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <x-input-label for="akhiran" :value="'Akhiran'" />
+                    <x-text-input :disabled="true" class="cursor-not-allowed opacity-50" required readonly
+                        id="akhiran" name="akhiran" type="text" :value="$employeeData->suffix"
+                        class="mt-1 block w-full cursor-not-allowed opacity-70" />
                 </div>
 
-                <div class=" md:col-span-2">
-                    <label for="lokasi" class="block text-sm font-medium text-gray-700">Lokasi</label>
-                    <input type="text" id="lokasi" name="lokasi"
-                        value="{{ $employeeData->city }}, {{ $employeeData->country }}"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <!-- Lokasi -->
+                <div class="md:col-span-2">
+                    <x-input-label for="lokasi" :value="'Lokasi'" />
+                    <x-text-input :disabled="true" class="cursor-not-allowed opacity-50" required readonly
+                        id="lokasi" name="lokasi" type="text" :value="$employeeData->city . ', ' . $employeeData->country"
+                        class="mt-1 block w-full cursor-not-allowed opacity-70" />
                 </div>
 
+                <!-- Email -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" value="{{ $employeeData->user->email }}"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <x-input-label for="email" :value="'Email'" />
+                    <x-text-input :disabled="true" class="cursor-not-allowed opacity-50" required readonly
+                        id="email" name="email" type="email" :value="$employeeData->user->email"
+                        class="mt-1 block w-full cursor-not-allowed opacity-70" />
                 </div>
 
-                <div ">
-                    <label for="telepon" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                    <input type="text" id="telepon" name="telepon" value="{{ $employeeData->phone }}"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <!-- Telepon -->
+                <div>
+                    <x-input-label for="telepon" :value="'Nomor Telepon'" />
+                    <x-text-input :disabled="true" class="cursor-not-allowed opacity-50" required readonly
+                        id="telepon" name="telepon" type="text" :value="$employeeData->phone"
+                        class="mt-1 block w-full cursor-not-allowed opacity-70" />
                 </div>
             </div>
         </div>
+    </section>
+
+    {{-- lamaran --}}
+    <section class="py-4">
+        <div class="container max-w-3xl mx-auto border-2 border-gray-300 p-6 rounded-lg shadow-md bg-white">
+            <form action="POST">
+                @csrf
+                <div>
+                    <x-input-label id="suratLamaran" :value="__('Surat Lamaran')" />
+                    <x-text-area-input id="suratLamaran" name="suratLamaran" required class="mt-1 block w-full"
+                        placeholder="Apa yang ingin Anda sampaikan..." rows="6" :value="old('suratLamaran')">
+                        {{ old('suratLamaran') }}
+                    </x-text-area-input>
+                </div>
+                <div>
+                    <x-file-input name="cv" label="CV (Curriculum Vitae)" accept="application/pdf" required />
+                </div>
+                <div>
+                    <x-multi-file-input name="certificates" label="Upload Sertifikat" />
+                </div>
+                <div class="flex justify-end mt-4 mb-5">
+                    <x-primary-button>
+                        {{ __('Selanjutnya') }}
+                    </x-primary-button>
+                </div>
+            </form>
     </section>
 
 
