@@ -1,4 +1,5 @@
 <x-jobseeker-layout>
+    <x-alert.session-alert type="error" :message="session('error')" />
     <x-jobseeker.stepper :current="2" />
 
     <section class="py-4">
@@ -48,49 +49,53 @@
             <h3 class="font-semibold text-lg text-primaryColor py-2">Pendidikan</h3>
             <p>-</p>
 
-            {{-- surat lamaran --}}
-            <div>
-                <h3 class="font-semibold text-lg text-primaryColor py-2">Surat Lamaran</h3>
-                <div class="border-2 border-gray-300 p-4 rounded-lg  bg-white">
-                    <p class="text-md">{{ session('suratLamaran') }}</p>
+            <form action="" method="POST">
+                @csrf
+                {{-- surat lamaran --}}
+                <div>
+                    <h3 class="font-semibold text-lg text-primaryColor py-2">Surat Lamaran</h3>
+                    <div class="border-2 border-gray-300 p-4 rounded-lg  bg-white">
+                        <p class="text-md">{{ session('suratLamaran') }}</p>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <h3 class="font-semibold text-lg text-primaryColor py-2">CV (Currirculum Vitae)</h3>
-                <div class="border-2 border-gray-300 p-4 rounded-lg bg-white flex items-center gap-2">
-                    <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M11.6998 22.1001H5.69979C4.37431 22.1001 3.2998 21.0256 3.2998 19.7001L3.2999 5.30013C3.29991 3.97466 4.37442 2.90015 5.6999 2.90015H16.5002C17.8256 2.90015 18.9002 3.97466 18.9002 5.30015V10.1001M7.50018 7.70015H14.7002M7.50018 11.3001H14.7002M14.7002 16.0541V18.9985C14.7002 20.4534 16.2516 21.7879 17.7065 21.7879C19.1615 21.7879 20.7002 20.4535 20.7002 18.9985V15.2793C20.7002 14.509 20.2574 13.7273 19.2723 13.7273C18.2186 13.7273 17.7065 14.509 17.7065 15.2793V18.8435M7.50018 14.9001H11.1002"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+                <div>
+                    <h3 class="font-semibold text-lg text-primaryColor py-2">CV (Currirculum Vitae)</h3>
+                    <div class="border-2 border-gray-300 p-4 rounded-lg bg-white flex items-center gap-2">
+                        <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11.6998 22.1001H5.69979C4.37431 22.1001 3.2998 21.0256 3.2998 19.7001L3.2999 5.30013C3.29991 3.97466 4.37442 2.90015 5.6999 2.90015H16.5002C17.8256 2.90015 18.9002 3.97466 18.9002 5.30015V10.1001M7.50018 7.70015H14.7002M7.50018 11.3001H14.7002M14.7002 16.0541V18.9985C14.7002 20.4534 16.2516 21.7879 17.7065 21.7879C19.1615 21.7879 20.7002 20.4535 20.7002 18.9985V15.2793C20.7002 14.509 20.2574 13.7273 19.2723 13.7273C18.2186 13.7273 17.7065 14.509 17.7065 15.2793V18.8435M7.50018 14.9001H11.1002"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
 
-                    <p class="text-md">{{ session('cv') }}</p>
+                        <p class="text-md">{{ session('cv') }}</p>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <h3 class="font-semibold text-lg text-primaryColor py-2">Dokumen Tambahan</h3>
-                <ul>
-                    @foreach (session('sertifikat', []) as $name)
-                        <div class="border-2 border-gray-300 p-4 rounded-lg bg-white flex items-center gap-2 mb-2">
-                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M11.6998 22.1001H5.69979C4.37431 22.1001 3.2998 21.0256 3.2998 19.7001L3.2999 5.30013C3.29991 3.97466 4.37442 2.90015 5.6999 2.90015H16.5002C17.8256 2.90015 18.9002 3.97466 18.9002 5.30015V10.1001M7.50018 7.70015H14.7002M7.50018 11.3001H14.7002M14.7002 16.0541V18.9985C14.7002 20.4534 16.2516 21.7879 17.7065 21.7879C19.1615 21.7879 20.7002 20.4535 20.7002 18.9985V15.2793C20.7002 14.509 20.2574 13.7273 19.2723 13.7273C18.2186 13.7273 17.7065 14.509 17.7065 15.2793V18.8435M7.50018 14.9001H11.1002"
-                                    stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <li>{{ $name }}</li>
-                        </div>
-                    @endforeach
-                </ul>
-            </div>
-            <div class="flex justify-end py-7">
-                <x-primary-button>
-                    {{ __('Kirim Lamaran') }}
-                </x-primary-button>
-            </div>
+                <div>
+                    <h3 class="font-semibold text-lg text-primaryColor py-2">Dokumen Tambahan</h3>
+                    <ul>
+                        @foreach (session('sertifikat', []) as $name)
+                            <div class="border-2 border-gray-300 p-4 rounded-lg bg-white flex items-center gap-2 mb-2">
+                                <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M11.6998 22.1001H5.69979C4.37431 22.1001 3.2998 21.0256 3.2998 19.7001L3.2999 5.30013C3.29991 3.97466 4.37442 2.90015 5.6999 2.90015H16.5002C17.8256 2.90015 18.9002 3.97466 18.9002 5.30015V10.1001M7.50018 7.70015H14.7002M7.50018 11.3001H14.7002M14.7002 16.0541V18.9985C14.7002 20.4534 16.2516 21.7879 17.7065 21.7879C19.1615 21.7879 20.7002 20.4535 20.7002 18.9985V15.2793C20.7002 14.509 20.2574 13.7273 19.2723 13.7273C18.2186 13.7273 17.7065 14.509 17.7065 15.2793V18.8435M7.50018 14.9001H11.1002"
+                                        stroke="black" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <li>{{ $name }}</li>
+                            </div>
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="flex justify-end py-7">
+                    <x-primary-button>
+                        {{ __('Kirim Lamaran') }}
+                    </x-primary-button>
+                </div>
+            </form>
         </div>
 
     </section>

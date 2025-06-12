@@ -21,6 +21,11 @@ Route::middleware(['auth','role:employee', 'verified'])->group(function () {
         Route::get('/apply-job/{id}/file-preview', [JobSeekerController::class, 'showPreview'])
             ->name('file-preview');
 
+        Route::post('/apply-job/{id}/file-preview', [JobSeekerController::class, 'storeStepTwo'])
+            ->name('job-apply.step-two');
+
+        Route::get('/apply-job/{id}/success', [JobSeekerController::class, 'successApply'])
+            ->name('job-apply.success');
     });
 
 });
