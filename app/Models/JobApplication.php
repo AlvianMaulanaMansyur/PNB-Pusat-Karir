@@ -44,4 +44,6 @@ class JobApplication extends Model
     {
         return $this->belongsTo(employees::class, 'employee_id');
     }
+
+
 }

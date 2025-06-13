@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\employees;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Notifications\JobApplicationSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class JobSeekerController extends Controller
 {
@@ -110,20 +112,31 @@ class JobSeekerController extends Controller
                 ->route('file-preview', ['id' => $id])
                 ->with('error', 'Selesaikan semua langkah secara bertahap');
         }
+
         if (session('applied_job_id') != $id) {
             return redirect()
                 ->route('job-apply', ['id' => $id])
                 ->with('error', 'Silahkan pilih lowongan yang sesuai.');
         }
+
         // mengambil data user
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
+
+        // ✅ CEK: apakah sudah pernah melamar ke lowongan ini
+        $alreadyApplied = JobApplication::where('job_id', $id)->where('employee_id', $employeeData->id)->exists();
+
+        if ($alreadyApplied) {
+            return redirect()
+                ->route('job-apply', ['id' => $id])
+                ->with('error', 'Anda sudah melamar untuk lowongan ini sebelumnya.');
+        }
 
         $suratLamaran = session('suratLamaran');
         $cv = session('cv');
         $cvPath = session('cv_path');
 
-        // mengambil data sertifikat dari session dan di pindahkan ke storage/cv
+        // ambil sertifikat dari session dan pindahkan
         $sertifikat = session('sertifikat', []);
         $sertifikatPaths = session('sertifikat_path', []);
         $finalSertifikatPaths = [];
@@ -133,9 +146,7 @@ class JobSeekerController extends Controller
             Storage::move($path, $newPath);
             $finalSertifikatPaths[] = $newPath;
         }
-        // dd($finalSertifikatPaths);
 
-        // memindahkan file dari storage/temp ke storage/cv
         $cvNewPath = 'cv/' . basename($cvPath);
         Storage::disk('public')->move($cvPath, $cvNewPath);
 
@@ -143,9 +154,10 @@ class JobSeekerController extends Controller
 
         DB::beginTransaction();
         try {
-            $user=JobApplication::create([
+            JobApplication::create([
                 'job_id' => $id,
-                'slug' => str('lamaran-' . substr(Auth::id(), 0, 8)),
+                'slug' => 'lamaran-' . Str::uuid(),
+
                 'employee_id' => $employeeData->id,
                 'applied_at' => now(),
                 'status' => 'pending',
@@ -155,16 +167,18 @@ class JobSeekerController extends Controller
                 'interview_status' => 'not_scheduled',
                 'interview_date' => null,
             ]);
+            // Kirim notifikasi ke employer
+            $employer = $job->employer;
 
-
+            $employeeData->notify(new JobApplicationSubmitted($job, $employeeData));
+            
             DB::commit();
             return redirect()->route('job-apply.success', ['id' => $id]);
-
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()
                 ->route('file-preview', ['id' => $id])
-                ->with('error', 'Anda sudah melamar untuk lowongan ini');
+                ->with('error', 'Terjadi kesalahan saat menyimpan lamaran: ' . $e->getMessage());
         }
     }
 
