@@ -9,11 +9,14 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $employee = Auth::user()->dataEmployees; // Ambil dari relasi user → employee
+        $employee = Auth::user()->dataEmployees;
 
         if (!$employee) {
             abort(403, 'Employee tidak ditemukan.');
         }
+
+        // Tandai semua sebagai sudah dibaca
+        $employee->unreadNotifications->markAsRead();
 
         $notifications = $employee->notifications;
 
