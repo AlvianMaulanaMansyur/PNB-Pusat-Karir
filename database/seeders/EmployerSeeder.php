@@ -171,8 +171,6 @@ class EmployerSeeder extends Seeder
 
         $slug = 'app-' . substr(md5(2), 0, 8);
         $applications = [
-
-
             [
                 'job_id' => 1,
                 'slug' => 'app-' . substr(md5('1-1'), 0, 8),
@@ -212,5 +210,37 @@ class EmployerSeeder extends Seeder
         ];
 
         DB::table('job_applications')->insert($applications);
+
+        $notifications = [
+            [
+                'employer_id' => 1,
+                'title' => 'Lamaran Baru Masuk',
+                'message' => 'John Doe melamar posisi Marketing Specialist.',
+                'is_read' => false,
+                'sent_at' => Carbon::now()->subHours(3),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'employer_id' => 1,
+                'title' => 'Jadwal Wawancara Ditetapkan',
+                'message' => 'Wawancara dengan Sari Putri dijadwalkan 3 hari lagi.',
+                'is_read' => false,
+                'sent_at' => Carbon::now()->subHours(1),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'employer_id' => 1,
+                'title' => 'Lamaran Ditolak',
+                'message' => 'Lamaran John Doe untuk posisi Marketing Specialist telah ditolak.',
+                'is_read' => true,
+                'sent_at' => Carbon::now()->subDays(1),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ];
+
+        DB::table('employer_notifications')->insert($notifications);
     }
 }

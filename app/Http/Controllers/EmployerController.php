@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployerNotification;
 use App\Models\employers;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -331,7 +333,7 @@ class EmployerController extends Controller
         }
     }
 
-    public function showApplicants($slug)
+    public function showApplicants($slug, Request $request)
     {
         $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
@@ -340,13 +342,19 @@ class EmployerController extends Controller
             return back()->with('error', 'Employer belum memiliki lowongan.');
         }
 
-        $applications = JobApplication::with(['employee', 'job'])
-            ->whereIn('job_id', $employer->jobListings->pluck('id'))
-            ->orderBy('applied_at', 'desc')
-            ->get()
-            ->groupBy('job_id');
+        $statusFilter = $request->query('status');
 
-        return view('employer.pelamar-lowongan', compact('applications'));
+        $applications = $this->filterstatus($request);
+
+        $withoutFilter = $this->getAllApplications();
+
+        $summary = [
+            'total' => $withoutFilter->flatten()->count(),
+            'interview' => $withoutFilter->flatten()->where('status', 'interview')->count(),
+            'accepted' => $withoutFilter->flatten()->where('status', 'accepted')->count(),
+            'rejected' => $withoutFilter->flatten()->where('status', 'rejected')->count(),
+        ];
+        return view('employer.pelamar-lowongan', compact('applications', 'summary'));
     }
 
     public function updateStatus(Request $request, $slug)
@@ -356,17 +364,38 @@ class EmployerController extends Controller
             'interview_date' => 'nullable|date',
         ]);
 
-        // Cari berdasarkan slug, bukan ID
         $application = JobApplication::where('slug', $slug)->firstOrFail();
         $application->status = $request->status;
 
         if ($request->status === 'interview') {
             $application->interview_date = $request->interview_date;
+            $application->interview_status = 'scheduled';
         } else {
             $application->interview_date = null;
         }
 
         $application->save();
+
+        // ✅ Buat notifikasi jika status = interview dan tanggal tersedia
+        // if ($request->status === 'interview' && $request->interview_date) {
+        //     $job = $application->job;
+        //     $employer = $job->employer;
+        //     $employee = $application->employee;
+
+        //     if ($employer && $employee) {
+        //         $formattedDate = Carbon::parse($request->interview_date)->format('d M Y H:i');
+        //         $message = 'Interview dengan pelamar ' . $employee->name .
+        //             ' untuk lowongan "' . $job->nama_lowongan .
+        //             '" dijadwalkan pada ' . $formattedDate . '.';
+
+        //         EmployerNotification::create([
+        //             'employer_id' => $employer->id,
+        //             'title' => 'Jadwal Interview Baru',
+        //             'message' => $message,
+        //             'is_read' => false,
+        //         ]);
+        //     }
+        // }
 
         return back()->with('success', 'Status pelamar berhasil diperbarui.');
     }
@@ -430,6 +459,28 @@ class EmployerController extends Controller
 
             $application->save();
 
+            // if ($application->interview_date) {
+            //     $job = $application->job;
+            //     $employer = $job->employer;
+            //     $employee = $application->employee;
+
+            //     // Pastikan semuanya tidak null (hindari error jika data belum lengkap)
+            //     if ($employer && $employee) {
+            //         $formattedDate = Carbon::parse($application->interview_date)->format('d M Y H:i');
+
+            //         $message = 'Interview dengan pelamar ' . $employee->name .
+            //             ' untuk lowongan "' . $job->nama_lowongan .
+            //             '" dijadwalkan pada ' . $formattedDate . '.';
+
+            //         EmployerNotification::create([
+            //             'employer_id' => $employer->id,
+            //             'title' => 'Jadwal Interview Baru',
+            //             'message' => $message,
+            //             'is_read' => false,
+            //         ]);
+            //     }
+            // }
+
             // Log: Tanggal interview dan status berhasil diperbarui
             Log::info('Tanggal interview dan status aplikasi berhasil diperbarui.', [
                 'application_id' => $application->id,
@@ -484,6 +535,39 @@ class EmployerController extends Controller
             ->get()
             ->groupBy('job_id'); // Penting untuk tampilan di view
 
-        return view('employer.pelamar-lowongan', compact('applications'));
+        return $applications;
     }
+
+    public function getAllApplications()
+    {
+        return JobApplication::with('job', 'employee')
+            ->orderBy('applied_at', 'desc')
+            ->get()
+            ->groupBy('job_id'); // Penting untuk tampilan di view
+    }
+
+    public function notifications()
+    {
+        $employer = Auth::user()->employer;
+
+        // Tandai semua notifikasi sebagai telah dibaca
+        EmployerNotification::where('employer_id', $employer->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        // Ambil semua notifikasi
+        $notifications = EmployerNotification::where('employer_id', $employer->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('employer.notifikasi', compact('notifications'));
+    }
+    public function destroyNotification($id)
+{
+    $notif = EmployerNotification::findOrFail($id);
+    $notif->delete();
+
+    return redirect()->back()->with('success', 'Notifikasi berhasil dihapus.');
+}
+
 }
