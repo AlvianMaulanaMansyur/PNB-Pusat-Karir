@@ -21,7 +21,8 @@
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
                 </x-dropdown.nav-dropdown>
 
-                <x-navlink href="#" class="relative">
+                {{-- notification --}}
+                <x-navlink href="{{ route('notifikasi.jobseeker') }}" class="relative">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -36,8 +37,8 @@
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
                         <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}"
-                             {{-- Use the user's profile photo URL --}}
-                            alt="Profile" class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
+                            {{-- Use the user's profile photo URL --}} alt="Profile"
+                            class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
                         <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-200"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -101,7 +102,8 @@
                             <button @click= "submenuOpen = !submenuOpen"
                                 class="flex  justify-between items-center w-full  px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
                                 <div class="flex items-center ">
-                                    <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}" alt="Profile"
+                                    <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}"
+                                        alt="Profile"
                                         class="rounded-full w-10 h-10 object-cover border-2 border-gray-200 mr-3" />
                                     <span class="text-gray-700 font-medium">Nama Pengguna</span>
                                 </div>

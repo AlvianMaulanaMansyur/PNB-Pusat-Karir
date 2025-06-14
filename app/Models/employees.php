@@ -32,6 +32,8 @@ class employees extends Model
         'years_of_experience',
         'availability',
         'photo_profile',
+        'cv',
+        'SuratLamaran',
     ];
 
     public function user()
