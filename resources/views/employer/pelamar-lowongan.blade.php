@@ -68,6 +68,32 @@
 @endif
 
 <div class="flex flex-col w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-auto">
+    {{-- Judul Statistik --}}
+    <div class="text-center my-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Statistik Pelamar</h2>
+        <p class="text-sm text-gray-500">Ringkasan data pelamar berdasarkan status aplikasi</p>
+    </div>
+
+    {{-- Ringkasan Statistik Pelamar --}}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-auto mb-8">
+        <div class="bg-white rounded-lg shadow p-4 text-center border-t-4 border-blue-500">
+            <p class="text-sm text-gray-600">Total Pelamar</p>
+            <p class="text-xl font-bold text-blue-700">{{$summary['total']}}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 text-center border-t-4 border-indigo-500">
+            <p class="text-sm text-gray-600">Interview</p>
+            <p class="text-xl font-bold text-indigo-700">{{$summary['interview']}}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 text-center border-t-4 border-green-500">
+            <p class="text-sm text-gray-600">Diterima</p>
+            <p class="text-xl font-bold text-green-700">{{$summary['accepted']}}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 text-center border-t-4 border-red-500">
+            <p class="text-sm text-gray-600">Ditolak</p>
+            <p class="text-xl font-bold text-red-700">{{$summary['rejected']}}</p>
+        </div>
+    </div>
+
     <!-- Filter Form Mulai -->
     <form method="GET" action="{{ url()->current() }}" class="mb-8">
         <div class="flex items-center gap-4 bg-white border border-gray-200 shadow-sm rounded-lg p-4">
@@ -96,7 +122,7 @@
     <div class="mb-12">
         <div class="flex items-center justify-between mb-4 border-b border-gray-300 pb-2">
             <h2 class="text-xl font-semibold text-gray-900">
-                Lowongan: {{ $jobApps->first()->job->nama_lowongan }} ({{ $jobApps->first()->job->posisi }})
+               {{ $jobApps->first()->job->nama_lowongan }} ({{ $jobApps->first()->job->posisi }})
             </h2>
             <span class="text-sm text-gray-600 font-medium">Total Pelamar: {{ $jobApps->count() }}</span>
         </div>
