@@ -1,6 +1,7 @@
     <?php
     use App\Http\Controllers\Jobseeker\JobSeekerController;
-    use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\jobseeker\JobseekerProfiles;
+use App\Http\Controllers\NotificationController;
     use Illuminate\Support\Facades\Route;
 
     Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
@@ -22,5 +23,9 @@
 
             // route notifikasi
             Route::get('/notifikasi',  [NotificationController::class, 'index'])->name('notifikasi.jobseeker');
+        });
+        Route::prefix('/my-profile')->group(function () {
+            Route::get('/', [JobseekerProfiles::class, 'index'])->name('jobseeker.profiles');
+            Route::put('/update-photo', [JobseekerProfiles::class, 'updatePhoto'])->name('profile.update-photo');
         });
     });

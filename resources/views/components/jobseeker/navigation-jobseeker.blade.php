@@ -46,7 +46,9 @@
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
-                        <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}"
+                        <img src="{{ $employeeData->photo_profile === 'image/user.png'
+                            ? asset($employeeData->photo_profile)
+                            : asset('storage/' . $employeeData->photo_profile) }}"
                             {{-- Use the user's profile photo URL --}} alt="Profile"
                             class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
                         <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-200"
@@ -61,7 +63,8 @@
                         x-transition:leave-start="transform opacity-100 scale-100"
                         x-transition:leave-end="transform opacity-0 scale-95"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50 py-1">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
+                        <a href="{{ route('jobseeker.profiles') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
                             Saya</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
                         <form method="POST" action="{{ route('logout') }}">
