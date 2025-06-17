@@ -26,6 +26,7 @@ use App\Http\Controllers\NotificationController;
         });
         Route::prefix('/my-profile')->group(function () {
             Route::get('/', [JobseekerProfiles::class, 'index'])->name('jobseeker.profiles');
-            Route::put('/update-photo', [JobseekerProfiles::class, 'updatePhoto'])->name('profile.update-photo');
+            Route::put('/update-photo', [JobseekerProfiles::class, 'updateProfile'])->name('profile.update-profiles');
+            Route::put('/summary-update', [JobseekerProfiles::class, 'updateSummary'])->name('profile.update-summary');
         });
     });

@@ -1,4 +1,4 @@
-<div class="text-sm text-gray-600 mb-4" aria-label="Breadcrumb">
+<div class="text-xs text-gray-600 mb-4" aria-label="Breadcrumb">
     <ol class="list-reset flex items-center space-x-2">
         @foreach ($links as $index => $link)
             @if ($index < count($links) - 1)

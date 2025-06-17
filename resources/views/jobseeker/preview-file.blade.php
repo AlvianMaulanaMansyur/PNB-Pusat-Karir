@@ -23,7 +23,9 @@
             <h3 class="font-semibold text-lg text-primaryColor py-4">Ringkasan Profile</h3>
             <div class="flex items-center gap-7">
                 <div class="w-28 h-auto rounded-full overflow-hidden  ">
-                    <img src="{{ $employeeData->photo_profile }}" alt="">
+                    <img src="{{ $employeeData->photo_profile === 'image/user.png'
+                                ? asset($employeeData->photo_profile)
+                                : asset('storage/' . $employeeData->photo_profile) }}" alt="">
                 </div>
                 <div class="w-full mx-4 ">
                     <p class="text-gray-800 text-xl font-semibold capitalize">

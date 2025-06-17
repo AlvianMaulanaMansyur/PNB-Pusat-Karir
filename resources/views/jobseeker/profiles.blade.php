@@ -1,10 +1,11 @@
 <x-jobseeker-layout>
     <section>
         <x-alert.session-alert class="session-alert" type="success" :message="session('success')" />
-
         <div class="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="container border-2 shadow rounded-xl p-5 py-5 my-5 bg-darkBlue text-white md:px-20">
-
+            <div class="py-3">
+                <x-breadcrumb :links="[['label' => 'Home', 'url' => route('employee.landing-page')], ['label' => 'Profile']]" />
+            </div>
+            <div class="container border-2 shadow rounded-xl p-5 py-5  bg-darkBlue  md:px-20">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5 py-7">
                     <div class="flex flex-col sm:flex-row items-center gap-6">
                         <div class="border-4 rounded-full p-2">
@@ -14,7 +15,7 @@
                                 alt="Profile" class="rounded-full w-28 h-28 object-cover border-2 border-gray-200" />
                         </div>
 
-                        <div class="flex flex-col gap-2 text-center sm:text-left">
+                        <div class="flex flex-col gap-2 text-center sm:text-left text-white">
                             <div class="font-semibold text-3xl sm:text-4xl">
                                 {{ $employeeData->first_name }} {{ $employeeData->last_name }}
                                 {{ $employeeData->suffix }}
@@ -29,17 +30,21 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Kanan: Tombol -->
                     <div class="flex justify-center md:justify-end mt-4 md:mt-0">
                         @include('components.jobseeker.modal-UpdateProfiles')
                     </div>
                 </div>
-
             </div>
-        </div>
+            <div>
+                <p class="font-semibold text-2xl text-primaryColor py-4">Ringkasan Diri</p>
+                @include('components.jobseeker.modal-add-update-summary')
+            </div>
+            <div>
+                <p class="font-semibold text-lg text-primaryColor py-4">Pendidikan</p>
+                <div class="pb-20 ps-5 border align-top">
+                    -
+                </div>
+            </div>
     </section>
-
-
-
 </x-jobseeker-layout>
