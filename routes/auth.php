@@ -16,7 +16,6 @@ use App\Http\Controllers\AuthenticationChecker;
 use Illuminate\Support\Facades\Route;
 use phpDocumentor\Reflection\Location;
 
-
 Route::get('/get-countries', [LocationController::class, 'getCountries']);
 Route::get('/get-cities', [LocationController::class, 'getCities']);
 
@@ -52,8 +51,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-
-
     // API untuk mengecek username dan email terdaftar atau tidak
     Route::get('/AuthCheker', [AuthenticationChecker::class, 'CheckerShowForm'])->name('account-checker');
     Route::post('/AuthCheker', [AuthenticationChecker::class, 'CheckerFormStore']);
@@ -82,16 +79,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-
-
-
 });
 
 Route::get('/admin/login', [  AdminAuthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [ AdminAuthController::class, 'login'])->name('admin.login.submit');
 
 Route::get('/admin/dashboard', [ AdminDashboardController::class, 'AdminDashboard'])->name('adminDashboard');
-
-    // Route::middleware('auth')->group(function () {
-    //     Route::get('/admin/dashboard', [AdminAuthController::class, 'index'])->name('admin.dashboard');
-    // });

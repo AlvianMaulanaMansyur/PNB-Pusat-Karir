@@ -1,8 +1,7 @@
-    <?php
+<?php
 
 use App\Http\Controllers\Jobseeker\JobSeekerController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::middleware(['auth','role:employee', 'verified'])->group(function () {
     // Route untuk halaman dashboard jobseeker
@@ -27,5 +26,4 @@ Route::middleware(['auth','role:employee', 'verified'])->group(function () {
         Route::get('/apply-job/{id}/success', [JobSeekerController::class, 'successApply'])
             ->name('job-apply.success');
     });
-
 });
