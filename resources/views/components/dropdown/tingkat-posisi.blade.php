@@ -5,16 +5,16 @@
 
 @php
     $tingkatposisi = [
-        'Internship / Magang' => 'Internship / Magang',
-        'Entry Level / Staf' => 'Entry Level / Staf',
+        'Internship' => 'Internship',
+        'Staf' => 'Staf',
         'Junior Staff' => 'Junior Staff',
         'Senior Staff' => 'Senior Staff',
-        'Supervisor / Koordinator' => 'Supervisor / Koordinator',
+        'Supervisor' => 'Supervisor',
         'Assistant Manager' => 'Assistant Manager',
         'Manager' => 'Manager',
         'Senior Manager' => 'Senior Manager',
         'Department Head' => 'Department Head',
-        'Director / Executive' => 'Director / Executive',
+        'Director' => 'Director',
     ];
 @endphp
 <div>

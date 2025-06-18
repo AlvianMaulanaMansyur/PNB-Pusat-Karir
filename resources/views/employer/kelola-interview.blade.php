@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-{{-- Judul Halaman --}}
 <div class="flex justify-start">
     <div class="flex flex-col w-full lg:w-2/3 text-left mx-4 md:mx-10 lg:mx-20 lg:ml-28">
         <p class="text-md text-gray-600">Selamat datang di halaman</p>
@@ -11,51 +9,32 @@
         <div class="w-28 h-1 bg-blue-500 rounded mb-4"></div>
         <p class="text-gray-600 text-sm mb-3">Kelola proses interview pelamar yang telah mendaftar ke lowongan pekerjaan Anda.</p>
 
-        <div class="flex items-start space-x-4 border-l-4 border-blue-600 bg-blue-50 rounded-md p-5 mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600 flex-shrink-0" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 11-10 10A10 10 0 0112 2z" />
-            </svg>
-            <div>
-                <h3 class="text-blue-700 font-semibold text-lg mb-1">Informasi Tambahan</h3>
-                <p class="text-blue-800 text-sm leading-relaxed max-w-prose">
-                    Halaman ini menampilkan daftar pelamar yang sedang menunggu jadwal interview. Anda dapat melihat nama pelamar, tanggal interview yang telah dijadwalkan, serta menindaklanjuti proses interview sesuai kebutuhan.
-                </p>
-            </div>
-        </div>
-
         <a href="{{ route('employer.dashboard') }}"
             class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mt-2 transition duration-300 mb-4">
             <i class="fas fa-arrow-left mr-2"></i> Kembali ke Halaman Utama
         </a>
 
         @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Memproses...',
-                    text: 'Silakan tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    }
-                });
-
-                // Setelah 1.5 detik, tutup loading lalu tampilkan alert sukses
-                setTimeout(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: "{{ session('success') }}",
-                        confirmButtonText: 'OK'
-                    });
-                }, 1500);
-            });
-        </script>
+            <x-alert.session-alert type="success" :message="session('success')" />
         @endif
 
-        {{-- Tabel Interview dari Data Asli --}}
+        @if (session('error'))
+            <x-alert.session-alert type="error" :message="session('error')" />
+        @endif
+
+        @if ($errors->any())
+            <x-alert.session-alert type="error" :message="$errors->first()" />
+        @endif
+
+        {{-- Loop berdasarkan lowongan --}}
+@forelse ($applications as $jobId => $jobApps)
+    @php $job = $jobApps->first()->job; @endphp
+
+    <div class="mt-10 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">
+            Lowongan: {{ $job->nama_lowongan }} ({{ $job->posisi }}) - {{ $jobApps->count() }} Pelamar
+        </h2>
+
         <div class="overflow-x-auto bg-white shadow rounded-lg">
             <table class="min-w-full text-sm text-left text-gray-700">
                 <thead class="bg-gray-200">
@@ -69,129 +48,132 @@
                 </thead>
                 <tbody>
                     @php $no = 1; @endphp
-                    @forelse ($applications as $jobApps)
                     @foreach ($jobApps as $app)
-                    <tr class="border-b hover:bg-gray-100">
-                        <td class="px-6 py-4">{{ $no++ }}</td>
-                        <td class="px-6 py-4">
-                            {{ $app->employee->first_name }} {{ $app->employee->last_name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            @if ($app->interview_date)
-                            {{ \Carbon\Carbon::parse($app->interview_date)->translatedFormat('d M Y, H:i') }}
-                            @else
-                            <span class="italic text-gray-400">Belum dijadwalkan</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            @if ($app->status === 'interview')
-                            <span class="px-2 py-1 text-xs font-semibold rounded bg-green-300 text-green-800">
-                                Dijadwalkan
-                            </span>
-                            @else
-                            <span class="px-2 py-1 text-xs font-semibold rounded bg-yellow-300 text-yellow-800">
-                                Menunggu
-                            </span>
-                            @endif
-                        </td>
-                        <!-- Aksi -->
-                        <td class="px-6 py-4 space-x-3">
-                            <!-- Tombol untuk membuka modal detail -->
-                            <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.remove('hidden')" class="text-blue-600 hover:underline text-sm">
-                                Detail
-                            </button>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-6 py-4">{{ $no++ }}</td>
+                            <td class="px-6 py-4">{{ $app->employee->first_name }} {{ $app->employee->last_name }}</td>
+                            <td class="px-6 py-4">
+                                @if ($app->interview_date)
+                                    {{ \Carbon\Carbon::parse($app->interview_date)->translatedFormat('d M Y, H:i') }}
+                                @else
+                                    <span class="italic text-gray-400">Belum dijadwalkan</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded bg-green-300 text-green-800">Dijadwalkan</span>
+                            </td>
+                            <td class="px-6 py-4 space-x-3">
+                                {{-- Tombol Detail --}}
+                                <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.remove('hidden')"
+                                    class="text-blue-600 hover:underline text-sm">Detail</button>
 
-                            <!-- Modal Detail -->
-                            <div id="modal-detail-{{ $app->slug }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-                                    <!-- Tombol Tutup -->
-                                    <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800">
-                                        &times;
-                                    </button>
+                                {{-- Tombol Jadwal Ulang --}}
+                                <button onclick="document.getElementById('modal-{{ $app->slug }}').classList.remove('hidden')"
+                                    class="text-blue-600 hover:underline text-sm">Jadwal Ulang</button>
 
-                                    <h2 class="text-xl font-semibold mb-4">Detail Lamaran</h2>
+                                {{-- MODAL DETAIL --}}
+<div id="modal-detail-{{ $app->slug }}"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 hidden overflow-y-auto py-10 px-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl p-6 relative animate-fadeIn">
+        <!-- Tombol Tutup -->
+        <button type="button"
+            onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')"
+            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold transition">&times;
+        </button>
 
-                                    <div class="space-y-2 text-sm text-gray-700">
-                                        <p><strong>Nama:</strong> {{ $app->employee->first_name }} {{ $app->employee->last_name }}</p>
-                                        <p><strong>Email:</strong> {{ $app->employee->user->email }}</p>
-                                        <p><strong>Nomor Telepon:</strong> {{ $app->employee->phone }}</p>
-                                        <p><strong>Judul Lowongan:</strong> {{ $app->job->nama_lowongan }}</p>
-                                        <p><strong>Posisi Dilamar:</strong> {{ $app->job->posisi }}</p>
-                                        <p><strong>Status:</strong>
-                                            @if ($app->status === 'interview')
-                                            <span class="px-2 py-1 text-xs font-semibold rounded bg-green-300 text-green-800">Dijadwalkan</span>
-                                            @else
-                                            <span class="px-2 py-1 text-xs font-semibold rounded bg-yellow-300 text-yellow-800">Menunggu</span>
-                                            @endif
-                                        </p>
-                                        <p><strong>Tanggal Interview:</strong>
-                                            @if ($app->interview_date)
-                                            {{ \Carbon\Carbon::parse($app->interview_date)->translatedFormat('d M Y, H:i') }}
-                                            @else
-                                            <span class="italic text-gray-400">Belum dijadwalkan</span>
-                                            @endif
-                                        </p>
-                                        <p><strong>CV:</strong> {{ $app->cv_file }}</p>
-                                    </div>
+        <!-- Judul -->
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Detail Interview</h2>
 
-                                    <div class="mt-6 flex justify-end">
-                                        <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')" class="px-4 py-2 bg-gray-200 text-sm rounded hover:bg-gray-300">
-                                            Tutup
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Konten -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+            <div><span class="font-medium">Nama:</span><br>{{ $app->employee->first_name }} {{ $app->employee->last_name }}</div>
+            <div><span class="font-medium">Email:</span><br>{{ $app->employee->user->email }}</div>
+            <div><span class="font-medium">Telepon:</span><br>{{ $app->employee->phone }}</div>
+            <div><span class="font-medium">Lowongan:</span><br>{{ $app->job->nama_lowongan }}</div>
+            <div><span class="font-medium">Posisi:</span><br>{{ $app->job->posisi }}</div>
+            <div>
+                <span class="font-medium">Tanggal Interview:</span><br>
+                {{ \Carbon\Carbon::parse($app->interview_date)->translatedFormat('d M Y, H:i') }}
+            </div>
+            <div>
+                <span class="font-medium">Status:</span><br>
+                <span class="inline-block mt-1 px-2 py-1 text-xs font-semibold rounded bg-emerald-100 text-emerald-700">
+                    Dijadwalkan
+                </span>
+            </div>
+            <div class="sm:col-span-2">
+                <span class="font-medium">CV:</span><br>
+                <a href="{{ asset('storage/' . $app->cv_file) }}" target="_blank"
+                    class="text-blue-600 hover:underline">{{ $app->cv_file }}</a>
+            </div>
+        </div>
 
-                            <!-- Tombol trigger modal -->
-                            <button onclick="document.getElementById('modal-{{ $app->slug }}').classList.remove('hidden')" class="text-blue-600 hover:underline text-sm">
-                                Jadwal Ulang
-                            </button>
+        <!-- Tombol Tutup -->
+        <div class="mt-6 text-end">
+            <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')"
+                class="inline-flex items-center px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
 
-                            <!-- Modal -->
-                            <div id="modal-{{ $app->slug }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                <div class="bg-white rounded-lg shadow p-6 w-full max-w-md">
-                                    <h2 class="text-lg font-semibold mb-4">Atur Ulang Tanggal Interview</h2>
-                                    <form action="{{ route('employer.updateInterviewDate', ['slug' => $app->slug]) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <label class="block mb-2 text-sm font-medium text-gray-700">Tanggal & Waktu Interview</label>
+                                {{-- MODAL JADWAL ULANG --}}
+                                {{-- MODAL JADWAL ULANG --}}
+<div id="modal-{{ $app->slug }}"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 hidden overflow-y-auto py-10 px-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative animate-fadeIn">
+        <!-- Tombol Tutup -->
+        <button onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')"
+            class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 transition text-xl font-bold">&times;
+        </button>
 
-                                        @php
-                                        $now = \Carbon\Carbon::now()->format('Y-m-d\TH:i');
-                                        @endphp
+        <!-- Judul -->
+        <h2 class="text-lg font-semibold mb-4 text-gray-800">Atur Ulang Tanggal Interview</h2>
 
-                                        <input
-                                            type="datetime-local"
-                                            name="interview_date"
-                                            value="{{ $app->interview_date ? \Carbon\Carbon::parse($app->interview_date)->format('Y-m-d\TH:i') : '' }}"
-                                            min="{{ $now }}"
-                                            class="w-full border-gray-300 rounded px-3 py-2 mb-4">
+        <!-- Form -->
+        <form action="{{ route('employer.updateInterviewDate', ['slug' => $app->slug]) }}" method="POST">
+            @csrf
+            @method('PATCH')
 
-                                        <div class="flex justify-end gap-2">
-                                            <button type="button" onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')" class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
-                                                Batal
-                                            </button>
-                                            <button type="submit"
-                                                class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
-                                                Simpan
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+            @php
+                $now = \Carbon\Carbon::now()->format('Y-m-d\TH:i');
+            @endphp
+
+            <label class="block mb-2 text-sm font-medium text-gray-700">Tanggal & Waktu Interview</label>
+            <input type="datetime-local"
+                name="interview_date"
+                value="{{ $app->interview_date ? \Carbon\Carbon::parse($app->interview_date)->format('Y-m-d\TH:i') : '' }}"
+                min="{{ $now }}"
+                class="w-full border-gray-300 rounded px-3 py-2 mb-4 shadow-sm focus:ring-primaryColor focus:border-primaryColor">
+
+            <!-- Tombol -->
+            <div class="flex justify-end gap-2 mt-2">
+                <button type="button"
+                    onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')"
+                    class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
+                    Batal
+                </button>
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+                            </td>
+                        </tr>
                     @endforeach
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada pelamar yang sedang dalam proses interview.</td>
-                    </tr>
-                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
-</div>
+@empty
+    <p class="text-center text-gray-500 mt-6">Tidak ada pelamar dalam proses interview.</p>
+@endforelse
+
 
 {{-- Tombol Kembali ke Atas --}}
 <button id="backToTop"
@@ -204,12 +186,10 @@
 </button>
 
 <script>
-    // Tampilkan tombol "Kembali ke Atas" setelah scroll 300px
     window.addEventListener('scroll', () => {
         const btn = document.getElementById('backToTop');
         btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
     });
 </script>
-
 
 @endsection

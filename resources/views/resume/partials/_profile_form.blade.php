@@ -1,0 +1,1 @@
+@livewire('personal-details-form', ['id' => $resume->id, 'initialData' => $resume->resume_data['personal_details'] ?? []])

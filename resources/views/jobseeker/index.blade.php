@@ -33,8 +33,15 @@
                             jenislowongan: @json($job->jenislowongan),
                             profile: @json(asset($job->profile)),
                             deskripsi: @json($job->deskripsi),
+                            tanggung_jawab: @json($job->responsibility),
+                            kualifikasi: @json($job->kualifikasi),
+                            detail_kualifikasi: @json($job->detailkualifikasi),
+                            gaji: @json($job->gaji),
+                            benefit: @json($job->benefit),
                             photo_profile: @json(asset($job->employer->photo_profile)),
                             created_at: @json($job->created_at->diffForHumans())
+
+
                         })'>
                         {{-- Poster dan informasi lowongan --}}
                         <div class="flex items-start space-x-4">
@@ -42,6 +49,8 @@
                             <div>
                                 <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
                                     class="w-24 h-24 object-cover rounded-lg shadow-md">
+
+
                             </div>
 
                             {{-- Informasi lowongan --}}
@@ -76,11 +85,21 @@
                             </div>
                         </div>
 
-                        <div class="flex text-sm mt-4 space-x-2 items-center">
+                        {{-- bubble kualifikasi --}}
+                        <div class="flex  text-sm mt-4 space-x-2 items-center">
                             <div
                                 class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-medium capitalize">
                                 {{ $job->jenislowongan }}
                             </div>
+                            <div
+                                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-medium capitalize">
+                                {{ $job->posisi }}
+                            </div>
+                            <div
+                                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-medium capitalize">
+                                {{ $job->kualifikasi }}
+                            </div>
+
                         </div>
                         <span class="text-sm text-gray-500 flex items-center justify-end mt-2">
                             {{ $job->created_at->diffForHumans() }}
@@ -148,11 +167,27 @@
                             <div class="text-sm text-gray-600" x-text="selectedJob.jenislowongan"></div>
                         </div>
 
+                        {{-- Gaji --}}
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                            </svg>
+
+
+                            <div class="text-sm text-gray-600"
+                                x-text="'Rp. ' + Number(selectedJob.gaji).toLocaleString('id-ID')"></div>
+                        </div>
                         <div class="text-xs text-gray-400" x-text="selectedJob.created_at"></div>
 
                         {{-- button lamar dan save --}}
                         <div class="py-6">
-                            <x-primary-button>Lamar Cepat</x-primary-button>
+                            <a :href="'/id/apply-job/' + selectedJob.id" target="_blank">
+                                <x-primary-button>
+                                    {{ __('Lamar') }}
+                                </x-primary-button>
+                            </a>
                             <x-secondary-button class="ml-2">Simpan</x-secondary-button>
                         </div>
 
@@ -167,21 +202,19 @@
                         {{-- Tanggung Jawab --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Tanggung Jawab</h3>
-                            <div class="text-sm text-gray-400">Tanggung jawab pekerjaan akan ditampilkan di sini...
-                            </div>
+                            <div class="text-sm text-gray-400" x-text="selectedJob.tanggung_jawab"></div>
                         </div>
 
                         {{-- Kualifikasi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Kualifikasi</h3>
-                            <div class="text-sm text-gray-400">Kualifikasi pekerjaan akan ditampilkan di sini...
-                            </div>
+                            <div class="text-sm text-gray-400" x-text="selectedJob.detail_kualifikasi"></div>
                         </div>
 
                         {{-- Benefit --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Benefit</h3>
-                            <div class="text-sm text-gray-400">Benefit pekerjaan akan ditampilkan di sini...</div>
+                            <div class="text-sm text-gray-400" x-text="selectedJob.benefit"></div>
                             {{-- <div class=""></div> --}}
                         </div>
                 </template>

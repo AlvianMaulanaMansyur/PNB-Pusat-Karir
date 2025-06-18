@@ -10,7 +10,7 @@
             <!-- Menu Utama Desktop -->
             <div class="hidden md:flex items-center gap-5 font-semibold">
                 <x-navlink href="#">Tentang Kami</x-navlink>
-                <x-navlink href="{{ route('cv.dashboard') }}">Generate CV</x-navlink>
+                <x-navlink href="{{ route('resumes.index') }}">Generate CV</x-navlink>
 
                 <x-dropdown.nav-dropdown label="acara">
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100">Acara Saya</a>
@@ -21,23 +21,36 @@
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
                 </x-dropdown.nav-dropdown>
 
-                <x-navlink href="#" class="relative">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M9.33333 20.0909C10.041 20.6562 10.9755 21 12 21C13.0245 21 13.959 20.6562 14.6667 20.0909M4.50763 17.1818C4.08602 17.1818 3.85054 16.5194 4.10557 16.1514C4.69736 15.2975 5.26855 14.0451 5.26855 12.537L5.29296 10.3517C5.29296 6.29145 8.29581 3 12 3C15.7588 3 18.8058 6.33993 18.8058 10.4599L18.7814 12.537C18.7814 14.0555 19.3329 15.3147 19.9006 16.169C20.1458 16.5379 19.9097 17.1818 19.4933 17.1818H4.50763Z"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    {{-- <span
-                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span> --}}
-                </x-navlink>
+                {{-- notification --}}
+                @auth
+                    @php
+                        $employee = Auth::user()->dataEmployees;
+                        $unreadCount = $employee?->unreadNotifications->count() ?? 0;
+                    @endphp
 
+                    <x-navlink href="{{ route('notifikasi.jobseeker') }}" class="relative">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M9.33333 20.0909C10.041 20.6562 10.9755 21 12 21C13.0245 21 13.959 20.6562 14.6667 20.0909M4.50763 17.1818C4.08602 17.1818 3.85054 16.5194 4.10557 16.1514C4.69736 15.2975 5.26855 14.0451 5.26855 12.537L5.29296 10.3517C5.29296 6.29145 8.29581 3 12 3C15.7588 3 18.8058 6.33993 18.8058 10.4599L18.7814 12.537C18.7814 14.0555 19.3329 15.3147 19.9006 16.169C20.1458 16.5379 19.9097 17.1818 19.4933 17.1818H4.50763Z"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                        @if ($unreadCount > 0)
+                            <span
+                                class="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500 animate-ping"></span>
+                        @endif
+                    </x-navlink>
+
+                @endauth
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
-                        <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}"
-                             {{-- Use the user's profile photo URL --}}
-                            alt="Profile" class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
+                        <img src="{{ $employeeData->photo_profile === 'image/user.png'
+                            ? asset($employeeData->photo_profile)
+                            : asset('storage/' . $employeeData->photo_profile) }}"
+                            {{-- Use the user's profile photo URL --}} alt="Profile"
+                            class="rounded-full w-10 h-10 object-cover border-2 border-gray-200" />
                         <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-200"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -50,7 +63,8 @@
                         x-transition:leave-start="transform opacity-100 scale-100"
                         x-transition:leave-end="transform opacity-0 scale-95"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50 py-1">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
+                        <a href="{{ route('jobseeker.profiles') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
                             Saya</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
                         <form method="POST" action="{{ route('logout') }}">
@@ -101,7 +115,8 @@
                             <button @click= "submenuOpen = !submenuOpen"
                                 class="flex  justify-between items-center w-full  px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
                                 <div class="flex items-center ">
-                                    <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}" alt="Profile"
+                                    <img src="{{ $employeeData->photo_profile ? asset('images/profile.png') : asset('storage/' . $employeeData->photo_profile) }}"
+                                        alt="Profile"
                                         class="rounded-full w-10 h-10 object-cover border-2 border-gray-200 mr-3" />
                                     <span class="text-gray-700 font-medium">Nama Pengguna</span>
                                 </div>

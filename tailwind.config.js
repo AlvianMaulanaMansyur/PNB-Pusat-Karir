@@ -20,7 +20,7 @@ export default {
             'customblue': '0px 4px 30px rgba(42, 34, 212, 0.5)'
             },
             colors: {
-                'primaryColor' : '#5A4FF3',
+                'primaryColor' : '#4A3AFF',
                 'darkBlue' : '#091A50'
             }
         },
