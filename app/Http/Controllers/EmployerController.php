@@ -202,8 +202,8 @@ class EmployerController extends Controller
         $lowongan = JobListing::where('slug', $slug)->firstOrFail();
 
         // Hapus poster jika ada
-        if ($lowongan->poster && Storage::exists($lowongan->poster)) {
-            Storage::delete($lowongan->poster);
+        if ($lowongan->poster && Storage::disk('public')->exists($lowongan->poster)) {
+            Storage::disk('public')->delete($lowongan->poster);
         }
 
         // Hapus data lowongan
@@ -546,28 +546,34 @@ class EmployerController extends Controller
             ->groupBy('job_id'); // Penting untuk tampilan di view
     }
 
-    public function notifications()
-    {
-        $employer = Auth::user()->employer;
-
-        // Tandai semua notifikasi sebagai telah dibaca
-        EmployerNotification::where('employer_id', $employer->id)
-            ->where('is_read', false)
-            ->update(['is_read' => true]);
-
-        // Ambil semua notifikasi
-        $notifications = EmployerNotification::where('employer_id', $employer->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('employer.notifikasi', compact('notifications'));
-    }
-    public function destroyNotification($id)
+   public function notifications()
 {
-    $notif = EmployerNotification::findOrFail($id);
-    $notif->delete();
+    $employer = Auth::user()->employer;
 
-    return redirect()->back()->with('success', 'Notifikasi berhasil dihapus.');
+    // Ambil semua notifikasi milik employer
+    $notifications = EmployerNotification::where('employer_id', $employer->id)
+        ->orderBy('created_at', 'desc')
+        ->get(); // <-- TIDAK lagi pakai paginate()
+
+    // Ambil notifikasi terbaru yang belum dibaca (hanya satu)
+    $latestUnread = EmployerNotification::where('employer_id', $employer->id)
+        ->where('is_read', false)
+        ->orderBy('created_at', 'desc')
+        ->first();
+
+    // Tandai semua sebagai telah dibaca (setelah ambil latestUnread)
+    EmployerNotification::where('employer_id', $employer->id)
+        ->where('is_read', false)
+        ->update(['is_read' => true]);
+
+    return view('employer.notifikasi', compact('notifications', 'latestUnread'));
 }
 
+    public function destroyNotification($id)
+    {
+        $notif = EmployerNotification::findOrFail($id);
+        $notif->delete();
+
+        return redirect()->back()->with('success', 'Notifikasi berhasil dihapus.');
+    }
 }

@@ -20,7 +20,7 @@
         📬 Notifikasi Anda
     </h1>
 
-    {{-- Flash Message Fallback --}}
+    {{-- Flash Message --}}
     @if(session('success'))
         <div class="bg-green-100 border border-green-300 text-green-800 text-sm px-4 py-3 rounded mb-4 shadow-sm">
             {{ session('success') }}
@@ -29,7 +29,7 @@
 
     {{-- Daftar Notifikasi --}}
     @if($notifications->count() > 0)
-    <div class="bg-white border border-gray-200 rounded-xl shadow p-4 space-y-4 max-h-[500px] overflow-y-auto">
+    <div class="bg-white border border-gray-200 rounded-xl shadow p-4 space-y-4 max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         @foreach ($notifications as $notif)
         <div class="flex justify-between items-start gap-4 border-l-4 px-4 py-3 rounded-md transition hover:bg-gray-50
             {{ $notif->is_read ? 'bg-white border-gray-300' : 'bg-blue-50 border-blue-500' }}">
@@ -44,13 +44,13 @@
             </div>
 
             <div class="flex items-center gap-2">
-                @if (!$notif->is_read)
+                @if ($latestUnread && $notif->id === $latestUnread->id)
                 <span class="bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-0.5 rounded-full">
                     Baru
                 </span>
                 @endif
 
-                {{-- Tombol Hapus dengan Swal --}}
+                {{-- Tombol Hapus --}}
                 <form action="{{ route('employer.notifikasi.destroy', $notif->id) }}" method="POST" class="delete-form">
                     @csrf
                     @method('DELETE')
@@ -105,7 +105,7 @@
 
         deleteForms.forEach(form => {
             form.addEventListener('submit', function (e) {
-                e.preventDefault(); // mencegah submit langsung
+                e.preventDefault();
 
                 Swal.fire({
                     title: 'Yakin ingin menghapus?',
@@ -118,7 +118,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit(); // submit form secara manual
+                        form.submit();
                     }
                 });
             });

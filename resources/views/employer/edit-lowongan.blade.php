@@ -186,40 +186,54 @@
     </div>
 </form>
 
-{{-- Modal Konfirmasi --}}
+{{-- Modal Konfirmasi Update --}}
 <div id="modal-confirm-update" tabindex="-1"
-    class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-sm">
-    <div class="relative w-full max-w-md max-h-full">
-        <div class="relative bg-white rounded-xl shadow-xl border border-gray-200">
-            <button type="button"
-                class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition rounded-full w-8 h-8 flex items-center justify-center"
-                aria-label="Tutup" onclick="hideModalUpdate()">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 14 14">
-                    <path d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-md bg-black/30">
+    <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 transition-all duration-300 ease-out">
+        
+        {{-- Tombol Tutup --}}
+        <button type="button"
+            class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full w-9 h-9 flex items-center justify-center transition"
+            aria-label="Tutup" onclick="hideModalUpdate()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
 
-            <div class="p-6 text-center">
-                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" fill="none" viewBox="0 0 20 20">
-                    <path d="M10 11V6m0 0h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        {{-- Konten Modal --}}
+        <div class="p-6 sm:p-8 text-center">
+            {{-- Ikon Informasi --}}
+            <div class="mx-auto mb-5 flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
                 </svg>
-                <h3 class="mb-5 text-lg font-medium text-gray-700">Apakah kamu yakin ingin menyimpan perubahan lowongan ini?</h3>
+            </div>
 
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                Simpan Perubahan Lowongan?
+            </h3>
+            <p class="text-sm text-gray-500 mb-6">
+                Apakah kamu yakin ingin menyimpan perubahan pada lowongan ini? Pastikan semua data sudah benar.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-3">
                 <button type="button" id="confirm-update"
-                    class="bg-primaryColor hover:bg-darkBlue text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow-customblue">
+                    class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-primaryColor hover:bg-darkBlue rounded-md shadow-customblue transition">
                     Ya, Simpan
                 </button>
 
                 <button type="button" onclick="hideModalUpdate()"
-                    class="ml-3 px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                    class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
                     Batal
                 </button>
             </div>
         </div>
     </div>
 </div>
+
 
 
 
