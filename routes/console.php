@@ -13,7 +13,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-
 #fungsi untuk reminder jadwal interview pada employer
 Schedule::call(function () {
     Carbon::setLocale('id');
