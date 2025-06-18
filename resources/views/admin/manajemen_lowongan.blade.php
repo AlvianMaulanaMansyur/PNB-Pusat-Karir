@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
+
 <div class="flex">
     {{-- Main content --}}
     <main class="flex-1 bg-gray-100 p-8">
@@ -10,18 +11,22 @@
 
         <div class="flex items-center gap-4 mb-6">
             <input type="text" placeholder="Telusuri" class="w-full max-w-md border rounded-lg px-4 py-2 shadow">
-            <button class="bg-blue-900 text-white p-2 rounded-full hover:bg-blue-800">➕</button>
+            <form action="{{ route('tambah-lowongan.create') }}" method="GET">
+    <button type="submit" class="bg-blue-900 text-white p-2 rounded-full hover:bg-blue-800">
+        ➕
+    </button>
+</form>
         </div>
 
         <div class="space-y-4">
-            @foreach ($lowongans as $job)
+            @foreach ($joblisting as $job)
                 <div class="bg-white rounded-lg shadow p-4 flex justify-between items-center">
                     <div class="flex items-start gap-4">
                         <div class="text-4xl text-blue-900">📄</div>
                         <div>
-                            <h2 class="font-bold">{{ $job['posisi'] }}</h2>
-                            <p class="text-sm text-gray-600">{{ $job['perusahaan'] }}</p>
-                            <p class="text-sm text-gray-500">DESKRIPSI : Lorem ipsum dst...</p>
+                            <h2 class="font-bold">{{ $job->posisi}}</h2>
+                            <p class="text-sm text-gray-600">{{ $job->user->username}}</p>
+                            <p class="text-sm text-gray-500">{{ $job->deskripsi}}</p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 text-sm">

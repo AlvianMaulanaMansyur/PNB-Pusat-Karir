@@ -22,10 +22,36 @@ Route::get('/admin/verifikasi-akun', [AdminController::class, 'verifikasiAkun'])
 
 Route::get('/admin/detail-akun/{id}', [DetailAkunController::class, 'show'])->name('detail-akun.show');
 
-Route::get('/admin/manajemen-lowongan', [ManajemenLowonganController::class, 'index'])->name('manajemen-lowongan.index');
+#Route::get('/admin/manajemen-lowongan', [ManajemenLowonganController::class, 'index'])->name('manajemen-lowongan.index');
 
 Route::get('/admin/tambah-lowongan', [TambahLowonganController::class, 'create'])->name('tambah-lowongan.create');
 
+Route::post('/admin/storelowongan', [AdminController::class, 'storeLowongan'])
+            ->name('admin.storelowongan');
+
+Route::get('/admin/manajemen-lowongan', [AdminController::class, 'manajemenlowongan'])
+            ->name('admin.manajemen-lowongan');
+
+Route::delete('/admin/{slug}/destroy-lowongan', [AdminController::class, 'destroylowongan'])
+            ->name('admin.destroy-lowongan');
+
+Route::get('/admin/edit-lowongan/{slug}', [AdminController::class, 'editlowongan'])->name('admin.edit-lowongan');
+        Route::put('/admin/update-lowongan/{slug}', [AdminController::class, 'updatelowongan'])->name('admin.update-lowongan');
+
+
+Route::get('/verifikasi/employer', [AdminController::class, 'verifikasiEmployer'])->name('admin.verifikasi-employer');
+Route::get('/verifikasi/employee', [AdminController::class, 'verifikasiEmployee'])->name('admin.verifikasi-employee');
+
+Route::delete('/verifikasi/{id}', [AdminController::class, 'destroy'])->name('admin.verifikasi.destroy');
+Route::delete('/admin/verifikasi/{id}', [AdminController::class, 'destroy'])->name('admin.verifikasi.destroy');
+
+Route::get('/admin/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
+    Route::post('/employer/store', [AdminController::class, 'store'])->name('admin.employer.store');
+
+});
 // Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
 

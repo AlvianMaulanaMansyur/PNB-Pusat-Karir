@@ -28,4 +28,5 @@ class AdminAuthController extends Controller
             'username' => 'Login gagal. Username atau password salah.',
         ]);
     }
+    
 }
