@@ -21,19 +21,31 @@
         <div
             class="container max-w-screen-lg  mx-auto border-2 border-gray-300 py-6 rounded-lg shadow-md bg-white px-10">
             <h3 class="font-semibold text-lg text-primaryColor py-4">Ringkasan Profile</h3>
-            <div class="flex items-center gap-7">
-                <div class="w-28 h-auto rounded-full overflow-hidden  ">
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-7">
+                {{-- Foto Profil --}}
+                <div class="w-28 h-28 rounded-full overflow-hidden flex-shrink-0">
                     <img src="{{ $employeeData->photo_profile === 'image/user.png'
-                                ? asset($employeeData->photo_profile)
-                                : asset('storage/' . $employeeData->photo_profile) }}" alt="">
+                        ? asset($employeeData->photo_profile)
+                        : asset('storage/' . $employeeData->photo_profile) }}"
+                        alt="Foto Profil" class="w-full h-full object-cover">
                 </div>
-                <div class="w-full mx-4 ">
-                    <p class="text-gray-800 text-xl font-semibold capitalize">
-                        {{ $employeeData->first_name . ' ' . $employeeData->last_name . '' . $employeeData->suffix }}
+
+                {{-- Nama dan Ringkasan --}}
+                <div class="flex-1 text-center sm:text-left px-2">
+                    <p class="text-gray-800 text-2xl md:text-4xl font-semibold capitalize leading-snug">
+                        {{ $employeeData->first_name . ' ' . $employeeData->last_name . ' ' . $employeeData->suffix }}
                     </p>
-                    <p class="text-gray-600 text-md">-</p>
+
+                    @if (!empty($employeeSummary->summary))
+                        <p class="text-gray-800 text-md text-justify  whitespace-pre-line">
+                            {{ $employeeSummary->summary }}
+                        </p>
+                    @else
+                        <p class="text-gray-500 italic">Belum ada ringkasan profil.</p>
+                    @endif
                 </div>
             </div>
+
             <h3 class="font-semibold text-lg text-primaryColor py-2">Kontak</h3>
             <div class="flex items-center gap-5 ms-5 py-2">
                 <i class="fa-regular fa-envelope text-xl"></i>

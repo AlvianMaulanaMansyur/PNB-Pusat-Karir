@@ -36,9 +36,11 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <p class="font-semibold text-2xl text-primaryColor py-4">Ringkasan Diri</p>
-                @include('components.jobseeker.modal-add-update-summary')
+            <div class="py-4">
+                <p class="text-blue-700 text-2xl font-semibold py-2">Ringkasan Diri</p>
+                @include('components.jobseeker.modal-add-update-summary', [
+                    'summary' => $employeeProfile->summary ?? '',
+                ])
             </div>
             <div>
                 <p class="font-semibold text-lg text-primaryColor py-4">Pendidikan</p>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Jobseeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmployeeProfiles;
 use App\Models\employees;
 use App\Models\JobApplication;
 use App\Models\JobListing;
@@ -100,9 +101,10 @@ class JobSeekerController extends Controller
         $job = JobListing::with('employer')->findOrFail($id);
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
+        $employeeSummary = EmployeeProfiles::where('employee_id', $employeeData->id)->first();
 
         session(['step_2_completed' => true]); // tandai step 2 sudah selesai
-        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData'));
+        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData', 'employeeSummary' ));
     }
 
     public function storeStepTwo($id)
@@ -171,7 +173,7 @@ class JobSeekerController extends Controller
             $employer = $job->employer;
 
             $employeeData->notify(new JobApplicationSubmitted($job, $employeeData));
-            
+
             DB::commit();
             return redirect()->route('job-apply.success', ['id' => $id]);
         } catch (\Throwable $e) {

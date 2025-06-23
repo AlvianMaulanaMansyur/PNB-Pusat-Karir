@@ -49,8 +49,6 @@
                             <div>
                                 <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
                                     class="w-24 h-24 object-cover rounded-lg shadow-md">
-
-
                             </div>
 
                             {{-- Informasi lowongan --}}
