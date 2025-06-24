@@ -19,6 +19,7 @@ class JobseekerProfiles extends Controller
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
 
+
         // Pastikan employee ada
         if (!$employeeData) {
             return redirect()->back()->with('error', 'Data karyawan tidak ditemukan.');
@@ -27,8 +28,11 @@ class JobseekerProfiles extends Controller
         // Ambil data profile berdasarkan employee_id
         $employeeProfile = EmployeeProfiles::where('employee_id', $employeeData->id)->first();
 
+        // Ambil data education berdasarkan employee_id
+        $educations = educations::where('employee_id', $employeeData->id)->get();
+
         // Kirimkan keduanya ke view
-        return view('jobseeker.profiles', compact('employeeData', 'employeeProfile'));
+        return view('jobseeker.profiles', compact('employeeData', 'employeeProfile', 'educations'));
     }
 
     public function updateProfile(Request $request)
@@ -89,7 +93,7 @@ class JobseekerProfiles extends Controller
         $request->validate([
             'lembaga' => 'required|string',
             'sertifikasi' => 'required|string',
-            'pendidikan' => 'required|string',
+            'pendidikan' => 'required',
             'keahlian' => 'required|string',
             'lulus' => 'required',
             'deskripsi' => 'required',
@@ -100,7 +104,8 @@ class JobseekerProfiles extends Controller
             educations::create([
                 'employee_id' => $employeeData->id,
                 'institution' => $request->lembaga,
-                'degrees' => $request->sertifikasi,
+                'sertifications' => $request->sertifikasi,
+                'degrees' => $request->pendidikan,
                 'dicipline' => $request->keahlian,
                 'end_date' => $request->lulus,
                 'description' => $request->deskripsi

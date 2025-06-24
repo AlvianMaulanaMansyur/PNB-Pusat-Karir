@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('educations', function (Blueprint $table) {
-            // $table->dropColumn('degree');
-            // $table->dropColumn('major');
-            // $table->dropColumn('start_year');
-            // $table->dropColumn('end_year');
+            $table->dropColumn('degree');
+            $table->dropColumn('major');
+            $table->dropColumn('start_year');
+            $table->dropColumn('end_year');
 
             $table->string('degrees')->after('institution');
             $table->string('dicipline')->after('degrees');

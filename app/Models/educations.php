@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class educations extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'employee_id',
         'institution',
+        'sertifications',
         'degrees',
         'dicipline',
         'end_date',
         'description',
-
     ];
 
      public function employee(): BelongsTo
