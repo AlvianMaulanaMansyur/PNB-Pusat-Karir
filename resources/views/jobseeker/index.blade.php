@@ -23,7 +23,10 @@
             {{-- Kolom kiri: daftar lowongan --}}
             <div class="col-span-12 md:col-span-5 p-4 space-y-4">
                 @foreach ($jobs as $job)
-                    <div class="card p-6 border-4 border-[#9A9A9A] cursor-pointer rounded-3xl hover:border-darkBlue"
+                    <div class="card p-6 border-4 rounded-3xl cursor-pointer transition-all duration-200"
+                        :class="selectedJob?.id === {{ $job->id }} ?
+                            'border-primaryColor ring-2 ring-primaryColor' :
+                            'border-[#9A9A9A] hover:border-darkBlue'"
                         @click='goToDetail({
                             id: {{ $job->id }},
                             nama_lowongan: @json($job->nama_lowongan),
@@ -118,7 +121,7 @@
                 </template>
 
                 <template x-if="selectedJob !== null">
-                    <div class="card border-2 p-6 bg-white rounded-xl space-y-3">
+                    <div class="card p-6 bg-white rounded-xl space-y-3">
                         {{-- foto --}}
                         <div class="flex mb-4">
                             <img :src="selectedJob.photo_profile" alt="Poster lowongan"

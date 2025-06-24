@@ -38,11 +38,11 @@
                 </textarea>
                 <div class="flex justify-end space-x-2">
                     <button type="button" @click="$dispatch('close-modal', '{{ 'summary-modal' }}')"
-                        class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100">
+                        class="px-4 py-2 border rounded text-gray-600 hover:bg-red-600 hover:text-white">
                         Batal
                     </button>
                     <button type="submit" x-ref="submitBtn"
-                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800">
                         Simpan
                     </button>
                 </div>

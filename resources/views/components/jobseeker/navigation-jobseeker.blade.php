@@ -8,7 +8,7 @@
             </div>
 
             <!-- Menu Utama Desktop -->
-            <div class="hidden md:flex items-center gap-5 font-semibold">
+            <div class="hidden md:flex items-center gap-5 font-semibold text-sm xl:text-md">
                 <x-navlink href="#">Tracer Study</x-navlink>
                 <x-navlink href="#">Tentang Kami</x-navlink>
                 <x-navlink href="{{ route('resumes.index') }}">Generate CV</x-navlink>

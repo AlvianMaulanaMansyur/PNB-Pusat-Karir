@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\jobseeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\educations;
 use App\Models\EmployeeProfiles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class JobseekerProfiles extends Controller
 {
@@ -77,5 +80,40 @@ class JobseekerProfiles extends Controller
         $profile->save();
 
         return redirect()->back()->with('success', 'Ringkasan berhasil diperbarui.');
+    }
+
+    public function addEducation(Request $request)
+    {
+        $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+        $request->validate([
+            'lembaga' => 'required|string',
+            'sertifikasi' => 'required|string',
+            'pendidikan' => 'required|string',
+            'keahlian' => 'required|string',
+            'lulus' => 'required',
+            'deskripsi' => 'required',
+        ]);
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+            educations::create([
+                'employee_id' => $employeeData->id,
+                'institution' => $request->lembaga,
+                'degrees' => $request->sertifikasi,
+                'dicipline' => $request->keahlian,
+                'end_date' => $request->lulus,
+                'description' => $request->deskripsi
+
+            ]);
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Data pendidikan berhasil di tambahkan!  ');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return redirect()
+                ->route('jobseeker.profiles',)
+                ->with('error', 'Terjadi kesalahan saat menyimpan lamaran: ' . $e->getMessage());
+        }
     }
 }
