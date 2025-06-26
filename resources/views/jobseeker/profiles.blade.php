@@ -43,10 +43,12 @@
                     'summary' => $employeeProfile->summary ?? '',
                 ])
             </div>
+
+            {{-- section pendidikan --}}
             <div>
                 <p class="text-blue-700 text-2xl font-semibold py-2">Pendidikan</p>
                 @foreach ($educations as $key)
-                    <div class="container border-2 border-gray-500 p-5 my-2 rounded-lg max-w-screen-md ">
+                    <div class="container border-4 border-gray-300 p-5 my-2 rounded-lg  ">
                         <p class=" text-gray-700">{{ $key->institution }} </p>
                         <h2 class="font-semibold text-lg">{{ $key->sertifications }}</h2>
                         <div class="flex items-center gap-3">
@@ -57,19 +59,14 @@
                             <i class="fa-solid fa-book"></i>
                             <p>{{ $key->dicipline }}</p>
                         </div>
-                        <p>{{ $key->end_date }}</p>
-
+                        <p class="text-sm text-gray-500">Lulus {{ \Carbon\Carbon::parse( $key->end_date)->translatedFormat('F Y') }}</p>
                         <div class="py-4">
                             <h2 class="font-semibold py-2">Deskripsi Pengalaman:</h2>
                             <p class="text-justify">{!! nl2br(e($key->description)) !!}</p>
                         </div>
+                        
                     </div>
                 @endforeach
-
-                {{-- @php
-                    dd($educations)
-                @endphp --}}
-
                 @include('components.jobseeker.education-seciton')
             </div>
     </section>
