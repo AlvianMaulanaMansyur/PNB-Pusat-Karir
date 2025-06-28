@@ -17,7 +17,19 @@
                 } else {
                     this.selectedJob = job;
                 }
-            }
+            },
+            getDeadlineCountdown(deadline) {
+                if (!deadline) return '-';
+
+                const now = new Date();
+                const target = new Date(deadline);
+                const diffTime = target - now;
+
+                if (diffTime <= 0) return 'Sudah lewat';
+
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return `${diffDays} hari lagi`;
+            },
         }" class="grid grid-cols-12 gap-4 min-h-screen">
 
             {{-- Kolom kiri: daftar lowongan --}}
@@ -35,16 +47,15 @@
                             alamat_perusahaan: @json($job->employer->alamat_perusahaan ?? 'Alamat tidak tersedia'),
                             jenislowongan: @json($job->jenislowongan),
                             profile: @json(asset($job->profile)),
-                            deskripsi: @json($job->deskripsi),
-                            tanggung_jawab: @json($job->responsibility),
+                            deskripsi: @json(nl2br(e($job->deskripsi))),
+                            tanggung_jawab: @json(nl2br(e($job->responsibility))),
                             kualifikasi: @json($job->kualifikasi),
-                            detail_kualifikasi: @json($job->detailkualifikasi),
+                            detail_kualifikasi: @json(nl2br(e($job->detailkualifikasi))),
                             gaji: @json($job->gaji),
-                            benefit: @json($job->benefit),
+                            benefit: @json(nl2br(e($job->benefit))),
                             photo_profile: @json(asset($job->employer->photo_profile)),
+                            deadline: @json($job->deadline),
                             created_at: @json($job->created_at->diffForHumans())
-
-
                         })'>
                         {{-- Poster dan informasi lowongan --}}
                         <div class="flex items-start space-x-4">
@@ -182,40 +193,54 @@
                         </div>
                         <div class="text-xs text-gray-400" x-text="selectedJob.created_at"></div>
 
-                        {{-- button lamar dan save --}}
-                        <div class="py-6">
-                            <a :href="'/id/apply-job/' + selectedJob.id" target="_blank">
-                                <x-primary-button>
-                                    {{ __('Lamar') }}
+                        {{-- button lamar --}}
+                        <div class="py-6 flex">
+                            <template x-if="new Date(selectedJob.deadline) > new Date()">
+                                <a :href="'/id/apply-job/' + selectedJob.id" target="_blank">
+                                    <x-primary-button>
+                                        {{ __('Lamar') }}
+                                    </x-primary-button>
+                                </a>
+                            </template>
+
+                            <template x-if="new Date(selectedJob.deadline) <= new Date()">
+                                <x-primary-button disabled class="bg-red-500 hover:bg opacity-50 cursor-not-allowed">
+                                    Ditutup
                                 </x-primary-button>
-                            </a>
-                            <x-secondary-button class="ml-2">Simpan</x-secondary-button>
+                            </template>
+                            <x-secondary-button class="ml-2"
+                                x-text="getDeadlineCountdown(selectedJob.deadline)"></x-secondary-button>
                         </div>
 
-                        {{-- poster --}}
+                        {{-- poster
+                        <div>
+                            <H1>Info ebih lanjut</H1>
+
+                        </div> --}}
+
 
                         {{-- deskripsi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Deskripsi Pekerjaan</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.deskripsi"></div>
+                            <div class="text-sm text-gray-400" x-html="selectedJob.deskripsi"></div>
                         </div>
 
                         {{-- Tanggung Jawab --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Tanggung Jawab</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.tanggung_jawab"></div>
+                            <div class="text-sm text-gray-400" x-html="selectedJob.tanggung_jawab"></div>
                         </div>
 
                         {{-- Kualifikasi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Kualifikasi</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.detail_kualifikasi"></div>
+                            <div class="text-sm text-gray-400" x-html="selectedJob.detail_kualifikasi"></div>
                         </div>
 
                         {{-- Benefit --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Benefit</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.benefit"></div>
+                            <div class="text-sm text-gray-400" x-html="selectedJob.benefit"></div>
                             {{-- <div class=""></div> --}}
                         </div>
                 </template>

@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
             case 'employer':
                 return redirect()->route('employer.dashboard');
             case 'employee':
-                return redirect()->route('employee.landing-page');
+                return redirect()->route('employee.lowongan');
             default:
                 Auth::logout();
                 return redirect()->route('login')->with([

@@ -2,7 +2,7 @@
     <section class="mb-20">
         <div class="w-full max-w-screen-xl mx-auto mt-10 md:px-20">
             <x-breadcrumb :links="[
-            ['label' => 'Home', 'url' => route('employee.landing-page')],
+            ['label' => 'Home', 'url' => route('employee.lowongan')],
                 ['label' => 'Notifikasi'],
             ]" />
         </div>

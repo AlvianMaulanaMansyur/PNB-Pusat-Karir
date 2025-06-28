@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Jobseeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\educations;
 use App\Models\EmployeeProfiles;
 use App\Models\employees;
 use App\Models\JobApplication;
@@ -16,17 +17,40 @@ use Illuminate\Support\Str;
 
 class JobSeekerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // mengambil data karyawan yang sedang login
         $user = Auth::user();
-        $employeeData = $user->dataEmployees; // relasi
+        $employeeData = $user->dataEmployees;
 
-        // mengambil data lowongan kerja dengan relasi employer
-        $jobs = JobListing::with('employer')->latest()->paginate(5);
+        $query = JobListing::with('employer');
 
-        // dd($employerData);
+        // Filter berdasarkan keyword (judul lowongan / perusahaan / deskripsi)
+        if ($request->filled('keyword')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_lowongan', 'like', '%' . $request->keyword . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $request->keyword . '%')
+                    ->orWhereHas('employer', function ($q2) use ($request) {
+                        $q2->where('company_name', 'like', '%' . $request->keyword . '%');
+                    });
+            });
+        }
+
+        // Filter berdasarkan lokasi (alamat perusahaan)
+        if ($request->filled('location')) {
+            $query->whereHas('employer', function ($q) use ($request) {
+                $q->where('alamat_perusahaan', 'like', '%' . $request->location . '%');
+            });
+        }
+
+        $jobs = $query->latest()->paginate(5);
+
         return view('jobseeker.index', compact('employeeData', 'jobs'));
+    }
+
+    public function LandingPage()
+    {
+        $jobs = JobListing::latest()->take(6)->get();
+        return view('jobseeker.landingPage', compact('jobs'));
     }
 
     public function detailLowongan($id)
@@ -102,9 +126,10 @@ class JobSeekerController extends Controller
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
         $employeeSummary = EmployeeProfiles::where('employee_id', $employeeData->id)->first();
+        $employeeEducations = educations::where('employee_id', $employeeData->id)->get();
 
         session(['step_2_completed' => true]); // tandai step 2 sudah selesai
-        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData', 'employeeSummary' ));
+        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData', 'employeeSummary', 'employeeEducations'));
     }
 
     public function storeStepTwo($id)
@@ -159,7 +184,6 @@ class JobSeekerController extends Controller
             JobApplication::create([
                 'job_id' => $id,
                 'slug' => 'lamaran-' . Str::uuid(),
-
                 'employee_id' => $employeeData->id,
                 'applied_at' => now(),
                 'status' => 'pending',
