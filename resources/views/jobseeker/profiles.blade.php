@@ -2,6 +2,7 @@
     <section>
         <x-alert.session-alert class="session-alert" type="success" :message="session('success')" />
         <x-alert.session-alert class="session-alert" type="error" :message="session('error')" />
+        
         <div class="max-w-screen-xl w-full mx-auto px-4 sm:px-6  lg:px-32">
             <div class="py-3">
                 <x-breadcrumb :links="[['label' => 'Home', 'url' => route('employee.landing-page')], ['label' => 'Profile']]" />

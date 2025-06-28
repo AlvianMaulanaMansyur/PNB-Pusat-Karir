@@ -15,11 +15,11 @@
 
     <!-- Ringkasan tampil jika sudah ada -->
     <template x-if="summary">
-        <div class="border-4 border-gray-300 p-4 rounded-xl relative">
+        <div class="border-4 border-gray-300     p-4 rounded-xl relative">
             <p x-text="summary" class="text-gray-800 whitespace-pre-line pe-20 text-justify"></p>
             <button @click="showModal = true; $dispatch('open-modal', 'summary-modal')"
                 class="absolute top-3 right-6 text-primaryColor hover:text-blue-800">
-                <i class="fa-solid fa-pen-to-square text-2xl"></i>
+                <i class="fa-regular fa-pen-to-square text-2xl"></i>
             </button>
         </div>
     </template>

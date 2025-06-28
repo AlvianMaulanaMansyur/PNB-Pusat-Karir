@@ -25,10 +25,12 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
         // route notifikasi
         Route::get('/notifikasi',  [NotificationController::class, 'index'])->name('notifikasi.jobseeker');
     });
+
     Route::prefix('/my-profile')->group(function () {
         Route::get('/', [JobseekerProfiles::class, 'index'])->name('jobseeker.profiles');
         Route::put('/update-photo', [JobseekerProfiles::class, 'updateProfile'])->name('profile.update-profiles');
         Route::put('/summary-update', [JobseekerProfiles::class, 'updateSummary'])->name('profile.update-summary');
         Route::post('/education/add-educations', [JobseekerProfiles::class, 'addEducation'])->name('add.educations');
+        Route::put('/education/edit/{id}', [JobseekerProfiles::class, 'educationUpdate'])->name('education.update');
     });
 });

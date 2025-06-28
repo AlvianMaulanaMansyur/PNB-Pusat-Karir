@@ -4,12 +4,13 @@
         <div class="container border-4 border-gray-300 p-5 my-2 rounded-lg relative">
             <!-- Tombol Edit di pojok kanan atas -->
             <button @click="openEditModal(@js($key))"
-                class="absolute top-2 right-2 text-gray-500 hover:text-gray-300">
-                <i class="fa-solid fa-pen-to-square text-2xl"></i>
+                class="absolute top-2 right-6 text-gray-500 hover:text-gray-300">
+                <i class="fa-regular fa-pen-to-square text-2xl"></i>
             </button>
 
-            <p class="text-gray-700">{{ $key->institution }}</p>
-            <h2 class="font-semibold text-lg">{{ $key->sertifications }}</h2>
+            <p class="text-gray-700 text-md">{{ $key->institution }}</p>
+            <h2 class="font-semibold text-xl">{{ $key->sertifications }}</h2>
+
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-graduation-cap"></i>
                 <p>{{ $key->degrees }}</p>
@@ -105,10 +106,9 @@
 
     <!-- Modal Edit Pendidikan -->
     <x-modal name="edit-education-modal" :show="false" max-width="2xl">
-        <form method="POST" :action="`/education/update/${form.id}`">
+        <form method="POST" :action="'/my-profile/education/edit/' + form.id">
             @csrf
             @method('PUT')
-
             <div class="p-6 space-y-4">
                 <h2 class="text-lg font-semibold">Edit Pendidikan</h2>
 
@@ -121,11 +121,11 @@
                     x-model="form.sertifications" required />
 
                 <x-label-required for="degrees" :value="__('Jenis Pendidikan')" />
-                <x-text-input id="degrees" class="block w-full" type="text" name="degrees" x-model="form.degrees"
+                <x-dropdown.kualifikasi-pendidikan id="degrees" class="block w-full" type="text" name="degrees" x-model="form.degrees"
                     required />
 
                 <x-label-required for="dicipline" :value="__('Jenis Keahlian')" />
-                <x-text-input id="dicipline" class="block w-full" type="text" name="dicipline"
+                <x-dropdown.disiplin-utama id="dicipline" class="block w-full" type="text" name="dicipline"
                     x-model="form.dicipline" required />
 
                 <x-label-required for="end_date" :value="__('Tanggal Kelulusan')" />

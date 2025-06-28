@@ -121,4 +121,36 @@ class JobseekerProfiles extends Controller
                 ->with('error', 'Terjadi kesalahan saat menyimpan lamaran: ' . $e->getMessage());
         }
     }
+
+    public function educationUpdate(Request $request, $id)
+    {
+        // dd($request->all());
+
+        $validated = $request->validate([
+            'institution' => 'required|string',
+            'sertifications' => 'required|string',
+            'degrees' => 'required',
+            'dicipline' => 'required|string',
+            'end_date' => 'required|date',
+            'description' => 'required|string',
+        ]);
+        try {
+
+            $educationlist = educations::findOrFail($id);
+
+            $educationlist->institution = $validated['institution'];
+            $educationlist->sertifications = $validated['sertifications'];
+            $educationlist->degrees = $validated['degrees'];
+            $educationlist->dicipline = $validated['dicipline'];
+            $educationlist->end_date = $validated['end_date'];
+            $educationlist->description = $validated['description'];
+
+            $educationlist->save();
+
+            return redirect()->back()->with('success', 'data berhasil di perbarui');
+            
+        } catch (Throwable $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
 }
