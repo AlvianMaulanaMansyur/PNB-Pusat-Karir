@@ -76,7 +76,6 @@ class JobSeekerController extends Controller
         ]);
 
         // simpan file ke folder sementara storage/temp
-
         $cv = $request->file('cv');
         $cvPath = $cv->store('temp');
         $cvOriginalName = $cv->getClientOriginalName();

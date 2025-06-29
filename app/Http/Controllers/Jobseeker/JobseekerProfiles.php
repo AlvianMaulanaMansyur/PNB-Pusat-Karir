@@ -148,7 +148,7 @@ class JobseekerProfiles extends Controller
             $educationlist->save();
 
             return redirect()->back()->with('success', 'data berhasil di perbarui');
-            
+
         } catch (Throwable $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

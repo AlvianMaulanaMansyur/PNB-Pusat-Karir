@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Jobseeker\AppliedJobController;
 use App\Http\Controllers\Jobseeker\JobSeekerController;
 use App\Http\Controllers\jobseeker\JobseekerProfiles;
 use App\Http\Controllers\NotificationController;
@@ -24,8 +25,9 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
 
         Route::get('/apply-job/{id}/success', [JobSeekerController::class, 'successApply'])->name('job-apply.success');
 
-        // route notifikasi
         Route::get('/notifikasi',  [NotificationController::class, 'index'])->name('notifikasi.jobseeker');
+
+        Route::get('/activity/applied-jobs', [AppliedJobController::class, 'index'])->name('applied.index');
     });
 
     Route::prefix('/my-profile')->group(function () {
@@ -35,4 +37,5 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
         Route::post('/education/add-educations', [JobseekerProfiles::class, 'addEducation'])->name('add.educations');
         Route::put('/education/edit/{id}', [JobseekerProfiles::class, 'educationUpdate'])->name('education.update');
     });
+
 });

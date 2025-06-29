@@ -54,8 +54,6 @@
                 @endif
             </a>
 
-
-
             {{-- Foto User atau Ikon --}}
             <a href="{{ route('employer.edit-profile', ['slug' => auth()->user()->employer->slug]) }}"
                 class="hover:opacity-80 cursor-pointer" title="Edit Profile">
