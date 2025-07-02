@@ -24,20 +24,10 @@ return new class extends Migration
             $table->timestamps();
             
         });
-
-        Schema::create('application_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('application_id')->constrained('job_applications');
-            $table->foreignId('changed_by')->constrained('users'); // HRD yang mengubah
-            $table->string('action'); // 'status_change', 'note_added', etc
-            $table->text('metadata')->nullable(); // JSON data tambahan
-            $table->timestamps();
-        });
     }
 
     public function down()
     {
         Schema::dropIfExists('job_applications');
-        Schema::dropIfExists('application_logs');
     }
 };
