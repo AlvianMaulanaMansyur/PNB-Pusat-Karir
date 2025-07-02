@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Controllers\Jobseeker\AppliedJobController;
 use App\Http\Controllers\Jobseeker\JobSeekerController;
 use App\Http\Controllers\jobseeker\JobseekerProfiles;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
+    Route::get('/', [JobSeekerController::class, 'LandingPage'])->name('employee.landing-page');
     // Route untuk halaman dashboard jobseeker
-    Route::get('/', [JobSeekerController::class, 'index'])->name('employee.landing-page');
+
+    Route::get('/lowongan', [JobSeekerController::class, 'index'])->name('employee.lowongan');
 
     Route::get('/job-detail/{id}', [JobSeekerController::class, 'detailLowongan'])->name('job.detail');
 
@@ -22,12 +25,17 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
 
         Route::get('/apply-job/{id}/success', [JobSeekerController::class, 'successApply'])->name('job-apply.success');
 
-        // route notifikasi
         Route::get('/notifikasi',  [NotificationController::class, 'index'])->name('notifikasi.jobseeker');
+
+        Route::get('/activity/applied-jobs', [AppliedJobController::class, 'index'])->name('applied.index');
     });
+
     Route::prefix('/my-profile')->group(function () {
         Route::get('/', [JobseekerProfiles::class, 'index'])->name('jobseeker.profiles');
         Route::put('/update-photo', [JobseekerProfiles::class, 'updateProfile'])->name('profile.update-profiles');
         Route::put('/summary-update', [JobseekerProfiles::class, 'updateSummary'])->name('profile.update-summary');
+        Route::post('/education/add-educations', [JobseekerProfiles::class, 'addEducation'])->name('add.educations');
+        Route::put('/education/edit/{id}', [JobseekerProfiles::class, 'educationUpdate'])->name('education.update');
     });
+
 });

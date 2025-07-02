@@ -4,15 +4,18 @@
         <meta charset="UTF-8">
         <title>Dashboard Admin</title>
         @vite('resources/css/app.css')
+        <script src="//unpkg.com/alpinejs" defer></script>
     </head>
 <body class="bg-gray-100 font-sans">
-    <div class="flex h-screen">
+    <div class="h-screen">
         <!-- Main content -->
     @include('admin.layouts.sidebar')
-    <div class="flex-1 flex flex-col">
+    <div class="pl-64 bg-gray-100 min-h-screen p-2">
     @include ('admin.layouts.header')
     @yield ('content')
     </div>
     </div>
+    <!-- Tambahkan di bagian bawah sebelum </body> -->
+<script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </body>
 </html>

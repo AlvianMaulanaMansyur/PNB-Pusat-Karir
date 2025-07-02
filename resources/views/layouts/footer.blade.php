@@ -34,7 +34,7 @@
                         </a>
 
                         {{-- Email --}}
-                        <a href="#"><i class="fa-regular fa-envelope"></i></a>
+                        <a href="https://pnb.ac.id"><i class="fa-regular fa-envelope"></i></a>
 
                         {{-- LinkedIn --}}
                         <a href="#"><i class="fa-brands fa-linkedin text-white"></i></a>

@@ -60,6 +60,6 @@ class User extends Authenticatable
 
     public function dataEmployees ()
     {
-        return $this->hasOne(Employees::class);
+        return $this->hasOne(employees::class);
     }
 }

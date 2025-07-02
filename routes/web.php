@@ -1,11 +1,18 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CvController;
+use App\Http\Controllers\CvGeneratorController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminDashboardController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Auth\AdminauthController;
+use App\Http\Controllers\DetailAkunController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ManajemenLowonganController;
+use App\Http\Controllers\TambahLowonganController;
 use App\Http\Controllers\Resume\ExperienceController;
 use App\Http\Controllers\Resume\PersonalDetailsController;
 use App\Http\Controllers\ResumeController;
@@ -13,6 +20,44 @@ use App\Http\Controllers\ResumeController;
 Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
 
+Route::put('/admin/verifikasi-akun/{id}', [AdminController::class, 'updateStatus'])->name('admin.verifikasi.update');
+
+Route::get('/admin/verifikasi-akun', [AdminController::class, 'verifikasiAkun'])->name('admin.verifikasi-akun');
+
+Route::get('/admin/detail-akun/{id}', [DetailAkunController::class, 'show'])->name('detail-akun.show');
+
+#Route::get('/admin/manajemen-lowongan', [ManajemenLowonganController::class, 'index'])->name('manajemen-lowongan.index');
+
+Route::get('/admin/tambah-lowongan', [TambahLowonganController::class, 'create'])->name('tambah-lowongan.create');
+
+Route::post('/admin/storelowongan', [AdminController::class, 'storeLowongan'])
+            ->name('admin.storelowongan');
+
+Route::get('/admin/manajemen-lowongan', [AdminController::class, 'manajemenlowongan'])
+            ->name('admin.manajemen-lowongan');
+
+Route::delete('/admin/{slug}/destroy-lowongan', [AdminController::class, 'destroylowongan'])
+            ->name('admin.destroy-lowongan');
+
+Route::get('/admin/edit-lowongan/{slug}', [AdminController::class, 'editlowongan'])->name('admin.edit-lowongan');
+        Route::put('/admin/update-lowongan/{slug}', [AdminController::class, 'updatelowongan'])->name('admin.update-lowongan');
+
+
+Route::get('/verifikasi/employer', [AdminController::class, 'verifikasiEmployer'])->name('admin.verifikasi-employer');
+Route::get('/verifikasi/employee', [AdminController::class, 'verifikasiEmployee'])->name('admin.verifikasi-employee');
+
+Route::delete('/verifikasi/{id}', [AdminController::class, 'destroy'])->name('admin.verifikasi.destroy');
+Route::delete('/admin/verifikasi/{id}', [AdminController::class, 'destroy'])->name('admin.verifikasi.destroy');
+
+Route::get('/admin/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
+    Route::post('/employer/store', [AdminController::class, 'store'])->name('admin.employer.store');
+
+});
+// Route::middleware('auth')->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rute resource untuk CRUD dasar resume
     Route::resource('resumes', ResumeController::class);
@@ -125,3 +170,4 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__ . '/jobseeker.php';
 require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
