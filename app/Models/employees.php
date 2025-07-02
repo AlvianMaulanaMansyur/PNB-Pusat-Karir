@@ -49,5 +49,8 @@ class employees extends Model
     {
         return $this->hasOne(EmployeeProfiles::class, 'employee_id');
     }
-
+    public function educations()
+    {
+        return $this->hasMany(educations::class, 'employee_id');
+    }
 }

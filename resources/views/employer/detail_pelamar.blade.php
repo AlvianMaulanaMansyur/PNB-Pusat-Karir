@@ -40,44 +40,53 @@
             </a>
         </div>
 
+
+
         <!-- Foto dan Identitas -->
-        <div class="flex items-center gap-6 mb-6">
-            @if ($application->employee->photo_profile)
-                <img src="{{ asset('storage/' . $application->employee->photo_profile) }}"
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8">
+            <div class="flex-shrink-0">
+                <img src="{{ $application->employee->photo_profile 
+                    ? asset('storage/' . $application->employee->photo_profile) 
+                    : asset('images/profile.png') }}"
                     alt="Foto Pelamar"
                     class="w-24 h-24 rounded-full object-cover border shadow">
-            @else
-                <img src="{{ asset('images/profile.png') }}"
-                    alt="Foto Default"
-                    class="w-24 h-24 rounded-full object-cover border shadow">
-            @endif
+            </div>
             <div>
                 <p class="text-xl font-semibold text-gray-800">
                     {{ $application->employee->first_name }} {{ $application->employee->last_name }}
                 </p>
-                <p class="text-sm text-gray-500">{{ $application->employee->email }}</p>
+                <p class="text-sm text-gray-500 mt-1">{{ $application->employee->email }}</p>
                 <p class="text-sm text-gray-500">{{ $application->employee->phone ?? '-' }}</p>
             </div>
         </div>
 
         <!-- Detail Tambahan -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-700 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700 mb-8">
             <div>
                 <p class="text-gray-500">Tanggal Melamar</p>
                 <p class="mt-1">{{ $application->applied_at->format('d M Y H:i') }}</p>
             </div>
+            @php
+            $statusColors = [
+            'pending' => 'bg-yellow-100 text-yellow-800',
+            'reviewed' => 'bg-blue-100 text-blue-800',
+            'interview' => 'bg-indigo-100 text-indigo-800',
+            'accepted' => 'bg-green-100 text-green-800',
+            'rejected' => 'bg-red-100 text-red-800',
+            ];
+            $colorClass = $statusColors[$application->status] ?? 'bg-gray-100 text-gray-800';
+            @endphp
             <div>
                 <p class="text-gray-500">Status Lamaran</p>
-                <span class="inline-block mt-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs capitalize">
-                    {{ $application->status }}
+                <span class="inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold {{ $colorClass }}">
+                    {{ ucfirst($application->status) }}
                 </span>
+                @if ($application->status === 'interview' && $application->interview_date)
+                <p class="text-xs text-gray-500 mt-1">
+                    ({{ \Carbon\Carbon::parse($application->interview_date)->format('d M Y H:i') }})
+                </p>
+                @endif
             </div>
-            @if ($application->interview_date)
-                <div>
-                    <p class="text-gray-500">Tanggal Wawancara</p>
-                    <p class="mt-1">{{ $application->interview_date->format('d M Y H:i') }}</p>
-                </div>
-            @endif
 
             <div>
                 <p class="text-gray-500">Pendidikan Terakhir</p>
@@ -113,35 +122,58 @@
             </div>
         </div>
 
+        <!-- Riwayat Pendidikan -->
+        @if ($application->employee->educations && count($application->employee->educations))
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Riwayat Pendidikan</h3>
+            <ul class="space-y-4">
+                @foreach ($application->employee->educations as $edu)
+                <li class="border-l-4 border-blue-500 pl-4">
+                    <p class="text-base font-medium text-gray-900">{{ $edu->institution }}</p>
+                    <p class="text-sm text-gray-600">
+                        {{ $edu->degrees ?? '-' }} - {{ $edu->dicipline ?? '-' }}<br>
+                        Selesai: {{ $edu->end_date ? \Carbon\Carbon::parse($edu->end_date)->format('M Y') : '-' }}
+                    </p>
+                    @if ($edu->description)
+                    <p class="text-sm text-gray-500 mt-1">{{ $edu->description }}</p>
+                    @endif
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <!-- Cover Letter -->
-        <div class="mb-6">
+        @if ($application->cover_letter)
+        <div class="mb-8">
             <p class="text-gray-500 mb-1">Cover Letter</p>
-            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-sm max-h-52 overflow-y-auto whitespace-pre-line shadow-inner">
-                {{ $application->cover_letter ?? '-' }}
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-sm whitespace-pre-line shadow-inner">
+                {{ $application->cover_letter }}
             </div>
         </div>
+        @endif
 
         <!-- CV -->
         @if ($application->cv_file)
-            <div class="mb-6">
-                <p class="text-gray-500 mb-1">CV</p>
-                <a href="{{ asset('storage/' . $application->cv_file) }}" target="_blank"
-                   class="text-blue-600 hover:underline text-sm">📄 Lihat CV</a>
-            </div>
+        <div class="mb-8">
+            <p class="text-gray-500 mb-1">CV</p>
+            <a href="{{ route('cv.download', basename($application->cv_file)) }}" target="_blank"
+                class="text-blue-600 hover:underline text-sm">📄 Lihat CV</a>
+        </div>
         @endif
 
         <!-- Skills -->
         @if ($application->employee->skills && count($application->employee->skills))
-            <div>
-                <p class="text-gray-500 mb-1">Skills</p>
-                <div class="flex flex-wrap gap-2">
-                    @foreach ($application->employee->skills as $skill)
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
-                            {{ $skill->nama }}
-                        </span>
-                    @endforeach
-                </div>
+        <div class="mb-6">
+            <p class="text-gray-500 mb-1">Skills</p>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($application->employee->skills as $skill)
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                    {{ $skill->nama }}
+                </span>
+                @endforeach
             </div>
+        </div>
         @endif
     </div>
 </div>

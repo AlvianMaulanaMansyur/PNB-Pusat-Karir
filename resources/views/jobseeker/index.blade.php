@@ -61,7 +61,7 @@
                         <div class="flex items-start space-x-4">
                             {{-- Poster --}}
                             <div>
-                                <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
+                                <img src="{{ asset('storage/' . $job->employer->photo_profile) }}" alt="Poster lowongan"
                                     class="w-24 h-24 object-cover rounded-lg shadow-md">
                             </div>
 

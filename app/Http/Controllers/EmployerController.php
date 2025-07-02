@@ -617,18 +617,24 @@ class EmployerController extends Controller
         return view('employer.cari_pelamar', compact('skills', 'candidates', 'selectedSkills', 'jobListings'));
     }
 
-    public function detailPelamar($slug, $userId)
+    public function detailPelamar($slug, $jobId, $userId)
     {
         $employer = Employers::where('slug', $slug)
             ->with('jobListings')
             ->firstOrFail();
 
+        // Pastikan job_id termasuk milik employer ini
         $jobIds = $employer->jobListings->pluck('id')->toArray();
+        if (!in_array($jobId, $jobIds)) {
+            abort(403, 'Lowongan tidak valid atau tidak dimiliki employer ini.');
+        }
 
-        $application = JobApplication::with(['employee', 'job'])
-            ->whereIn('job_id', $jobIds)
+        // Ambil lamaran sesuai job_id dan employee_id
+        $application = JobApplication::with(['employee.educations', 'job']) // ← tambahkan employee.educations
+            ->where('job_id', $jobId)
             ->where('employee_id', $userId)
             ->firstOrFail();
+
 
         $jobListings = $employer->jobListings;
 
@@ -636,33 +642,40 @@ class EmployerController extends Controller
     }
 
     public function detailKandidat($slug, $id)
-    {
-        $candidate = DB::selectOne("
-            SELECT 
-                e.*, 
-                u.email,
-                ANY_VALUE(ep.summary) AS summary,
-                ANY_VALUE(ep.linkedin) AS linkedin,
-                ANY_VALUE(ep.website) AS website,
-                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills
-            FROM employees e
-            JOIN users u ON u.id = e.user_id
-            LEFT JOIN employee_profiles ep ON ep.employee_id = e.id
-            LEFT JOIN employee_skill es ON e.id = es.employee_id
-            LEFT JOIN skills s ON s.id = es.skill_id
-            WHERE e.id = ?
-            GROUP BY e.id
-        ", [$id]);
-        if (!$candidate) {
-            abort(404, 'Kandidat tidak ditemukan');
-        }
+{
+    // Query kandidat utama
+    $candidate = DB::selectOne("
+        SELECT 
+            e.*, 
+            u.email,
+            ANY_VALUE(ep.summary) AS summary,
+            ANY_VALUE(ep.linkedin) AS linkedin,
+            ANY_VALUE(ep.website) AS website,
+            GROUP_CONCAT(s.name SEPARATOR ', ') AS skills
+        FROM employees e
+        JOIN users u ON u.id = e.user_id
+        LEFT JOIN employee_profiles ep ON ep.employee_id = e.id
+        LEFT JOIN employee_skill es ON e.id = es.employee_id
+        LEFT JOIN skills s ON s.id = es.skill_id
+        WHERE e.id = ?
+        GROUP BY e.id
+    ", [$id]);
 
-        // Ambil data lowongan dari employer login
-        $employer = Auth::user()->employer;
-        $jobListings = DB::table('job_listings')
-            ->where('user_id', $employer->user_id)
-            ->get();
-
-        return view('employer.detail_kandidat', compact('candidate', 'jobListings'));
+    if (!$candidate) {
+        abort(404, 'Kandidat tidak ditemukan');
     }
+
+    // Ambil data pendidikan
+    $educations = \App\Models\educations::where('employee_id', $id)->get();
+
+    // Ambil data lowongan milik employer yang sedang login
+    $employer = Auth::user()->employer;
+    $jobListings = DB::table('job_listings')
+        ->where('user_id', $employer->user_id)
+        ->get();
+
+    // Kirim ke view
+    return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
+}
+
 }

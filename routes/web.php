@@ -16,6 +16,7 @@ use App\Http\Controllers\TambahLowonganController;
 use App\Http\Controllers\Resume\ExperienceController;
 use App\Http\Controllers\Resume\PersonalDetailsController;
 use App\Http\Controllers\ResumeController;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
@@ -31,16 +32,16 @@ Route::get('/admin/detail-akun/{id}', [DetailAkunController::class, 'show'])->na
 Route::get('/admin/tambah-lowongan', [TambahLowonganController::class, 'create'])->name('tambah-lowongan.create');
 
 Route::post('/admin/storelowongan', [AdminController::class, 'storeLowongan'])
-            ->name('admin.storelowongan');
+    ->name('admin.storelowongan');
 
 Route::get('/admin/manajemen-lowongan', [AdminController::class, 'manajemenlowongan'])
-            ->name('admin.manajemen-lowongan');
+    ->name('admin.manajemen-lowongan');
 
 Route::delete('/admin/{slug}/destroy-lowongan', [AdminController::class, 'destroylowongan'])
-            ->name('admin.destroy-lowongan');
+    ->name('admin.destroy-lowongan');
 
 Route::get('/admin/edit-lowongan/{slug}', [AdminController::class, 'editlowongan'])->name('admin.edit-lowongan');
-        Route::put('/admin/update-lowongan/{slug}', [AdminController::class, 'updatelowongan'])->name('admin.update-lowongan');
+Route::put('/admin/update-lowongan/{slug}', [AdminController::class, 'updatelowongan'])->name('admin.update-lowongan');
 
 
 Route::get('/verifikasi/employer', [AdminController::class, 'verifikasiEmployer'])->name('admin.verifikasi-employer');
@@ -54,10 +55,9 @@ Route::get('/admin/employer/create', [AdminController::class, 'create'])->name('
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
     Route::post('/employer/store', [AdminController::class, 'store'])->name('admin.employer.store');
-
 });
 // Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
+Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rute resource untuk CRUD dasar resume
     Route::resource('resumes', ResumeController::class);
@@ -145,7 +145,9 @@ Route::middleware('auth')->group(function () {
 
             Route::get('{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
             Route::patch('pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
-            Route::get('{slug}/pelamar-lowongan/{userId}/detail', [EmployerController::class, 'detailPelamar'])->name('employer.detail-pelamar');
+            Route::get('{slug}/pelamar-lowongan/{jobId}/{userId}/detail', [EmployerController::class, 'detailPelamar'])
+    ->name('employer.detail-pelamar');
+
 
             Route::get('{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
             Route::patch('{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
@@ -160,6 +162,26 @@ Route::middleware('auth')->group(function () {
 
 
             Route::post('send-invitation/{jobId}/{userId}', [MailController::class, 'inviteApplicants'])->name('employer.send-invitation');
+
+            Route::get('/download/cv/{filename}', function ($filename) {
+                $path = 'temp/' . $filename;
+
+                if (!Storage::exists($path)) {
+                    abort(404);
+                }
+
+                return Storage::download($path);
+            })->name('cv.download');
+
+            Route::get('/download/sertif/{filename}', function ($filename) {
+                $path = '/private/sertifikat/' . $filename;
+
+                if (!Storage::exists($path)) {
+                    abort(404);
+                }
+
+                return Storage::download($path);
+            })->name('sertifikat.download');
 
             // Route dashboard default employer (boleh juga digabung di atas)
             Route::get('/', function () {

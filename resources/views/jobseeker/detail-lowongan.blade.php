@@ -5,7 +5,7 @@
         <div class="card border-2 p-6 bg-white rounded-xl space-y-3">
             {{-- Foto --}}
             <div class="flex mb-4">
-                <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
+                <img src="{{ asset('storage/' . $job->employer->photo_profile) }}" alt="Poster lowongan"
                     class="w-24 h-24 object-cover rounded-lg shadow-md">
             </div>
 
