@@ -4,7 +4,6 @@
             <h1 class="text-2xl font-bold text-gray-800">Resume Saya</h1>
             <div x-data="{ open: false }" class="relative">
 
-                <!-- Tombol Trigger Modal -->
                 <button @click="open = true"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow transition">
                     + Buat CV Baru

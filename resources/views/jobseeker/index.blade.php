@@ -114,7 +114,7 @@
             {{-- Kolom kanan: detail lowongan (desktop only) --}}
             <div class="hidden md:block col-span-7 h-screen overflow-y-auto sticky top-0 p-4 ">
                 <template x-if="selectedJob === null">
-                    <div class="text-center text-gray-500 mt-20">
+                    <div class="text-center text-gray-700 mt-20">
                         <p class="text-xl font-semibold">Pilih lowongan untuk ditampilkan</p>
                     </div>
                 </template>
@@ -153,7 +153,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                             </svg>
-                            <p class="text-sm text-gray-500" x-text="selectedJob.alamat_perusahaan"></p>
+                            <p class="text-sm text-gray-700" x-text="selectedJob.alamat_perusahaan"></p>
                         </div>
 
                         {{-- /Jenis Lowongan --}}
@@ -164,7 +164,7 @@
                                     d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
 
-                            <div class="text-sm text-gray-600" x-text="selectedJob.jenislowongan"></div>
+                            <div class="text-sm text-gray-700" x-text="selectedJob.jenislowongan"></div>
                         </div>
 
                         {{-- Gaji --}}
@@ -196,25 +196,25 @@
                         {{-- deskripsi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Deskripsi Pekerjaan</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.deskripsi"></div>
+                            <div class="text-sm text-gray-700" x-text="selectedJob.deskripsi"></div>
                         </div>
 
                         {{-- Tanggung Jawab --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Tanggung Jawab</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.tanggung_jawab"></div>
+                            <div class="text-sm text-gray-700" x-text="selectedJob.tanggung_jawab"></div>
                         </div>
 
                         {{-- Kualifikasi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Kualifikasi</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.detail_kualifikasi"></div>
+                            <div class="text-sm text-gray-700" x-text="selectedJob.detail_kualifikasi"></div>
                         </div>
 
                         {{-- Benefit --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Benefit</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.benefit"></div>
+                            <div class="text-sm text-gray-700" x-text="selectedJob.benefit"></div>
                             {{-- <div class=""></div> --}}
                         </div>
                 </template>

@@ -18,6 +18,7 @@ use App\Http\Controllers\ResumeController;
 
 Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
+Route::post('/admin/logut', [AdminauthController::class, 'destroy'])->name('admin.logout');
 
 Route::put('/admin/verifikasi-akun/{id}', [AdminController::class, 'updateStatus'])->name('admin.verifikasi.update');
 
@@ -30,16 +31,16 @@ Route::get('/admin/detail-akun/{id}', [DetailAkunController::class, 'show'])->na
 Route::get('/admin/tambah-lowongan', [TambahLowonganController::class, 'create'])->name('tambah-lowongan.create');
 
 Route::post('/admin/storelowongan', [AdminController::class, 'storeLowongan'])
-            ->name('admin.storelowongan');
+    ->name('admin.storelowongan');
 
 Route::get('/admin/manajemen-lowongan', [AdminController::class, 'manajemenlowongan'])
-            ->name('admin.manajemen-lowongan');
+    ->name('admin.manajemen-lowongan');
 
 Route::delete('/admin/{slug}/destroy-lowongan', [AdminController::class, 'destroylowongan'])
-            ->name('admin.destroy-lowongan');
+    ->name('admin.destroy-lowongan');
 
 Route::get('/admin/edit-lowongan/{slug}', [AdminController::class, 'editlowongan'])->name('admin.edit-lowongan');
-        Route::put('/admin/update-lowongan/{slug}', [AdminController::class, 'updatelowongan'])->name('admin.update-lowongan');
+Route::put('/admin/update-lowongan/{slug}', [AdminController::class, 'updatelowongan'])->name('admin.update-lowongan');
 
 
 Route::get('/verifikasi/employer', [AdminController::class, 'verifikasiEmployer'])->name('admin.verifikasi-employer');
@@ -53,10 +54,9 @@ Route::get('/admin/employer/create', [AdminController::class, 'create'])->name('
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
     Route::post('/employer/store', [AdminController::class, 'store'])->name('admin.employer.store');
-
 });
-// Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
+
+Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rute resource untuk CRUD dasar resume
     Route::resource('resumes', ResumeController::class);
