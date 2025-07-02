@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminauthController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\Resume\ExperienceController;
 use App\Http\Controllers\Resume\PersonalDetailsController;
 use App\Http\Controllers\ResumeController;
@@ -99,6 +100,7 @@ Route::middleware('auth')->group(function () {
 
             Route::get('{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
             Route::patch('pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
+            Route::get('{slug}/pelamar-lowongan/{userId}/detail', [EmployerController::class, 'detailPelamar'])->name('employer.detail-pelamar');
 
             Route::get('{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
             Route::patch('{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
@@ -107,6 +109,12 @@ Route::middleware('auth')->group(function () {
             Route::get('notifications', [EmployerController::class, 'notifications'])->name('employer.notifications');
             Route::delete('/notifikasi/{id}', [EmployerController::class, 'destroyNotification'])->name('employer.notifikasi.destroy');
 
+            Route::get('cari-pelamar', [EmployerController::class, 'caripelamar'])->name('employer.temukan-kandidat');
+            Route::get('{slug}/kandidat/{id}', [EmployerController::class, 'detailKandidat'])->name('employer.detail-kandidat');
+
+
+
+            Route::post('send-invitation/{jobId}/{userId}', [MailController::class, 'inviteApplicants'])->name('employer.send-invitation');
 
             // Route dashboard default employer (boleh juga digabung di atas)
             Route::get('/', function () {

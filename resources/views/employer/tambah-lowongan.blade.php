@@ -68,7 +68,7 @@
 
             {{-- Responsibility --}}
             <div class="mb-5">
-                <x-label-required for="responsibility" :value="__('Responsibility')" />
+                <x-label-required for="responsibility" :value="__('Tanggung Jawab')" />
                 <x-text-area-input id="responsibility" name="responsibility"
                     class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
                     placeholder="Tulis tanggung jawab utama posisi ini, misalnya: mengatur jadwal, menyusun laporan, dll." required />

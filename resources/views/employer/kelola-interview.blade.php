@@ -27,7 +27,7 @@
         @endif
 
         {{-- Loop berdasarkan lowongan --}}
-@forelse ($applications as $jobId => $jobApps)
+    @forelse ($applications as $jobId => $jobApps)
     @php $job = $jobApps->first()->job; @endphp
 
     <div class="mt-10 mb-6">
@@ -72,97 +72,95 @@
                                     class="text-blue-600 hover:underline text-sm">Jadwal Ulang</button>
 
                                 {{-- MODAL DETAIL --}}
-<div id="modal-detail-{{ $app->slug }}"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 hidden overflow-y-auto py-10 px-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl p-6 relative animate-fadeIn">
-        <!-- Tombol Tutup -->
-        <button type="button"
-            onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')"
-            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold transition">&times;
-        </button>
+                                <div id="modal-detail-{{ $app->slug }}"
+                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 hidden overflow-y-auto py-10 px-4">
+                                    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl p-6 relative animate-fadeIn">
+                                        <!-- Tombol Tutup -->
+                                        <button type="button"
+                                            onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')"
+                                            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold transition">&times;
+                                        </button>
 
-        <!-- Judul -->
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Detail Interview</h2>
+                                        <!-- Judul -->
+                                        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Detail Interview</h2>
 
-        <!-- Konten -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-            <div><span class="font-medium">Nama:</span><br>{{ $app->employee->first_name }} {{ $app->employee->last_name }}</div>
-            <div><span class="font-medium">Email:</span><br>{{ $app->employee->user->email }}</div>
-            <div><span class="font-medium">Telepon:</span><br>{{ $app->employee->phone }}</div>
-            <div><span class="font-medium">Lowongan:</span><br>{{ $app->job->nama_lowongan }}</div>
-            <div><span class="font-medium">Posisi:</span><br>{{ $app->job->posisi }}</div>
-            <div>
-                <span class="font-medium">Tanggal Interview:</span><br>
-                {{ \Carbon\Carbon::parse($app->interview_date)->translatedFormat('d M Y, H:i') }}
-            </div>
-            <div>
-                <span class="font-medium">Status:</span><br>
-                <span class="inline-block mt-1 px-2 py-1 text-xs font-semibold rounded bg-emerald-100 text-emerald-700">
-                    Dijadwalkan
-                </span>
-            </div>
-            <div class="sm:col-span-2">
-                <span class="font-medium">CV:</span><br>
-                <a href="{{ asset('storage/' . $app->cv_file) }}" target="_blank"
-                    class="text-blue-600 hover:underline">{{ $app->cv_file }}</a>
-            </div>
-        </div>
+                                        <!-- Konten -->
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+                                            <div><span class="font-medium">Nama:</span><br>{{ $app->employee->first_name }} {{ $app->employee->last_name }}</div>
+                                            <div><span class="font-medium">Email:</span><br>{{ $app->employee->user->email }}</div>
+                                            <div><span class="font-medium">Telepon:</span><br>{{ $app->employee->phone }}</div>
+                                            <div><span class="font-medium">Lowongan:</span><br>{{ $app->job->nama_lowongan }}</div>
+                                            <div><span class="font-medium">Posisi:</span><br>{{ $app->job->posisi }}</div>
+                                            <div>
+                                                <span class="font-medium">Tanggal Interview:</span><br>
+                                                {{ \Carbon\Carbon::parse($app->interview_date)->translatedFormat('d M Y, H:i') }}
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">Status:</span><br>
+                                                <span class="inline-block mt-1 px-2 py-1 text-xs font-semibold rounded bg-emerald-100 text-emerald-700">
+                                                    Dijadwalkan
+                                                </span>
+                                            </div>
+                                            <div class="sm:col-span-2">
+                                                <span class="font-medium">CV:</span><br>
+                                                <a href="{{ asset('storage/' . $app->cv_file) }}" target="_blank"
+                                                    class="text-blue-600 hover:underline">{{ $app->cv_file }}</a>
+                                            </div>
+                                        </div>
 
-        <!-- Tombol Tutup -->
-        <div class="mt-6 text-end">
-            <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')"
-                class="inline-flex items-center px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-                Tutup
-            </button>
-        </div>
-    </div>
-</div>
-
+                                        <!-- Tombol Tutup -->
+                                        <div class="mt-6 text-end">
+                                            <button onclick="document.getElementById('modal-detail-{{ $app->slug }}').classList.add('hidden')"
+                                                class="inline-flex items-center px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                                                Tutup
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 {{-- MODAL JADWAL ULANG --}}
                                 {{-- MODAL JADWAL ULANG --}}
-<div id="modal-{{ $app->slug }}"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 hidden overflow-y-auto py-10 px-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative animate-fadeIn">
-        <!-- Tombol Tutup -->
-        <button onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')"
-            class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 transition text-xl font-bold">&times;
-        </button>
+                                <div id="modal-{{ $app->slug }}"
+                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 hidden overflow-y-auto py-10 px-4">
+                                    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative animate-fadeIn">
+                                        <!-- Tombol Tutup -->
+                                        <button onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')"
+                                            class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 transition text-xl font-bold">&times;
+                                        </button>
 
-        <!-- Judul -->
-        <h2 class="text-lg font-semibold mb-4 text-gray-800">Atur Ulang Tanggal Interview</h2>
+                                        <!-- Judul -->
+                                        <h2 class="text-lg font-semibold mb-4 text-gray-800">Atur Ulang Tanggal Interview</h2>
 
-        <!-- Form -->
-        <form action="{{ route('employer.updateInterviewDate', ['slug' => $app->slug]) }}" method="POST">
-            @csrf
-            @method('PATCH')
+                                        <!-- Form -->
+                                        <form action="{{ route('employer.updateInterviewDate', ['slug' => $app->slug]) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
 
-            @php
-                $now = \Carbon\Carbon::now()->format('Y-m-d\TH:i');
-            @endphp
+                                            @php
+                                                $now = \Carbon\Carbon::now()->format('Y-m-d\TH:i');
+                                            @endphp
 
-            <label class="block mb-2 text-sm font-medium text-gray-700">Tanggal & Waktu Interview</label>
-            <input type="datetime-local"
-                name="interview_date"
-                value="{{ $app->interview_date ? \Carbon\Carbon::parse($app->interview_date)->format('Y-m-d\TH:i') : '' }}"
-                min="{{ $now }}"
-                class="w-full border-gray-300 rounded px-3 py-2 mb-4 shadow-sm focus:ring-primaryColor focus:border-primaryColor">
+                                            <label class="block mb-2 text-sm font-medium text-gray-700">Tanggal & Waktu Interview</label>
+                                            <input type="datetime-local"
+                                                name="interview_date"
+                                                value="{{ $app->interview_date ? \Carbon\Carbon::parse($app->interview_date)->format('Y-m-d\TH:i') : '' }}"
+                                                min="{{ $now }}"
+                                                class="w-full border-gray-300 rounded px-3 py-2 mb-4 shadow-sm focus:ring-primaryColor focus:border-primaryColor">
 
-            <!-- Tombol -->
-            <div class="flex justify-end gap-2 mt-2">
-                <button type="button"
-                    onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')"
-                    class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
-                    Batal
-                </button>
-                <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow">
-                    Simpan
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
+                                            <!-- Tombol -->
+                                            <div class="flex justify-end gap-2 mt-2">
+                                                <button type="button"
+                                                    onclick="document.getElementById('modal-{{ $app->slug }}').classList.add('hidden')"
+                                                    class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
+                                                    Batal
+                                                </button>
+                                                <button type="submit"
+                                                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-md transition shadow">
+                                                    Simpan
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
