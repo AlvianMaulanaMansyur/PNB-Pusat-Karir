@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\employees;
 use App\Models\EmployerNotification;
 use App\Models\employers;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Models\Skill;
 use App\Notifications\ApplicationStatusUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -514,10 +517,17 @@ class EmployerController extends Controller
     public function filterstatus(Request $request)
     {
         $statusFilter = $request->query('status');
+        $searchKeyword = $request->query('search'); // Tambahkan ini
 
         $applications = \App\Models\JobApplication::with('job', 'employee')
             ->when($statusFilter, function ($query) use ($statusFilter) {
                 $query->where('status', $statusFilter);
+            })
+            ->when($searchKeyword, function ($query) use ($searchKeyword) {
+                $query->whereHas('job', function ($q) use ($searchKeyword) {
+                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')
+                        ->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
+                });
             })
             ->orderBy('applied_at', 'desc')
             ->get()
@@ -525,34 +535,33 @@ class EmployerController extends Controller
 
         return $applications;
     }
-
     public function getAllApplications()
     {
         return JobApplication::with('job', 'employee')->orderBy('applied_at', 'desc')->get()->groupBy('job_id'); // Penting untuk tampilan di view
     }
 
-   public function notifications()
-{
-    $employer = Auth::user()->employer;
+    public function notifications()
+    {
+        $employer = Auth::user()->employer;
 
-    // Ambil semua notifikasi milik employer
-    $notifications = EmployerNotification::where('employer_id', $employer->id)
-        ->orderBy('created_at', 'desc')
-        ->get(); // <-- TIDAK lagi pakai paginate()
+        // Ambil semua notifikasi milik employer
+        $notifications = EmployerNotification::where('employer_id', $employer->id)
+            ->orderBy('created_at', 'desc')
+            ->get(); // <-- TIDAK lagi pakai paginate()
 
-    // Ambil notifikasi terbaru yang belum dibaca (hanya satu)
-    $latestUnread = EmployerNotification::where('employer_id', $employer->id)
-        ->where('is_read', false)
-        ->orderBy('created_at', 'desc')
-        ->first();
+        // Ambil notifikasi terbaru yang belum dibaca (hanya satu)
+        $latestUnread = EmployerNotification::where('employer_id', $employer->id)
+            ->where('is_read', false)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
-    // Tandai semua sebagai telah dibaca (setelah ambil latestUnread)
-    EmployerNotification::where('employer_id', $employer->id)
-        ->where('is_read', false)
-        ->update(['is_read' => true]);
+        // Tandai semua sebagai telah dibaca (setelah ambil latestUnread)
+        EmployerNotification::where('employer_id', $employer->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
 
-    return view('employer.notifikasi', compact('notifications', 'latestUnread'));
-}
+        return view('employer.notifikasi', compact('notifications', 'latestUnread'));
+    }
 
     public function destroyNotification($id)
     {
@@ -561,4 +570,112 @@ class EmployerController extends Controller
 
         return redirect()->back()->with('success', 'Notifikasi berhasil dihapus.');
     }
+
+    public function caripelamar(Request $request)
+    {
+        $skills = Skill::all();
+        $selectedSkills = $request->input('skills', []);
+
+        if (!empty($selectedSkills)) {
+            $placeholders = implode(',', array_fill(0, count($selectedSkills), '?'));
+
+            $query = "
+            SELECT 
+                e.*, 
+                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills, 
+                u.email as email,
+                COUNT(DISTINCT s.id) AS matching_count
+            FROM employees e
+            JOIN employee_skill es ON e.id = es.employee_id
+            JOIN skills s ON s.id = es.skill_id
+            JOIN users u ON u.id = e.user_id
+            WHERE s.id IN ($placeholders)
+            GROUP BY e.id
+            ORDER BY matching_count DESC
+        ";
+
+            $candidates = DB::select($query, $selectedSkills);
+        } else {
+            $candidates = DB::select("
+            SELECT 
+                e.*, 
+                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills, 
+                u.email as email
+            FROM employees e
+            JOIN employee_skill es ON e.id = es.employee_id
+            JOIN skills s ON s.id = es.skill_id
+            JOIN users u ON u.id = e.user_id
+            GROUP BY e.id
+        ");
+        }
+
+        $employer = Auth::user()->employer;
+
+        $jobListings = JobListing::where('user_id', $employer->user_id)->get();
+
+
+        return view('employer.cari_pelamar', compact('skills', 'candidates', 'selectedSkills', 'jobListings'));
+    }
+
+    public function detailPelamar($slug, $jobId, $userId)
+    {
+        $employer = Employers::where('slug', $slug)
+            ->with('jobListings')
+            ->firstOrFail();
+
+        // Pastikan job_id termasuk milik employer ini
+        $jobIds = $employer->jobListings->pluck('id')->toArray();
+        if (!in_array($jobId, $jobIds)) {
+            abort(403, 'Lowongan tidak valid atau tidak dimiliki employer ini.');
+        }
+
+        // Ambil lamaran sesuai job_id dan employee_id
+        $application = JobApplication::with(['employee.educations', 'job']) // ← tambahkan employee.educations
+            ->where('job_id', $jobId)
+            ->where('employee_id', $userId)
+            ->firstOrFail();
+
+
+        $jobListings = $employer->jobListings;
+
+        return view('employer.detail_pelamar', compact('application', 'jobListings'));
+    }
+
+    public function detailKandidat($slug, $id)
+{
+    // Query kandidat utama
+    $candidate = DB::selectOne("
+        SELECT 
+            e.*, 
+            u.email,
+            ANY_VALUE(ep.summary) AS summary,
+            ANY_VALUE(ep.linkedin) AS linkedin,
+            ANY_VALUE(ep.website) AS website,
+            GROUP_CONCAT(s.name SEPARATOR ', ') AS skills
+        FROM employees e
+        JOIN users u ON u.id = e.user_id
+        LEFT JOIN employee_profiles ep ON ep.employee_id = e.id
+        LEFT JOIN employee_skill es ON e.id = es.employee_id
+        LEFT JOIN skills s ON s.id = es.skill_id
+        WHERE e.id = ?
+        GROUP BY e.id
+    ", [$id]);
+
+    if (!$candidate) {
+        abort(404, 'Kandidat tidak ditemukan');
+    }
+
+    // Ambil data pendidikan
+    $educations = \App\Models\educations::where('employee_id', $id)->get();
+
+    // Ambil data lowongan milik employer yang sedang login
+    $employer = Auth::user()->employer;
+    $jobListings = DB::table('job_listings')
+        ->where('user_id', $employer->user_id)
+        ->get();
+
+    // Kirim ke view
+    return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
+}
+
 }

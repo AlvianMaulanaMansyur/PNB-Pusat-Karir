@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\educations;
 use App\Models\EmployeeProfiles;
 use App\Models\employees;
+use App\Models\EmployerNotification;
 use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\portofoliopathimg;
@@ -231,6 +232,20 @@ class JobSeekerController extends Controller
                 ->route('job-apply', ['id' => $id])
                 ->with('error', 'Silahkan pilih lowongan yang sesuai.');
         }
+
+        $job = JobListing::with('employer')->findOrFail($id);
+        $user = Auth::user();
+        $employee = DB::table('employees')->where('user_id', $user->id)->first();
+        $employer_id = $job->employer->id;
+        $title = "{$employee->first_name} {$employee->last_name} melamar di lowongan anda {$job->nama_lowongan}";
+        $message = "Anda memiliki pelamar baru pada lowongan {$job->nama_lowongan}";
+
+        EmployerNotification::create([
+            'employer_id' => $employer_id,
+            'title' => $title,
+            'message' => $message,
+            'is_read' => false,
+        ]);
 
         // Hapus session setelah sukses apply
         session()->forget(['suratLamaran', 'cv', 'cv_path', 'sertifikat', 'sertifikat_path', 'applied_job_id', 'step_1_completed', 'step_2_completed']);

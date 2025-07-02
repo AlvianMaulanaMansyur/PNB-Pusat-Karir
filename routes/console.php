@@ -23,7 +23,7 @@ Schedule::call(function () {
         if (
             $applicant->status === 'interview' &&
             $applicant->interview_date &&
-            Carbon::parse($applicant->interview_date)->isBetween(now(), now()->addDays(7)) // akan check apakah ada jadwal interview di antara hari ini dan 7 hari kedepan
+            Carbon::parse($applicant->interview_date)->isBetween(now(), now()->addDays(3)) // akan check apakah ada jadwal interview di antara hari ini dan 7 hari kedepan
         ) {
             Log::info('Interview notification triggered for applicant ID: ' . $applicant->id);
 

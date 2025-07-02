@@ -34,14 +34,20 @@
         <div class="flex justify-between items-start gap-4 border-l-4 px-4 py-3 rounded-md transition hover:bg-gray-50
             {{ $notif->is_read ? 'bg-white border-gray-300' : 'bg-blue-50 border-blue-500' }}">
 
-            <div class="flex-1">
-                <p class="{{ $notif->is_read ? 'text-gray-700 text-sm' : 'text-blue-900 font-semibold text-sm' }}">
-                    {{ $notif->message }}
-                </p>
-                <p class="text-xs text-gray-400 mt-1">
-                    {{ $notif->created_at->diffForHumans() }}
-                </p>
-            </div>
+           <div class="flex-1">
+    <p class="{{ $notif->is_read ? 'text-gray-800' : 'text-blue-800' }} text-base font-bold">
+        {{ $notif->title }}
+    </p>
+    <p class="{{ $notif->is_read ? 'text-gray-600' : 'text-gray-800' }} text-sm mt-1">
+        {{ $notif->message }}
+    </p>
+    <p class="text-xs text-gray-400 mt-1">
+        {{ $notif->created_at->diffForHumans() }}
+    </p>
+</div>
+
+
+
 
             <div class="flex items-center gap-2">
                 @if ($latestUnread && $notif->id === $latestUnread->id)

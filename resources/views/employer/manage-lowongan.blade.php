@@ -70,58 +70,81 @@
 
 
 {{-- Tabel Daftar Lowongan --}}
-<div class="flex flex-col w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-20 lg:ml-28 mt-6 mb-12">
-    <div class="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
-        <table class="min-w-full text-sm text-left text-gray-700 table-auto">
-            <thead class="bg-gray-100 border-b border-gray-200">
+<div class="flex flex-col w-full lg:w-2/3 mx-auto mt-6 mb-12">
+
+    {{-- Tombol Tambah --}}
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('employer.tambahlowongan') }}"
+           class="inline-flex items-center px-4 py-2 bg-gradient-to-br from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah Lowongan
+        </a>
+    </div>
+
+    {{-- Tabel --}}
+    <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow">
+        <table class="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
+            <thead class="bg-gray-50 text-gray-600 uppercase tracking-wider text-xs">
                 <tr>
-                    <th class="px-5 py-3 font-medium w-20">Poster</th>
-                    <th class="px-5 py-3 font-medium w-1/4 max-w-xs">Nama Lowongan</th>
-                    <th class="px-5 py-3 font-medium w-1/6">Posisi</th>
-                    <th class="px-5 py-3 font-medium w-1/6">Jenis</th>
-                    <th class="px-5 py-3 font-medium w-1/6">Gaji</th>
-                    <th class="px-5 py-3 font-medium w-1/6">Deadline</th>
-                    <th class="px-5 py-3 font-medium text-center w-32">Aksi</th>
+                    <th class="px-6 py-3 text-left font-semibold">Poster</th>
+                    <th class="px-6 py-3 text-left font-semibold">Nama Lowongan</th>
+                    <th class="px-6 py-3 text-left font-semibold">Posisi</th>
+                    <th class="px-6 py-3 text-left font-semibold">Jenis</th>
+                    <th class="px-6 py-3 text-left font-semibold">Gaji</th>
+                    <th class="px-6 py-3 text-left font-semibold">Deadline</th>
+                    <th class="px-6 py-3 text-center font-semibold">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100 bg-white">
+            <tbody class="bg-white divide-y divide-gray-100">
                 @forelse ($joblisting as $lowongan)
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-5 py-4">
+                <tr class="hover:bg-blue-50 transition">
+                    <td class="px-6 py-4">
                         @if ($lowongan->poster)
-                        <img src="{{ asset('storage/' . $lowongan->poster) }}" alt="Poster" class="w-16 h-16 object-cover rounded-md border">
+                            <img src="{{ asset('storage/' . $lowongan->poster) }}" alt="Poster"
+                                 class="w-14 h-14 object-cover rounded-md border">
                         @else
-                        <span class="text-gray-400 italic">Tidak ada</span>
+                            <span class="text-gray-400 italic">Tidak ada</span>
                         @endif
                     </td>
-                    <td class="px-5 py-4 font-semibold text-gray-800 truncate max-w-xs" title="{{ $lowongan->nama_lowongan }}">
+                    <td class="px-6 py-4 font-medium text-gray-900 truncate max-w-xs" title="{{ $lowongan->nama_lowongan }}">
                         {{ $lowongan->nama_lowongan }}
                     </td>
-                    <td class="px-5 py-4 truncate max-w-[150px]">
-                        {{ $lowongan->posisi }}
+                    <td class="px-6 py-4">{{ $lowongan->posisi }}</td>
+                    <td class="px-6 py-4">{{ $lowongan->jenislowongan }}</td>
+                    <td class="px-6 py-4 text-green-600 font-semibold">
+                        <div class="inline-flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.333.667-4 2-4 4s2.667 3.333 4 4 4-1.333 4-4-2.667-3.333-4-4z" />
+                            </svg>
+                            {{ 'Rp ' . number_format((int) str_replace('.', '', $lowongan->gaji), 0, ',', '.') }}
+                        </div>
                     </td>
-                    <td class="px-5 py-4 truncate">
-                        {{ $lowongan->jenislowongan }}
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="inline-flex items-center gap-1 text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M8 7V3m8 4V3m-9 4h10M5 11h14M5 19h14M5 15h14" />
+                            </svg>
+                            {{ \Carbon\Carbon::parse($lowongan->deadline)->format('d M Y') }}
+                        </div>
                     </td>
-                    <td class="px-5 py-4 text-green-600 font-medium">
-                        {{ 'Rp ' . number_format((int) str_replace('.', '', $lowongan->gaji), 0, ',', '.') }}
-                    </td>
-                    <td class="px-5 py-4 whitespace-nowrap">
-                        {{ \Carbon\Carbon::parse($lowongan->deadline)->format('d M Y') }}
-                    </td>
-                    <td class="px-5 py-4">
+                    <td class="px-6 py-4">
                         <div class="flex justify-center items-center gap-2 flex-wrap">
                             <a href="{{ route('employer.edit-lowongan', $lowongan->slug) }}"
-                                class="px-3 py-1 text-xs font-semibold text-gray-800 bg-yellow-300 rounded hover:bg-yellow-400 transition">
+                               class="px-3 py-1 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded hover:bg-yellow-300 transition">
                                 Edit
                             </a>
-
                             <form action="{{ route('employer.destroy-lowongan', $lowongan->slug) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button"
-                                    onclick="showDeleteModal(this.closest('form'))"
-                                    class="px-3 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700 transition">
+                                        onclick="showDeleteModal(this.closest('form'))"
+                                        class="px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded hover:bg-red-700 transition">
                                     Hapus
                                 </button>
                             </form>
@@ -130,13 +153,15 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-5 py-4 text-center text-gray-500">Belum ada lowongan ditambahkan.</td>
+                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada lowongan ditambahkan.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 </div>
+
+
 
 
 {{-- Modal Konfirmasi Hapus --}}
