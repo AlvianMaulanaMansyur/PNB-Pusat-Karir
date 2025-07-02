@@ -23,7 +23,7 @@
 
         <!-- Tombol -->
         <div class="flex justify-center mt-6">
-            <a href="{{ route('employee.landing-page') }}">
+            <a href="{{ route('employee.lowongan') }}">
                 <x-primary-button>
                     {{ __('Kembali ke Beranda') }}
                 </x-primary-button>

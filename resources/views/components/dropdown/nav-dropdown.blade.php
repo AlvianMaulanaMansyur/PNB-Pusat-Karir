@@ -17,7 +17,7 @@
     </button>
 
     <div x-show="open" @click.away="open = false"
-        class="absolute right-0 mt-2 min-w-max px-10 py-4 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-50 z-50 text-md">
+        class="absolute right-0 mt-2 min-w-max py-4 rounded-md shadow-lg bg-white ring-1  ring-opacity-50 z-50 text-md">
         <div class="text-gray-700">
             {{ $slot }}
         </div>

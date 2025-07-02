@@ -8,7 +8,8 @@
             </div>
 
             <!-- Menu Utama Desktop -->
-            <div class="hidden md:flex items-center gap-5 font-semibold">
+            <div class="hidden md:flex items-center gap-5 font-semibold text-sm xl:text-md">
+                <x-navlink href="#">Tracer Study</x-navlink>
                 <x-navlink href="#">Tentang Kami</x-navlink>
                 <x-navlink href="{{ route('resumes.index') }}">Generate CV</x-navlink>
 
@@ -17,8 +18,8 @@
                 </x-dropdown.nav-dropdown>
 
                 <x-dropdown.nav-dropdown label="pekerjaan">
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Lowongan Pekerjaan</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
+                    <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Lowongan Pekerjaan</a>
+                    <a href="{{ route('applied.index') }}" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
                 </x-dropdown.nav-dropdown>
 
                 {{-- notification --}}
@@ -29,12 +30,7 @@
                     @endphp
 
                     <x-navlink href="{{ route('notifikasi.jobseeker') }}" class="relative">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M9.33333 20.0909C10.041 20.6562 10.9755 21 12 21C13.0245 21 13.959 20.6562 14.6667 20.0909M4.50763 17.1818C4.08602 17.1818 3.85054 16.5194 4.10557 16.1514C4.69736 15.2975 5.26855 14.0451 5.26855 12.537L5.29296 10.3517C5.29296 6.29145 8.29581 3 12 3C15.7588 3 18.8058 6.33993 18.8058 10.4599L18.7814 12.537C18.7814 14.0555 19.3329 15.3147 19.9006 16.169C20.1458 16.5379 19.9097 17.1818 19.4933 17.1818H4.50763Z"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
+                        <i class="fa-regular fa-bell text-xl "></i>
 
                         @if ($unreadCount > 0)
                             <span

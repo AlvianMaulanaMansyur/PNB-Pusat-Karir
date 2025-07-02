@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Auth\AdminauthController;
 use App\Http\Controllers\DetailAkunController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\ManajemenLowonganController;
 use App\Http\Controllers\TambahLowonganController;
 use App\Http\Controllers\Resume\ExperienceController;
 use App\Http\Controllers\Resume\PersonalDetailsController;
 use App\Http\Controllers\ResumeController;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
@@ -55,7 +57,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
     Route::post('/employer/store', [AdminController::class, 'store'])->name('admin.employer.store');
 });
-
 Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rute resource untuk CRUD dasar resume
@@ -144,6 +145,9 @@ Route::middleware('auth')->group(function () {
 
             Route::get('{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
             Route::patch('pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
+            Route::get('{slug}/pelamar-lowongan/{jobId}/{userId}/detail', [EmployerController::class, 'detailPelamar'])
+    ->name('employer.detail-pelamar');
+
 
             Route::get('{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
             Route::patch('{slug}/update-interview', [EmployerController::class, 'updateInterviewDate'])->name('employer.updateInterviewDate');
@@ -152,6 +156,32 @@ Route::middleware('auth')->group(function () {
             Route::get('notifications', [EmployerController::class, 'notifications'])->name('employer.notifications');
             Route::delete('/notifikasi/{id}', [EmployerController::class, 'destroyNotification'])->name('employer.notifikasi.destroy');
 
+            Route::get('cari-pelamar', [EmployerController::class, 'caripelamar'])->name('employer.temukan-kandidat');
+            Route::get('{slug}/kandidat/{id}', [EmployerController::class, 'detailKandidat'])->name('employer.detail-kandidat');
+
+
+
+            Route::post('send-invitation/{jobId}/{userId}', [MailController::class, 'inviteApplicants'])->name('employer.send-invitation');
+
+            Route::get('/download/cv/{filename}', function ($filename) {
+                $path = 'temp/' . $filename;
+
+                if (!Storage::exists($path)) {
+                    abort(404);
+                }
+
+                return Storage::download($path);
+            })->name('cv.download');
+
+            Route::get('/download/sertif/{filename}', function ($filename) {
+                $path = '/private/sertifikat/' . $filename;
+
+                if (!Storage::exists($path)) {
+                    abort(404);
+                }
+
+                return Storage::download($path);
+            })->name('sertifikat.download');
 
             // Route dashboard default employer (boleh juga digabung di atas)
             Route::get('/', function () {
@@ -162,3 +192,4 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__ . '/jobseeker.php';
 require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
