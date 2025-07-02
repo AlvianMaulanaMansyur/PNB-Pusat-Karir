@@ -8,6 +8,7 @@ use App\Models\EmployeeProfiles;
 use App\Models\employees;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Models\portofoliopathimg;
 use App\Notifications\JobApplicationSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,14 +78,14 @@ class JobSeekerController extends Controller
 
         // simpan file ke folder sementara storage/temp
         $cv = $request->file('cv');
-        $cvPath = $cv->store('temp');
+        $cvPath = $cv->store('temp', 'public');
         $cvOriginalName = $cv->getClientOriginalName();
         $sertifikatPath = [];
         $sertifikatNames = [];
 
         if ($request->hasFile('certificates')) {
             foreach ($request->file('certificates') as $sertifikat) {
-                $sertifikatPath[] = $sertifikat->store('temp');
+                $sertifikatPath[] = $sertifikat->store('temp', 'public');
                 $sertifikatNames[] = $sertifikat->getClientOriginalName();
             }
         }
@@ -180,6 +181,7 @@ class JobSeekerController extends Controller
 
         DB::beginTransaction();
         try {
+            // Buat JobApplication dulu
             JobApplication::create([
                 'job_id' => $id,
                 'slug' => 'lamaran-' . Str::uuid(),
@@ -192,9 +194,18 @@ class JobSeekerController extends Controller
                 'interview_status' => 'not_scheduled',
                 'interview_date' => null,
             ]);
-            // Kirim notifikasi ke employer
-            $employer = $job->employer;
 
+            // Simpan path sertifikat (jika hanya satu file)
+            foreach ($finalSertifikatPaths as $path) {
+                portofoliopathimg::create([
+                    'employee_id' => $employeeData->id,
+                    'job_id' => $id,
+                    'portofolio_path' => $path,
+                    'original_name' => $sertifikat[$index] ?? null,
+                ]);
+            }
+
+            $employer = $job->employer;
             $employeeData->notify(new JobApplicationSubmitted($job, $employeeData));
 
             DB::commit();

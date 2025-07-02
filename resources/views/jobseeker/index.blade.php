@@ -53,16 +53,21 @@
                             detail_kualifikasi: @json(nl2br(e($job->detailkualifikasi))),
                             gaji: @json($job->gaji),
                             benefit: @json(nl2br(e($job->benefit))),
-                            photo_profile: @json(asset($job->employer->photo_profile)),
+                            photo_profile: @json(Str::startsWith($job->employer->photo_profile, 'image/')
+                                    ? asset($job->employer->photo_profile)
+                                    : asset('storage/' . $job->employer->photo_profile)),
                             deadline: @json($job->deadline),
                             created_at: @json($job->created_at->diffForHumans())
                         })'>
                         {{-- Poster dan informasi lowongan --}}
                         <div class="flex items-start space-x-4">
-                            {{-- Poster --}}
+                            {{-- Proflie pic --}}
                             <div>
-                                <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
-                                    class="w-24 h-24 object-cover rounded-lg shadow-md">
+                                <img src="{{ Str::startsWith($job->employer->photo_profile, 'image/')
+                                    ? asset($job->employer->photo_profile)
+                                    : asset('storage/' . $job->employer->photo_profile) }}"
+                                    alt="Poster lowongan" class="w-24 h-24 object-cover rounded-lg shadow-md">
+
                             </div>
 
                             {{-- Informasi lowongan --}}
@@ -135,7 +140,7 @@
                     <div class="card p-6 bg-white rounded-xl space-y-3">
                         {{-- foto --}}
                         <div class="flex mb-4">
-                            <img :src="selectedJob.photo_profile" alt="Poster lowongan"
+                            <img :src="selectedJob.photo_profile" alt="profile pict"
                                 class="w-32 h-32 object-cover rounded-lg shadow-md">
                         </div>
                         {{-- Judul yang bisa diklik ke halaman detail --}}
@@ -222,25 +227,25 @@
                         {{-- deskripsi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Deskripsi Pekerjaan</h3>
-                            <div class="text-sm text-gray-400" x-html="selectedJob.deskripsi"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.deskripsi"></div>
                         </div>
 
                         {{-- Tanggung Jawab --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Tanggung Jawab</h3>
-                            <div class="text-sm text-gray-400" x-html="selectedJob.tanggung_jawab"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.tanggung_jawab"></div>
                         </div>
 
                         {{-- Kualifikasi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Kualifikasi</h3>
-                            <div class="text-sm text-gray-400" x-html="selectedJob.detail_kualifikasi"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.detail_kualifikasi"></div>
                         </div>
 
                         {{-- Benefit --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Benefit</h3>
-                            <div class="text-sm text-gray-400" x-html="selectedJob.benefit"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.benefit"></div>
                             {{-- <div class=""></div> --}}
                         </div>
                 </template>

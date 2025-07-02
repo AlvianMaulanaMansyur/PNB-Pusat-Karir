@@ -18,8 +18,8 @@
                 </x-dropdown.nav-dropdown>
 
                 <x-dropdown.nav-dropdown label="pekerjaan">
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Lowongan Pekerjaan</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
+                    <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Lowongan Pekerjaan</a>
+                    <a href="{{ route('applied.index') }}" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
                 </x-dropdown.nav-dropdown>
 
                 {{-- notification --}}

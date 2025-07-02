@@ -19,4 +19,9 @@ class JobListing extends Model
     {
         return $this->hasMany(JobApplication::class, 'job_id');
     }
+
+    public function portofolio()
+    {
+        return $this->hasMany(portofoliopathimg::class, 'job_id');
+    }
 }
