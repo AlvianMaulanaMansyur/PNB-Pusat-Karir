@@ -19,6 +19,7 @@ class AdminController extends Controller
     public function AdminDashboard()
     {
         $users = User::whereIn('role', ['employer', 'employee'])->get();
+        // dd($users);
         return view('admin.dashboard', compact('users'));
     }
 
@@ -323,5 +324,6 @@ public function create()
         return redirect()->route('admin.employer.create')->with('success', 'Akun employer berhasil dibuat.');
     }
 
-
 }
+
+

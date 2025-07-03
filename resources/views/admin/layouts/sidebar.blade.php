@@ -49,7 +49,7 @@
             Manajemen Lowongan
         </a>
 
-        <a href="#" class="flex items-center gap-2 px-2 py-2 rounded hover:bg-blue-800 transition">
+        <a href="{{ route('admin.manajemenevent') }}" class="flex items-center gap-2 px-2 py-2 rounded hover:bg-blue-800 transition">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
             </svg>

@@ -6,7 +6,8 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Card 1 -->
         @php
-        $verifiedCount = $users->where('is_active', 1)->count();
+        $verifiedCount = $users
+        ->where('is_active', 1)->count();
         @endphp
 
         <div class="bg-blue-900 text-white p-4 rounded-md shadow flex flex-col items-center">

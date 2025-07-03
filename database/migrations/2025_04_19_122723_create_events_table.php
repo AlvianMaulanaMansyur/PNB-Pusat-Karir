@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('registration_link')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->boolean('is_active')->default(true);
+            $table->text('flyer');
         });
     }
 
