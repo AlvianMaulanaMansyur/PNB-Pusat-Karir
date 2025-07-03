@@ -12,13 +12,8 @@
 @endphp
 
 @if ($message)
-    <div
-        x-data="{ show: true }"
-        x-init="setTimeout(() => show = false, 3000)"
-        x-show="show"
-        x-transition
-        class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-4 py-3 rounded shadow border {{ $classes }}"
-    >
+    <div x-data="{ show: true }" {{-- x-init="setTimeout(() => show = false, 3000)" --}} x-show="show" x-transition
+        class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-4 py-3 rounded shadow border {{ $classes }}">
         <p class="text-sm font-medium">{{ $message }}</p>
     </div>
 @endif
