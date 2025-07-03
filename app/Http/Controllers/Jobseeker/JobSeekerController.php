@@ -57,8 +57,9 @@ class JobSeekerController extends Controller
 
     public function detailLowongan($id)
     {
+        $user = Auth::user();
         $job = JobListing::with('employer')->findOrFail($id);
-        return view('jobseeker.detail-lowongan', compact('job'));
+        return view('jobseeker.detail-lowongan', compact('job', 'user'));
     }
 
     public function applyJob($id)
@@ -202,7 +203,7 @@ class JobSeekerController extends Controller
                     'employee_id' => $employeeData->id,
                     'job_id' => $id,
                     'portofolio_path' => $path,
-                    'original_name' => $sertifikat[$index] ?? null,
+                    'file_name' => $sertifikat[$index] ?? null,
                 ]);
             }
 

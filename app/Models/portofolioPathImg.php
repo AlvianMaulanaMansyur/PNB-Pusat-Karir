@@ -12,7 +12,8 @@ class portofoliopathimg extends Model
     protected $fillable = [
         'employee_id',
         'job_id',
-        'portofolio_path', // Nama portofolio
+        'portofolio_path',
+        'file_name'
     ];
 
     public function employee()

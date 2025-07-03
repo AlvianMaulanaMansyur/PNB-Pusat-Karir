@@ -12,23 +12,23 @@ use Illuminate\Support\Facades\Auth;
 class AppliedJobController extends Controller
 {
     public function index()
-    {
-        $user = Auth::user();
-        $employeeData = $user->dataEmployees;
+{
+    $user = Auth::user();
+    $employeeData = $user->dataEmployees;
 
-        $application = JobApplication::with('job')->first();
-        $application->job->nama_lowongan;
-
-        if (!$employeeData) {
-            abort(403, 'Data karyawan tidak ditemukan');
-        }
-
-        // data sertifikat
-        $serticificate = portofoliopathimg::where('employee_id', $employeeData->id)->get();
-
-
-        $jobApplied = JobApplication::with('job.employer')->where('employee_id', $employeeData->id)->where('job_id', $application->job->id)->get();
-        // dd($jobApplied);
-        return view('jobseeker.allJobsAppliedPage', compact('jobApplied', 'serticificate'));
+    if (!$employeeData) {
+        abort(403, 'Data karyawan tidak ditemukan');
     }
+
+    // Ambil semua lamaran dan relasi job
+    $jobApplied = JobApplication::with('job.employer')->where('employee_id', $employeeData->id)->get();
+
+    // Ambil semua sertifikat yang berkaitan dengan employee_id dan job yang dilamar
+    $serticificate = portofoliopathimg::where('employee_id', $employeeData->id)
+        ->whereIn('job_id', $jobApplied->pluck('job_id'))
+        ->get();
+
+    return view('jobseeker.allJobsAppliedPage', compact('jobApplied', 'serticificate'));
+}
+
 }
