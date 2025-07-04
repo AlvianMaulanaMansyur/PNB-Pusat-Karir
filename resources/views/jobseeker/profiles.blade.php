@@ -39,13 +39,23 @@
                 </div>
             </div>
             <div class="py-4">
-                <p class="text-blue-700 text-2xl font-semibold py-2">Ringkasan Diri</p>
+                <p class="text-blue-700 text-3xl font-semibold py-2">Ringkasan Diri</p>
+                <p class="text-gray-600 text-lg py-2">Tambahkan ringkasan pribadi ke profil untuk memperkenalkan diri Anda.</p>
                 @include('components.jobseeker.modal-add-update-summary', [
                     'summary' => $employeeProfile->summary ?? '',
                 ])
             </div>
 
             {{-- section pendidikan --}}
+            <div class="my-10   ">
                 @include('components.jobseeker.education-seciton')
+            </div>
+
+            {{-- section pengalaman kerja --}}
+            <div class="my-10">
+                @include('components.jobseeker.experience-section')
+            </div>
+
+            
     </section>
 </x-jobseeker-layout>

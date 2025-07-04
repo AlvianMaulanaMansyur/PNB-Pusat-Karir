@@ -36,8 +36,19 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
         Route::get('/', [JobseekerProfiles::class, 'index'])->name('jobseeker.profiles');
         Route::put('/update-photo', [JobseekerProfiles::class, 'updateProfile'])->name('profile.update-profiles');
         Route::put('/summary-update', [JobseekerProfiles::class, 'updateSummary'])->name('profile.update-summary');
-        Route::post('/education/add-educations', [JobseekerProfiles::class, 'addEducation'])->name('add.educations');
-        Route::put('/education/edit/{id}', [JobseekerProfiles::class, 'educationUpdate'])->name('education.update');
+
+        // Route untuk section pendidikan
+        Route::prefix('/education')->group(function () {
+            Route::post('/add-educations', [JobseekerProfiles::class, 'addEducation'])->name('add.educations');
+            Route::put('/edit/{id}', [JobseekerProfiles::class, 'educationUpdate'])->name('education.update');
+            Route::delete('/delete/{id}', [JobseekerProfiles::class, 'educationDelete'])->name('education.delete');
+        });
+
+        Route::prefix('/work-experience')->group(function () {
+            Route::post('/add', [JobseekerProfiles::class, 'addWorkingExperience'])->name('work-experience.add');
+            Route::put('/edit/{id}', [JobseekerProfiles::class, 'updateWorkExperience'])->name('work-experience.update');
+            Route::delete('/delete/{id}', [JobseekerProfiles::class, 'deleteWorkExperience'])->name('work-experience.delete');
+        });
     });
 
 });

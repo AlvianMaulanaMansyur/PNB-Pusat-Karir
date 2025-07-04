@@ -5,6 +5,7 @@ namespace App\Http\Controllers\jobseeker;
 use App\Http\Controllers\Controller;
 use App\Models\educations;
 use App\Models\EmployeeProfiles;
+use App\Models\work_experience;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,8 +32,10 @@ class JobseekerProfiles extends Controller
         // Ambil data education berdasarkan employee_id
         $educations = educations::where('employee_id', $employeeData->id)->get();
 
+        $experience  = work_experience::where('employee_id', $employeeData->id)->get();
+
         // Kirimkan keduanya ke view
-        return view('jobseeker.profiles', compact('employeeData', 'employeeProfile', 'educations'));
+        return view('jobseeker.profiles', compact('employeeData', 'employeeProfile', 'educations', 'experience'));
     }
 
     public function updateProfile(Request $request)
@@ -148,9 +151,93 @@ class JobseekerProfiles extends Controller
             $educationlist->save();
 
             return redirect()->back()->with('success', 'data berhasil di perbarui');
-
         } catch (Throwable $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function educationDelete($id)
+    {
+        try {
+            $education = educations::findOrFail($id);
+            $education->delete();
+
+            return redirect()->back()->with('success', 'Data pendidikan berhasil dihapus.');
+        } catch (Throwable $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data pendidikan: ' . $e->getMessage());
+        }
+    }
+
+    public function addWorkingExperience(Request $request)
+    {
+        $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+
+        $request->validate([
+            'company' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'required|string|max:1000',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            work_experience::create([
+                'employee_id' => $employeeData->id,
+                'company' => $request->company,
+                'position' => $request->position,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'description' => $request->description,
+                'is_current' => empty($request->end_date) ? 1 : 0,
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Pengalaman kerja berhasil ditambahkan!');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan pengalaman kerja: ' . $e->getMessage());
+        }
+    }
+
+    public function updateWorkExperience(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'company' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'required|string|max:1000',
+        ]);
+
+        try {
+            $workExperience = work_experience::findOrFail($id);
+
+            $workExperience->company = $validated['company'];
+            $workExperience->position = $validated['position'];
+            $workExperience->start_date = $validated['start_date'];
+            $workExperience->end_date = $validated['end_date'];
+            $workExperience->description = $validated['description'];
+            $workExperience->is_current = empty($validated['end_date']) ? 1 : 0;
+
+            $workExperience->save();
+
+            return redirect()->back()->with('success', 'Pengalaman kerja berhasil diperbarui!');
+        } catch (Throwable $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengalaman kerja: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteWorkExperience($id)
+    {
+        try {
+            $workExperience = work_experience::findOrFail($id);
+            $workExperience->delete();
+
+            return redirect()->back()->with('success', 'Pengalaman kerja berhasil dihapus.');
+        } catch (Throwable $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus pengalaman kerja: ' . $e->getMessage());
         }
     }
 }
