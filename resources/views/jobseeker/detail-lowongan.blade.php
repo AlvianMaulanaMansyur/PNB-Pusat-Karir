@@ -13,8 +13,10 @@
         <div class="border-2 border-gray-300 p-6 bg-white rounded-xl shadow space-y-5">
             {{-- Header --}}
             <div class="flex gap-6 items-start">
-                <img src="{{ asset('storage/' . $job->employer->photo_profile) }}" alt="Foto perusahaan"
-                    class="w-40 h-40 object-cover rounded-lg shadow-md border" />
+                <img src="{{ $job->employer->photo_profile === 'images/default_employer.png'
+                    ? asset('images/default_employer.png')
+                    : asset('storage/' . $job->employer->photo_profile) }}"
+                    alt="Foto perusahaan" class="w-40 h-40 object-cover rounded-lg shadow-md border" />
 
                 <div class="flex-1 items">
                     <h1 class="text-3xl font-bold text-primaryColor mb-1">{{ $job->nama_lowongan }}</h1>

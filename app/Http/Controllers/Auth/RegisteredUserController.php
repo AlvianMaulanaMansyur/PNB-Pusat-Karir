@@ -84,7 +84,7 @@ class RegisteredUserController extends Controller
             $employer = employers::create([
                 'user_id' => $user->id,
                 'slug' => str('employer-'.substr($user->id, 0, 8)),
-                'photo_profile' => 'employer_profiles/default_employer.png',
+                'photo_profile' => 'images/default_employer.png',
                 'alamat_perusahaan' => $request->alamat_perusahaan,
                 'company_name' => $request->nameCompany,
                 'business_registration_number' => $request->business_registration_number,
@@ -161,7 +161,7 @@ class RegisteredUserController extends Controller
                 'last_name' => $request->nama_belakang,
                 'suffix' => $request->akhiran,
                 'phone' => $request->phone,
-                'photo_profile' => '/images/profile.png',
+                'photo_profile' => 'images/profile.png',
                 'country' => $request->negara,
                 'city' => $request->kota,
                 'highest_education' => $request->education,

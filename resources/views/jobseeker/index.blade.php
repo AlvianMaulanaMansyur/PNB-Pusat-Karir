@@ -20,13 +20,13 @@
             },
             getDeadlineCountdown(deadline) {
                 if (!deadline) return '-';
-        
+
                 const now = new Date();
                 const target = new Date(deadline);
                 const diffTime = target - now;
-        
+
                 if (diffTime <= 0) return 'Sudah lewat';
-        
+
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 return `${diffDays} hari lagi`;
             },
@@ -53,20 +53,25 @@
                             detail_kualifikasi: @json(nl2br(e($job->detailkualifikasi))),
                             gaji: @json($job->gaji),
                             benefit: @json(nl2br(e($job->benefit))),
-                            photo_profile: @json(Str::startsWith($job->employer->photo_profile, 'image/')
-                                    ? asset($job->employer->photo_profile)
+                            photo_profile: @json(
+                                $job->employer->photo_profile === 'images/default_employer.png'
+                                    ? asset('images/default_employer.png')
                                     : asset('storage/' . $job->employer->photo_profile)),
+
                             deadline: @json($job->deadline),
                             created_at: @json($job->created_at->diffForHumans())
                         })'>
+
+
                         {{-- Poster dan informasi lowongan --}}
                         <div class="flex items-start space-x-4">
                             {{-- Proflie pic --}}
                             <div>
-                                <img src="{{ Str::startsWith($job->employer->photo_profile, 'image/')
-                                    ? asset($job->employer->photo_profile)
+                                <img src="{{ $job->employer->photo_profile === 'images/default_employer.png'
+                                    ? asset('images/default_employer.png')
                                     : asset('storage/' . $job->employer->photo_profile) }}"
-                                    alt="Poster lowongan" class="w-24 h-24 object-cover rounded-lg shadow-md">
+                                    alt="Foto Profil"
+                                    class="w-28 h-28 object-cover rounded-lg border border-gray-300 shadow-sm">
                             </div>
 
                             {{-- Informasi lowongan --}}

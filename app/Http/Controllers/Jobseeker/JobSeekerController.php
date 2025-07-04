@@ -45,7 +45,7 @@ class JobSeekerController extends Controller
             });
         }
 
-        $jobs = $query->latest()->paginate(5);
+        $jobs = $query->latest()->paginate(10);
 
         return view('jobseeker.index', compact('employeeData', 'jobs'));
     }
