@@ -30,16 +30,17 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
+    public function destroy(Request $request)
+{
+    Auth::logout(); // Logout user dari sesi
 
-        $request->session()->invalidate();
+    // Hancurkan session & token agar aman
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        $request->session()->regenerateToken();
-
-        return redirect('admin.adminLogin');
-    }
+    // Redirect ke halaman login admin
+    return redirect()->route('admin.adminLogin'); // pastikan route ini ada
+}
 
 
     

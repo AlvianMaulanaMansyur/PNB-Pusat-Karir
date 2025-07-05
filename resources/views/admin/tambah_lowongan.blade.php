@@ -12,7 +12,7 @@
 <x-alert.session-alert type="error" :message="session('error')" />
 @endif
 
-{{-- Tampilkan error validasi (opsional, tampilkan error pertama) --}}
+{{-- Tampilkan error validasi --}}
 @if ($errors->any())
 <x-alert.session-alert type="error" :message="$errors->first()" />
 @endif
@@ -25,7 +25,7 @@
         {{-- Form Tambah Lowongan (centered) --}}
         <div class="flex justify-center">
             <div class="w-full lg:w-2/3 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                <form action="{{ route('admin.storelowongan') }}" method="POST" enctype="multipart/form-data" novalidate>
+                <form action="{{ route('admin.store-lowongan') }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
 
                     {{-- Nama Lowongan --}}
@@ -37,12 +37,12 @@
                     <x-text-area-input id="deskripsi" name="deskripsi" class="mt-1 w-full" required />
 
                     {{-- Jenis Lowongan --}}
-                    <x-label-required for="jenis_lowongan" :value="__('Jenis Lowongan')" class="mt-4" />
-                    <x-dropdown.jenis-lowongan class="mt-1 w-full" />
+                    <x-label-required for="jenislowongan" :value="__('Jenis Lowongan')" class="mt-4" />
+                    <x-dropdown.jenis-lowongan id="jenislowongan" name="jenislowongan" class="mt-1 w-full" />
 
                     {{-- Posisi --}}
                     <x-label-required for="posisi" :value="__('Posisi')" class="mt-4" />
-                    <x-dropdown.tingkat-posisi class="mt-1 w-full" />
+                    <x-dropdown.tingkat-posisi class="mt-1 w-full" name="posisi" />
 
                     {{-- Responsibility --}}
                     <x-label-required for="responsibility" :value="__('Responsibility')" class="mt-4" />
@@ -50,7 +50,7 @@
 
                     {{-- Kualifikasi --}}
                     <x-label-required for="kualifikasi" :value="__('Kualifikasi')" class="mt-4" />
-                    <x-dropdown.kualifikasi-pendidikan class="mt-1 w-full" />
+                    <x-dropdown.kualifikasi-pendidikan class="mt-1 w-full" name="kualifikasi" />
 
                     {{-- Detail Kualifikasi --}}
                     <x-label-required for="detailkualifikasi" :value="__('Detail Kualifikasi')" class="mt-4" />
