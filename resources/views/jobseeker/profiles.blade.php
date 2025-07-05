@@ -56,6 +56,8 @@
                 @include('components.jobseeker.experience-section')
             </div>
 
-            
+            @include('components.jobseeker.skills-section')
+
+            {{-- section sertifikat --}}
     </section>
 </x-jobseeker-layout>

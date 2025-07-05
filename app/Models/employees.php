@@ -63,4 +63,9 @@ class employees extends Model
     {
         return $this->hasMany(work_experience::class, 'employee_id');
     }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(expertness::class, 'employee_id');
+    }
 }

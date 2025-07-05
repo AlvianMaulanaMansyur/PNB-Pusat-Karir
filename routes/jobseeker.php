@@ -49,6 +49,9 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
             Route::put('/edit/{id}', [JobseekerProfiles::class, 'updateWorkExperience'])->name('work-experience.update');
             Route::delete('/delete/{id}', [JobseekerProfiles::class, 'deleteWorkExperience'])->name('work-experience.delete');
         });
-    });
 
+        Route::get('/fetch-skills', [JobseekerProfiles::class, 'fetchSkills'])->name('skill.fetch');
+        Route::post('/add-skill', [JobseekerProfiles::class, 'addSkill'])->name('skill.add');
+        Route::delete('/delete-skill/{id}', [JobseekerProfiles::class, 'deleteSkill'])->name('skill.delete');
+    });
 });

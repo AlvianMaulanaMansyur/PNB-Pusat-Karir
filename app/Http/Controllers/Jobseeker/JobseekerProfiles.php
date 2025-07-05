@@ -5,6 +5,7 @@ namespace App\Http\Controllers\jobseeker;
 use App\Http\Controllers\Controller;
 use App\Models\educations;
 use App\Models\EmployeeProfiles;
+use App\Models\expertness;
 use App\Models\work_experience;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,8 @@ class JobseekerProfiles extends Controller
         $educations = educations::where('employee_id', $employeeData->id)->get();
 
         $experience  = work_experience::where('employee_id', $employeeData->id)->get();
+
+        $skills = expertness::where('employee_id', $employeeData->id)->get();
 
         // Kirimkan keduanya ke view
         return view('jobseeker.profiles', compact('employeeData', 'employeeProfile', 'educations', 'experience'));
@@ -238,6 +241,79 @@ class JobseekerProfiles extends Controller
             return redirect()->back()->with('success', 'Pengalaman kerja berhasil dihapus.');
         } catch (Throwable $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus pengalaman kerja: ' . $e->getMessage());
+        }
+    }
+
+    public function fetchSkills()
+    {
+        $user = Auth::user();
+        $skills = $user->dataEmployees->skills()->select('id', 'skill_name')->get();
+
+        return response()->json(['skills' => $skills]);
+    }
+
+    public function addSkill(Request $request)
+    {
+        $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+
+        $request->validate([
+            'skills' => 'required|array',
+            'skills.*' => 'string|max:255',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $saved = [];
+
+            foreach ($request->skills as $skill) {
+                if (!empty($skill)) {
+                    $saved[] = expertness::create([
+                        'employee_id' => $employeeData->id,
+                        'skill_name' => $skill,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'savedSkills' => $saved, // Sudah berupa koleksi model
+            ]);
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'error' => 'Gagal menyimpan keahlian: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function deleteSkill($id)
+    {
+        try {
+            $user = Auth::user();
+            $employeeId = $user->dataEmployees->id;
+
+            // Ambil skill berdasarkan ID dan pastikan milik employee yang sedang login
+            $skill = expertness::where('id', $id)
+                ->where('employee_id', $employeeId)
+                ->first();
+
+            if (!$skill) {
+                return response()->json(['success' => false, 'error' => 'Skill tidak ditemukan atau bukan milik Anda.']);
+            }
+
+            $skill->delete();
+
+            return response()->json(['success' => true]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
         }
     }
 }
