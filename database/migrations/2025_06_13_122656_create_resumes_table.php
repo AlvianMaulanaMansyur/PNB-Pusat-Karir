@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('resumes', function (Blueprint $table) {
-            $table->id(); // Kolom ID utama
-            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('employee_id')->unique()->constrained('employees')->onDelete('cascade');
             $table->string('title')->default('Untitled Resume');
             $table->string('slug')->unique(); // Slug unik untuk URL yang user-friendly
             $table->json('resume_data');

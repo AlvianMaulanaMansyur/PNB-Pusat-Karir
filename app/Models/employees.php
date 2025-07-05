@@ -44,6 +44,11 @@ class employees extends Model
     {
         return $this->hasMany(Resume::class, 'employee_id');
     }
+    
+    public function resume()
+    {
+        return $this->hasOne(Resume::class);
+    }
 
     public function profile()
     {
