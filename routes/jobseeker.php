@@ -25,7 +25,7 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
 
         Route::get('/apply-job/{id}/success', [JobSeekerController::class, 'successApply'])->name('job-apply.success');
 
-        Route::get('/notifikasi',  [NotificationController::class, 'index'])->name('notifikasi.jobseeker');
+        Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifikasi.jobseeker');
 
         Route::get('/activity/applied-jobs', [AppliedJobController::class, 'index'])->name('applied.index');
 
@@ -49,9 +49,11 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
             Route::put('/edit/{id}', [JobseekerProfiles::class, 'updateWorkExperience'])->name('work-experience.update');
             Route::delete('/delete/{id}', [JobseekerProfiles::class, 'deleteWorkExperience'])->name('work-experience.delete');
         });
-
-        Route::get('/fetch-skills', [JobseekerProfiles::class, 'fetchSkills'])->name('skill.fetch');
-        Route::post('/add-skill', [JobseekerProfiles::class, 'addSkill'])->name('skill.add');
-        Route::delete('/delete-skill/{id}', [JobseekerProfiles::class, 'deleteSkill'])->name('skill.delete');
+        route::prefix('/skills')->group(function () {
+            Route::get('/fetch-skills', [JobseekerProfiles::class, 'fetchSkills'])->name('skill.fetch');
+            Route::post('/add-skill', [JobseekerProfiles::class, 'addSkill'])->name('skill.add');
+            Route::delete('/delete-skill/{id}', [JobseekerProfiles::class, 'deleteSkill'])->name('skill.delete');
+            Route::get('/search-skill', [JobseekerProfiles::class, 'searchSkill'])->name('skill.search');
+        });
     });
 });

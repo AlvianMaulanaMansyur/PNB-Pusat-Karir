@@ -4,23 +4,24 @@ namespace App\Http\Controllers\jobseeker;
 
 use App\Http\Controllers\Controller;
 use App\Models\educations;
+use App\Models\employee_skill;
 use App\Models\EmployeeProfiles;
 use App\Models\expertness;
+use App\Models\Skill;
 use App\Models\work_experience;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class JobseekerProfiles extends Controller
 {
-
     public function index()
     {
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
-
 
         // Pastikan employee ada
         if (!$employeeData) {
@@ -33,9 +34,11 @@ class JobseekerProfiles extends Controller
         // Ambil data education berdasarkan employee_id
         $educations = educations::where('employee_id', $employeeData->id)->get();
 
-        $experience  = work_experience::where('employee_id', $employeeData->id)->get();
+        $experience = work_experience::where('employee_id', $employeeData->id)->get();
 
-        $skills = expertness::where('employee_id', $employeeData->id)->get();
+        $skills = employee_skill::where('employee_id', $employeeData->id)->with('skill')->get();
+
+        // dd($skills);
 
         // Kirimkan keduanya ke view
         return view('jobseeker.profiles', compact('employeeData', 'employeeProfile', 'educations', 'experience'));
@@ -114,8 +117,7 @@ class JobseekerProfiles extends Controller
                 'degrees' => $request->pendidikan,
                 'dicipline' => $request->keahlian,
                 'end_date' => $request->lulus,
-                'description' => $request->deskripsi
-
+                'description' => $request->deskripsi,
             ]);
             DB::commit();
 
@@ -123,7 +125,7 @@ class JobseekerProfiles extends Controller
         } catch (Throwable $e) {
             DB::rollBack();
             return redirect()
-                ->route('jobseeker.profiles',)
+                ->route('jobseeker.profiles')
                 ->with('error', 'Terjadi kesalahan saat menyimpan lamaran: ' . $e->getMessage());
         }
     }
@@ -141,7 +143,6 @@ class JobseekerProfiles extends Controller
             'description' => 'required|string',
         ]);
         try {
-
             $educationlist = educations::findOrFail($id);
 
             $educationlist->institution = $validated['institution'];
@@ -155,7 +156,9 @@ class JobseekerProfiles extends Controller
 
             return redirect()->back()->with('success', 'data berhasil di perbarui');
         } catch (Throwable $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -167,7 +170,9 @@ class JobseekerProfiles extends Controller
 
             return redirect()->back()->with('success', 'Data pendidikan berhasil dihapus.');
         } catch (Throwable $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data pendidikan: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan saat menghapus data pendidikan: ' . $e->getMessage());
         }
     }
 
@@ -200,7 +205,9 @@ class JobseekerProfiles extends Controller
             return redirect()->back()->with('success', 'Pengalaman kerja berhasil ditambahkan!');
         } catch (Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan pengalaman kerja: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan saat menambahkan pengalaman kerja: ' . $e->getMessage());
         }
     }
 
@@ -228,7 +235,9 @@ class JobseekerProfiles extends Controller
 
             return redirect()->back()->with('success', 'Pengalaman kerja berhasil diperbarui!');
         } catch (Throwable $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengalaman kerja: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan saat memperbarui pengalaman kerja: ' . $e->getMessage());
         }
     }
 
@@ -240,80 +249,107 @@ class JobseekerProfiles extends Controller
 
             return redirect()->back()->with('success', 'Pengalaman kerja berhasil dihapus.');
         } catch (Throwable $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus pengalaman kerja: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan saat menghapus pengalaman kerja: ' . $e->getMessage());
         }
     }
 
+    // Contoh di JobseekerProfiles.php
+    // Ambil skill employee
     public function fetchSkills()
     {
-        $user = Auth::user();
-        $skills = $user->dataEmployees->skills()->select('id', 'skill_name')->get();
-
+        $employee = auth()->user()->dataEmployees;
+        $skills = $employee
+            ->employeeSkills()
+            ->with('skill')
+            ->get()
+            ->map(function ($empSkill) {
+                return [
+                    'id' => $empSkill->skill->id,
+                    'name' => $empSkill->skill->name,
+                ];
+            });
         return response()->json(['skills' => $skills]);
     }
 
+    // Simpan skill dan relasi employee_skill
     public function addSkill(Request $request)
     {
-        $user = Auth::user();
-        $employeeData = $user->dataEmployees;
+        $employee = auth()->user()->dataEmployees;
+        $skills = $request->skills; // array dari front-end
 
-        $request->validate([
-            'skills' => 'required|array',
-            'skills.*' => 'string|max:255',
-        ]);
+        // Hitung jumlah skill yang sudah dimiliki employee
+        $currentSkillCount = $employee->employeeSkills()->count();
 
-        DB::beginTransaction();
-
-        try {
-            $saved = [];
-
-            foreach ($request->skills as $skill) {
-                if (!empty($skill)) {
-                    $saved[] = expertness::create([
-                        'employee_id' => $employeeData->id,
-                        'skill_name' => $skill,
-                    ]);
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'savedSkills' => $saved, // Sudah berupa koleksi model
-            ]);
-        } catch (Throwable $e) {
-            DB::rollBack();
+        // Jika total skill akan melebihi 25, tolak
+        if ($currentSkillCount + count($skills) > 25) {
             return response()->json([
                 'success' => false,
-                'error' => 'Gagal menyimpan keahlian: ' . $e->getMessage()
+                'message' => 'Batas maksimum keahlian adalah 25.',
             ]);
+        }
+
+        $savedSkills = [];
+
+        foreach ($skills as $skillData) {
+            if ($skillData['id']) {
+                // Skill sudah ada, cek relasi employee_skill
+                $exists = $employee->employeeSkills()->where('skill_id', $skillData['id'])->exists();
+                if (!$exists) {
+                    $employee->employeeSkills()->create(['skill_id' => $skillData['id']]);
+                }
+                $savedSkills[] = ['id' => $skillData['id'], 'name' => $skillData['name']];
+            } else {
+                // Skill baru, simpan dulu di tabel skills
+                $skill = Skill::firstOrCreate(['name' => $skillData['name']]);
+
+                // Cek lagi untuk berjaga-jaga (jika sudah dibuat sebelumnya)
+                $exists = $employee->employeeSkills()->where('skill_id', $skill->id)->exists();
+                if (!$exists) {
+                    $employee->employeeSkills()->create(['skill_id' => $skill->id]);
+                }
+
+                $savedSkills[] = ['id' => $skill->id, 'name' => $skill->name];
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'savedSkills' => $savedSkills,
+        ]);
+    }
+
+    // Hapus skill employee
+    public function deleteSkill($skillId)
+    {
+        $employee = auth()->user()->dataEmployees;
+
+        if (!$employee) {
+            return response()->json(['success' => false, 'message' => 'Employee tidak ditemukan']);
+        }
+
+        try {
+            $deleted = employee_skill::where('employee_id', $employee->id)->where('skill_id', $skillId)->delete();
+
+            if ($deleted) {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Data tidak ditemukan']);
+            }
+        } catch (\Throwable $th) {
+            Log::error('Gagal menghapus skill: ' . $th->getMessage());
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus skill: ' . $th->getMessage()]);
         }
     }
 
-    public function deleteSkill($id)
+    // FUNGSI SEARCH SKILL
+    public function searchSkill(Request $request)
     {
-        try {
-            $user = Auth::user();
-            $employeeId = $user->dataEmployees->id;
-
-            // Ambil skill berdasarkan ID dan pastikan milik employee yang sedang login
-            $skill = expertness::where('id', $id)
-                ->where('employee_id', $employeeId)
-                ->first();
-
-            if (!$skill) {
-                return response()->json(['success' => false, 'error' => 'Skill tidak ditemukan atau bukan milik Anda.']);
-            }
-
-            $skill->delete();
-
-            return response()->json(['success' => true]);
-        } catch (Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ]);
-        }
+        $keyword = $request->query('keyword');
+        $skills = Skill::where('name', 'LIKE', "%{$keyword}%")
+            ->limit(10)
+            ->get();
+        return response()->json(['skills' => $skills]);
     }
 }
