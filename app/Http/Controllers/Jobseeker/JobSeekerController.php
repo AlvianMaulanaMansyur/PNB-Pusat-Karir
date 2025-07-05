@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Jobseeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\educations;
+use App\Models\EmployeeProfiles;
 use App\Models\employees;
+use App\Models\EmployerNotification;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Models\portofoliopathimg;
 use App\Notifications\JobApplicationSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,23 +19,47 @@ use Illuminate\Support\Str;
 
 class JobSeekerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // mengambil data karyawan yang sedang login
         $user = Auth::user();
-        $employeeData = $user->dataEmployees; // relasi
+        $employeeData = $user->dataEmployees;
 
-        // mengambil data lowongan kerja dengan relasi employer
-        $jobs = JobListing::with('employer')->latest()->paginate(5);
+        $query = JobListing::with('employer');
 
-        // dd($employerData);
+        // Filter berdasarkan keyword (judul lowongan / perusahaan / deskripsi)
+        if ($request->filled('keyword')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_lowongan', 'like', '%' . $request->keyword . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $request->keyword . '%')
+                    ->orWhereHas('employer', function ($q2) use ($request) {
+                        $q2->where('company_name', 'like', '%' . $request->keyword . '%');
+                    });
+            });
+        }
+
+        // Filter berdasarkan lokasi (alamat perusahaan)
+        if ($request->filled('location')) {
+            $query->whereHas('employer', function ($q) use ($request) {
+                $q->where('alamat_perusahaan', 'like', '%' . $request->location . '%');
+            });
+        }
+
+        $jobs = $query->latest()->paginate(5);
+
         return view('jobseeker.index', compact('employeeData', 'jobs'));
+    }
+
+    public function LandingPage()
+    {
+        $jobs = JobListing::latest()->take(6)->get();
+        return view('jobseeker.landingPage', compact('jobs'));
     }
 
     public function detailLowongan($id)
     {
+        $user = Auth::user();
         $job = JobListing::with('employer')->findOrFail($id);
-        return view('jobseeker.detail-lowongan', compact('job'));
+        return view('jobseeker.detail-lowongan', compact('job', 'user'));
     }
 
     public function applyJob($id)
@@ -51,16 +79,15 @@ class JobSeekerController extends Controller
         ]);
 
         // simpan file ke folder sementara storage/temp
-
         $cv = $request->file('cv');
-        $cvPath = $cv->store('temp');
+        $cvPath = $cv->store('temp', 'public');
         $cvOriginalName = $cv->getClientOriginalName();
         $sertifikatPath = [];
         $sertifikatNames = [];
 
         if ($request->hasFile('certificates')) {
             foreach ($request->file('certificates') as $sertifikat) {
-                $sertifikatPath[] = $sertifikat->store('temp');
+                $sertifikatPath[] = $sertifikat->store('temp', 'public');
                 $sertifikatNames[] = $sertifikat->getClientOriginalName();
             }
         }
@@ -100,9 +127,11 @@ class JobSeekerController extends Controller
         $job = JobListing::with('employer')->findOrFail($id);
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
+        $employeeSummary = EmployeeProfiles::where('employee_id', $employeeData->id)->first();
+        $employeeEducations = educations::where('employee_id', $employeeData->id)->get();
 
         session(['step_2_completed' => true]); // tandai step 2 sudah selesai
-        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData'));
+        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData', 'employeeSummary', 'employeeEducations'));
     }
 
     public function storeStepTwo($id)
@@ -154,10 +183,10 @@ class JobSeekerController extends Controller
 
         DB::beginTransaction();
         try {
+            // Buat JobApplication dulu
             JobApplication::create([
                 'job_id' => $id,
                 'slug' => 'lamaran-' . Str::uuid(),
-
                 'employee_id' => $employeeData->id,
                 'applied_at' => now(),
                 'status' => 'pending',
@@ -167,11 +196,20 @@ class JobSeekerController extends Controller
                 'interview_status' => 'not_scheduled',
                 'interview_date' => null,
             ]);
-            // Kirim notifikasi ke employer
-            $employer = $job->employer;
 
+            // Simpan path sertifikat (jika hanya satu file)
+            foreach ($finalSertifikatPaths as $path) {
+                portofoliopathimg::create([
+                    'employee_id' => $employeeData->id,
+                    'job_id' => $id,
+                    'portofolio_path' => $path,
+                    'file_name' => $sertifikat[$index] ?? null,
+                ]);
+            }
+
+            $employer = $job->employer;
             $employeeData->notify(new JobApplicationSubmitted($job, $employeeData));
-            
+
             DB::commit();
             return redirect()->route('job-apply.success', ['id' => $id]);
         } catch (\Throwable $e) {
@@ -195,6 +233,20 @@ class JobSeekerController extends Controller
                 ->route('job-apply', ['id' => $id])
                 ->with('error', 'Silahkan pilih lowongan yang sesuai.');
         }
+
+        $job = JobListing::with('employer')->findOrFail($id);
+        $user = Auth::user();
+        $employee = DB::table('employees')->where('user_id', $user->id)->first();
+        $employer_id = $job->employer->id;
+        $title = "{$employee->first_name} {$employee->last_name} melamar di lowongan anda {$job->nama_lowongan}";
+        $message = "Anda memiliki pelamar baru pada lowongan {$job->nama_lowongan}";
+
+        EmployerNotification::create([
+            'employer_id' => $employer_id,
+            'title' => $title,
+            'message' => $message,
+            'is_read' => false,
+        ]);
 
         // Hapus session setelah sukses apply
         session()->forget(['suratLamaran', 'cv', 'cv_path', 'sertifikat', 'sertifikat_path', 'applied_job_id', 'step_1_completed', 'step_2_completed']);

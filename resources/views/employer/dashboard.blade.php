@@ -19,9 +19,36 @@
             <img src="{{ asset('images/HumanLogin.png') }}" alt="3D Human">
         </div>
     </div>
-
-    {{-- Box Informasi Tambahan --}}
+    {{-- Akses Halaman Cari Pelamar --}}
+    {{-- CTA Temukan Kandidat --}}
     <div class="mt-40 px-10 lg:px-32">
+        <a href="{{ route('employer.temukan-kandidat') }}"
+            class="group flex items-center justify-between bg-white border border-indigo-100 rounded-2xl p-6 shadow-md transition duration-300 ease-in-out transform hover:shadow-lg hover:-translate-y-1 hover:border-indigo-300">
+
+            {{-- Konten Kiri --}}
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xl shadow transition duration-300 ease-in-out group-hover:bg-indigo-200 group-hover:rotate-6">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div>
+                    <h3
+                        class="text-base font-semibold text-gray-800 transition-colors duration-300 ease-in-out group-hover:text-indigo-700">
+                        Temukan Kandidat
+                    </h3>
+                    <p class="text-sm text-gray-500">
+                        Telusuri pelamar berdasarkan skill dan pengalaman yang sesuai kebutuhan Anda.
+                    </p>
+                </div>
+            </div>
+
+            {{-- Chevron kanan --}}
+            <i
+                class="fas fa-chevron-right text-gray-400 text-base transition duration-300 ease-in-out group-hover:text-indigo-600 group-hover:translate-x-1"></i>
+        </a>
+    </div>
+    {{-- Box Informasi Tambahan --}}
+    <div class="mt-6 px-10 lg:px-32">
         <div class="bg-white border border-blue-200 rounded-xl shadow-md p-6">
             <div class="flex items-center mb-3">
                 <i class="fas fa-info-circle text-blue-500 text-2xl mr-3"></i>
@@ -37,33 +64,48 @@
 
     {{-- Fitur Tersedia --}}
     <div class="mt-24 flex justify-center">
-        <div class="bg-gray-50 border border-gray-200 rounded-2xl shadow-md px-6 py-6 text-center w-full sm:w-3/4 lg:w-1/2">
-            <h2 class="text-2xl font-semibold text-gray-800">Fitur-fitur yang Tersedia</h2>
+        <div class="bg-white border border-indigo-100 rounded-2xl shadow-lg px-6 py-6 text-center w-full sm:w-3/4 lg:w-1/2" data-aos="fade-up">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-1">Fitur-fitur yang Tersedia</h2>
+            <p class="text-sm text-gray-500">Berbagai alat bantu untuk mempermudah proses rekrutmen Anda.</p>
         </div>
     </div>
 
     {{-- Box Fungsional --}}
-    <div class="mt-12 flex flex-wrap justify-center gap-8 px-10 lg:px-32">
+    <div class="mt-12 flex flex-wrap justify-center gap-6 px-10 lg:px-32">
+
         <!-- Tambah Lowongan -->
         <a href="{{ route('employer.tambahlowongan') }}"
-            class="group bg-green-500 hover:bg-green-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
-            <i class="fas fa-plus-circle text-3xl mb-2"></i>
-            <h3 class="text-lg font-medium">Tambah Lowongan</h3>
+            class="group bg-gradient-to-br from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300 hover:scale-105"
+            data-aos="fade-up" data-aos-delay="100">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 transition-transform group-hover:scale-110">
+                <i class="fas fa-plus-circle text-2xl text-white"></i>
+            </div>
+            <h3 class="text-base font-semibold mb-1">Tambah Lowongan</h3>
+            <p class="text-sm text-white/90">Buat dan publikasikan lowongan baru dengan cepat.</p>
         </a>
 
         <!-- Manajemen Lowongan -->
         <a href="{{ route('employer.manajemen-lowongan') }}"
-            class="group bg-yellow-400 hover:bg-yellow-500 text-gray-800 w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
-            <i class="fas fa-tasks text-3xl mb-2"></i>
-            <h3 class="text-lg font-medium">Manajemen Lowongan</h3>
+            class="group bg-gradient-to-br from-yellow-300 to-yellow-400 hover:from-yellow-400 hover:to-yellow-500 text-gray-800 w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300 hover:scale-105"
+            data-aos="fade-up" data-aos-delay="200">
+            <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center mx-auto mb-3 transition-transform group-hover:scale-110">
+                <i class="fas fa-tasks text-2xl text-gray-800"></i>
+            </div>
+            <h3 class="text-base font-semibold mb-1">Manajemen Lowongan</h3>
+            <p class="text-sm text-gray-700">Kelola semua lowongan Anda disini.</p>
         </a>
 
         <!-- Pelamar Lowongan -->
         <a href="{{ route('employer.pelamar-lowongan', ['slug' => auth()->user()->employer->slug]) }}"
-            class="group bg-blue-500 hover:bg-blue-600 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300">
-            <i class="fas fa-users text-3xl mb-2"></i>
-            <h3 class="text-lg font-medium">Pelamar Lowongan</h3>
+            class="group bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white w-full sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl p-5 text-center shadow-md transition-all duration-300 hover:scale-105"
+            data-aos="fade-up" data-aos-delay="300">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 transition-transform group-hover:scale-110">
+                <i class="fas fa-users text-2xl text-white"></i>
+            </div>
+            <h3 class="text-base font-semibold mb-1">Pelamar Lowongan</h3>
+            <p class="text-sm text-white/90">Lihat daftar pelamar dan kelola proses seleksi.</p>
         </a>
+
     </div>
 
     {{-- Detail fitur tambahan --}}

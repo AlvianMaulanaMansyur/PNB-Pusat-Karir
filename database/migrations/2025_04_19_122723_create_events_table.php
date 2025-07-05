@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('posted_by')->constrained('users')->onDelete('cascade');
-            $table->enum('posted_by_role', ['admin', 'employer']);
             $table->string('title', 100);
             $table->enum('event_type', ['webinar', 'jobfair', 'workshop']);
             $table->text('description');
@@ -21,9 +20,9 @@ return new class extends Migration
             $table->boolean('needs_registration')->default(false);
             $table->integer('max_participants')->nullable();
             $table->string('registration_link')->nullable();
-            $table->timestamp('created_at')->useCurrent();
             $table->boolean('is_active')->default(true);
             $table->text('flyer');
+            $table->timestamps();
         });
     }
 

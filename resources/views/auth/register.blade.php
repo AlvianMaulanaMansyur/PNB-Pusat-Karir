@@ -144,7 +144,7 @@
 
             <!-- telephone Address -->
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
-                <x-label-required for="Alamat" :value="__('Alamar Perusahaan')" />
+                <x-label-required for="Alamat" :value="__('Alamat Perusahaan')" />
                 <x-text-input id="alamat_perusahaan" name="alamat_perusahaan" type="text"
                     class="block mt-1 w-full" :value="old('alamat_perusahaan')" required />
                 <x-input-error :messages="$errors->get('alamat_perusahaan')" class="mt-2" />

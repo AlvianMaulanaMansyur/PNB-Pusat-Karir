@@ -17,13 +17,28 @@
                 } else {
                     this.selectedJob = job;
                 }
-            }
+            },
+            getDeadlineCountdown(deadline) {
+                if (!deadline) return '-';
+
+                const now = new Date();
+                const target = new Date(deadline);
+                const diffTime = target - now;
+
+                if (diffTime <= 0) return 'Sudah lewat';
+
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return `${diffDays} hari lagi`;
+            },
         }" class="grid grid-cols-12 gap-4 min-h-screen">
 
             {{-- Kolom kiri: daftar lowongan --}}
             <div class="col-span-12 md:col-span-5 p-4 space-y-4">
                 @foreach ($jobs as $job)
-                    <div class="card p-6 border-4 border-[#9A9A9A] cursor-pointer rounded-3xl hover:border-darkBlue"
+                    <div class="card p-6 border-4 rounded-3xl cursor-pointer transition-all duration-200"
+                        :class="selectedJob?.id === {{ $job->id }} ?
+                            'border-primaryColor ring-2 ring-primaryColor' :
+                            'border-[#9A9A9A] hover:border-darkBlue'"
                         @click='goToDetail({
                             id: {{ $job->id }},
                             nama_lowongan: @json($job->nama_lowongan),
@@ -32,24 +47,26 @@
                             alamat_perusahaan: @json($job->employer->alamat_perusahaan ?? 'Alamat tidak tersedia'),
                             jenislowongan: @json($job->jenislowongan),
                             profile: @json(asset($job->profile)),
-                            deskripsi: @json($job->deskripsi),
-                            tanggung_jawab: @json($job->responsibility),
+                            deskripsi: @json(nl2br(e($job->deskripsi))),
+                            tanggung_jawab: @json(nl2br(e($job->responsibility))),
                             kualifikasi: @json($job->kualifikasi),
-                            detail_kualifikasi: @json($job->detailkualifikasi),
+                            detail_kualifikasi: @json(nl2br(e($job->detailkualifikasi))),
                             gaji: @json($job->gaji),
-                            benefit: @json($job->benefit),
-                            photo_profile: @json(asset($job->employer->photo_profile)),
+                            benefit: @json(nl2br(e($job->benefit))),
+                            photo_profile: @json(Str::startsWith($job->employer->photo_profile, 'image/')
+                                    ? asset($job->employer->photo_profile)
+                                    : asset('storage/' . $job->employer->photo_profile)),
+                            deadline: @json($job->deadline),
                             created_at: @json($job->created_at->diffForHumans())
-
-
                         })'>
                         {{-- Poster dan informasi lowongan --}}
                         <div class="flex items-start space-x-4">
-                            {{-- Poster --}}
+                            {{-- Proflie pic --}}
                             <div>
-                                <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
-                                    class="w-24 h-24 object-cover rounded-lg shadow-md">
-
+                                <img src="{{ Str::startsWith($job->employer->photo_profile, 'image/')
+                                    ? asset($job->employer->photo_profile)
+                                    : asset('storage/' . $job->employer->photo_profile) }}"
+                                    alt="Poster lowongan" class="w-24 h-24 object-cover rounded-lg shadow-md">
 
                             </div>
 
@@ -114,16 +131,16 @@
             {{-- Kolom kanan: detail lowongan (desktop only) --}}
             <div class="hidden md:block col-span-7 h-screen overflow-y-auto sticky top-0 p-4 ">
                 <template x-if="selectedJob === null">
-                    <div class="text-center text-gray-500 mt-20">
+                    <div class="text-center text-gray-700 mt-20">
                         <p class="text-xl font-semibold">Pilih lowongan untuk ditampilkan</p>
                     </div>
                 </template>
 
                 <template x-if="selectedJob !== null">
-                    <div class="card border-2 p-6 bg-white rounded-xl space-y-3">
+                    <div class="card p-6 bg-white rounded-xl space-y-3">
                         {{-- foto --}}
                         <div class="flex mb-4">
-                            <img :src="selectedJob.photo_profile" alt="Poster lowongan"
+                            <img :src="selectedJob.photo_profile" alt="profile pict"
                                 class="w-32 h-32 object-cover rounded-lg shadow-md">
                         </div>
                         {{-- Judul yang bisa diklik ke halaman detail --}}
@@ -153,7 +170,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                             </svg>
-                            <p class="text-sm text-gray-500" x-text="selectedJob.alamat_perusahaan"></p>
+                            <p class="text-sm text-gray-700" x-text="selectedJob.alamat_perusahaan"></p>
                         </div>
 
                         {{-- /Jenis Lowongan --}}
@@ -164,7 +181,7 @@
                                     d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
 
-                            <div class="text-sm text-gray-600" x-text="selectedJob.jenislowongan"></div>
+                            <div class="text-sm text-gray-700" x-text="selectedJob.jenislowongan"></div>
                         </div>
 
                         {{-- Gaji --}}
@@ -181,40 +198,54 @@
                         </div>
                         <div class="text-xs text-gray-400" x-text="selectedJob.created_at"></div>
 
-                        {{-- button lamar dan save --}}
-                        <div class="py-6">
-                            <a :href="'/id/apply-job/' + selectedJob.id" target="_blank">
-                                <x-primary-button>
-                                    {{ __('Lamar') }}
+                        {{-- button lamar --}}
+                        <div class="py-6 flex">
+                            <template x-if="new Date(selectedJob.deadline) > new Date()">
+                                <a :href="'/id/apply-job/' + selectedJob.id" target="_blank">
+                                    <x-primary-button>
+                                        {{ __('Lamar') }}
+                                    </x-primary-button>
+                                </a>
+                            </template>
+
+                            <template x-if="new Date(selectedJob.deadline) <= new Date()">
+                                <x-primary-button disabled class="bg-red-500 hover:bg opacity-50 cursor-not-allowed">
+                                    Ditutup
                                 </x-primary-button>
-                            </a>
-                            <x-secondary-button class="ml-2">Simpan</x-secondary-button>
+                            </template>
+                            <x-secondary-button class="ml-2"
+                                x-text="getDeadlineCountdown(selectedJob.deadline)"></x-secondary-button>
                         </div>
 
-                        {{-- poster --}}
+                        {{-- poster
+                        <div>
+                            <H1>Info ebih lanjut</H1>
+
+                        </div> --}}
+
 
                         {{-- deskripsi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Deskripsi Pekerjaan</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.deskripsi"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.deskripsi"></div>
                         </div>
 
                         {{-- Tanggung Jawab --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Tanggung Jawab</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.tanggung_jawab"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.tanggung_jawab"></div>
                         </div>
 
                         {{-- Kualifikasi --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Kualifikasi</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.detail_kualifikasi"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.detail_kualifikasi"></div>
                         </div>
 
                         {{-- Benefit --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Benefit</h3>
-                            <div class="text-sm text-gray-400" x-text="selectedJob.benefit"></div>
+                            <div class="text-sm text-gray-700" x-html="selectedJob.benefit"></div>
                             {{-- <div class=""></div> --}}
                         </div>
                 </template>

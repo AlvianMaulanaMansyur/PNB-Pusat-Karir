@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\jobseeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\educations;
 use App\Models\EmployeeProfiles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class JobseekerProfiles extends Controller
 {
@@ -16,6 +19,7 @@ class JobseekerProfiles extends Controller
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
 
+
         // Pastikan employee ada
         if (!$employeeData) {
             return redirect()->back()->with('error', 'Data karyawan tidak ditemukan.');
@@ -24,8 +28,11 @@ class JobseekerProfiles extends Controller
         // Ambil data profile berdasarkan employee_id
         $employeeProfile = EmployeeProfiles::where('employee_id', $employeeData->id)->first();
 
+        // Ambil data education berdasarkan employee_id
+        $educations = educations::where('employee_id', $employeeData->id)->get();
+
         // Kirimkan keduanya ke view
-        return view('jobseeker.profiles', compact('employeeData', 'employeeProfile'));
+        return view('jobseeker.profiles', compact('employeeData', 'employeeProfile', 'educations'));
     }
 
     public function updateProfile(Request $request)
@@ -77,5 +84,73 @@ class JobseekerProfiles extends Controller
         $profile->save();
 
         return redirect()->back()->with('success', 'Ringkasan berhasil diperbarui.');
+    }
+
+    public function addEducation(Request $request)
+    {
+        $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+        $request->validate([
+            'lembaga' => 'required|string',
+            'sertifikasi' => 'required|string',
+            'pendidikan' => 'required',
+            'keahlian' => 'required|string',
+            'lulus' => 'required',
+            'deskripsi' => 'required',
+        ]);
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+            educations::create([
+                'employee_id' => $employeeData->id,
+                'institution' => $request->lembaga,
+                'sertifications' => $request->sertifikasi,
+                'degrees' => $request->pendidikan,
+                'dicipline' => $request->keahlian,
+                'end_date' => $request->lulus,
+                'description' => $request->deskripsi
+
+            ]);
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Data pendidikan berhasil di tambahkan!  ');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return redirect()
+                ->route('jobseeker.profiles',)
+                ->with('error', 'Terjadi kesalahan saat menyimpan lamaran: ' . $e->getMessage());
+        }
+    }
+
+    public function educationUpdate(Request $request, $id)
+    {
+        // dd($request->all());
+
+        $validated = $request->validate([
+            'institution' => 'required|string',
+            'sertifications' => 'required|string',
+            'degrees' => 'required',
+            'dicipline' => 'required|string',
+            'end_date' => 'required|date',
+            'description' => 'required|string',
+        ]);
+        try {
+
+            $educationlist = educations::findOrFail($id);
+
+            $educationlist->institution = $validated['institution'];
+            $educationlist->sertifications = $validated['sertifications'];
+            $educationlist->degrees = $validated['degrees'];
+            $educationlist->dicipline = $validated['dicipline'];
+            $educationlist->end_date = $validated['end_date'];
+            $educationlist->description = $validated['description'];
+
+            $educationlist->save();
+
+            return redirect()->back()->with('success', 'data berhasil di perbarui');
+
+        } catch (Throwable $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

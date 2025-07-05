@@ -91,7 +91,7 @@
 
     {{-- Responsibility --}}
     <div class="mb-4">
-        <x-label-required for="responsibility" :value="__('Responsibility')" />
+        <x-label-required for="responsibility" :value="__('Tanggung Jawab')" />
         <textarea name="responsibility" id="responsibility" rows="4"
             class="block mt-1 w-full rounded-md border-black-300 focus:ring-2 focus:ring-blue-500 text-sm"
             required>{{ old('responsibility', $lowongan->responsibility) }}</textarea>
@@ -190,7 +190,7 @@
 <div id="modal-confirm-update" tabindex="-1"
     class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-md bg-black/30">
     <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 transition-all duration-300 ease-out">
-        
+
         {{-- Tombol Tutup --}}
         <button type="button"
             class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full w-9 h-9 flex items-center justify-center transition"

@@ -1,5 +1,5 @@
 <footer>
-    <div class="bg-darkBlue text-white py-10 md:py-20 px-7 md:px-20">
+    <div class="bg-darkBlue text-white py-10 md:py-10 px-7 md:px-20">
         <div class="w-full max-w-screen-xl mx-auto">
             <div class="grid md:grid-cols-2 gap-10">
                 {{-- Kolom Kiri --}}
@@ -8,7 +8,7 @@
                         <x-pnb-logo class="w-10" />
                         <p class="text-xl font-semibold">Pusat PNB Karir</p>
                     </div>
-                    <div class="pt-5 md:pe-10">
+                    <div class="pt-5 md:pe-10 text-justify  text-xs">
                         <p>
                             Politeknik Negeri Bali (PNB) yang lebih dikenal dengan nama Poltek Bali merupakan lembaga
                             pendidikan tinggi bidang vokasi yang lebih mengedepankan praktik daripada teori.
@@ -34,7 +34,7 @@
                         </a>
 
                         {{-- Email --}}
-                        <a href="#"><i class="fa-regular fa-envelope"></i></a>
+                        <a href="https://pnb.ac.id"><i class="fa-regular fa-envelope"></i></a>
 
                         {{-- LinkedIn --}}
                         <a href="#"><i class="fa-brands fa-linkedin text-white"></i></a>
