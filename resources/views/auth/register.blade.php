@@ -1,6 +1,7 @@
 <x-employer-register-layout>
     <form method="POST" action="{{ route('register-employer') }}">
         @csrf
+
         <div class="lg:grid col-1 md:grid-col-4 lg:grid-cols-6 gap-2 lg:max-w-3xl  sm:max-w-xl flex flex-col mx-auto">
             <!-- Name -->
             <div class="mt-4 lg:col-span-3 md:grid-col-2  ">
@@ -144,7 +145,7 @@
 
             <!-- telephone Address -->
             <div class="mt-4 lg:col-span-6 md:grid-col-2">
-                <x-label-required for="Alamat" :value="__('Alamar Perusahaan')" />
+                <x-label-required for="Alamat" :value="__('Alamat Perusahaan')" />
                 <x-text-input id="alamat_perusahaan" name="alamat_perusahaan" type="text"
                     class="block mt-1 w-full" :value="old('alamat_perusahaan')" required />
                 <x-input-error :messages="$errors->get('alamat_perusahaan')" class="mt-2" />

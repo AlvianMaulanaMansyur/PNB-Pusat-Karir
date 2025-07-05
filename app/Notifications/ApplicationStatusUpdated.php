@@ -44,7 +44,7 @@ class ApplicationStatusUpdated extends Notification
 
     public function toDatabase($notifiable)
     {
-        $message = "Status lamaran Anda untuk posisi {$this->job->nama_lowongan} telah diubah menjadi: {$this->status}.";
+        $message = "📢 Status lamaran Anda untuk posisi {$this->job->nama_lowongan} telah diubah menjadi: {$this->status}.";
         if ($this->status === 'interview' && $this->interviewDate) {
             $message .= ' Jadwal interview: ' . date('d M Y H:i', strtotime($this->interviewDate));
         }
