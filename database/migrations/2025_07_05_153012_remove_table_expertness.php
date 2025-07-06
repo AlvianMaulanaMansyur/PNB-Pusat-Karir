@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('expertness');
+        // Schema::dropIfExists('expertness');
 
         Schema::table('expertness', function (Blueprint $table) {
             // Hapus tabel expertness
@@ -22,8 +22,5 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-      
-    }
+    public function down(): void {}
 };

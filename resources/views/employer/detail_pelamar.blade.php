@@ -168,6 +168,21 @@
         </div>
         @endif
 
+        <h3 class="text-lg font-semibold mb-4">Sertifikat / Portofolio</h3>
+        @forelse ($certificates as $cert)
+        <div class="mb-4">
+            <p class="font-medium text-gray-800">{{ $cert->file_name }}</p>
+            <a href="{{ asset('storage/' . $cert->portofolio_path) }}"
+                target="_blank"
+                class="text-blue-600 hover:underline text-sm">
+                Lihat Sertifikat
+            </a>
+        </div>
+        @empty
+        <p class="text-sm text-gray-500">Tidak ada sertifikat yang diunggah.</p>
+        @endforelse
+
+
     </div>
 
 

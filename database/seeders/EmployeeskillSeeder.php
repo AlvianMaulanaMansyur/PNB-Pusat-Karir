@@ -11,15 +11,15 @@ class EmployeeskillSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-   public function run()
+    public function run()
     {
         // Contoh data dummy
         $employeeSkills = [
-            ['employee_id' => 1, 'skill_id' => 1, 'proficiency_level' => '90'],
-            ['employee_id' => 1, 'skill_id' => 2, 'proficiency_level' => '100'],
-            ['employee_id' => 2, 'skill_id' => 1, 'proficiency_level' => '100'],
-            ['employee_id' => 2, 'skill_id' => 3, 'proficiency_level' => '100'],
-            ['employee_id' => 2, 'skill_id' => 2, 'proficiency_level' => '50'],
+            ['employee_id' => 1, 'skill_id' => 1],
+            ['employee_id' => 1, 'skill_id' => 2],
+            ['employee_id' => 2, 'skill_id' => 1],
+            ['employee_id' => 2, 'skill_id' => 3],
+            ['employee_id' => 2, 'skill_id' => 2],
             // Tambahkan data sesuai kebutuhan
         ];
 

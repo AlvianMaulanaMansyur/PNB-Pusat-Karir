@@ -88,7 +88,7 @@ class JobSeekerController extends Controller
 
         if ($request->hasFile('certificates')) {
             foreach ($request->file('certificates') as $sertifikat) {
-                $sertifikatPath[] = $sertifikat->store('temp', 'public');
+                $sertifikatPath[] = $sertifikat->store('sertifikat', 'public');
                 $sertifikatNames[] = $sertifikat->getClientOriginalName();
             }
         }
@@ -291,7 +291,6 @@ class JobSeekerController extends Controller
             return redirect()
                 ->route('job.detail', ['id' => $id])
                 ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda.');
-
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()

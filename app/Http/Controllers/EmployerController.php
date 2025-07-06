@@ -7,6 +7,7 @@ use App\Models\EmployerNotification;
 use App\Models\employers;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Models\portofoliopathimg;
 use App\Models\Skill;
 use App\Notifications\ApplicationStatusUpdated;
 use Carbon\Carbon;
@@ -133,24 +134,24 @@ class EmployerController extends Controller
     }
 
     public function manajemenlowongan()
-{
-    $userId = Auth::id();
+    {
+        $userId = Auth::id();
 
-    $lowongan_aktif = JobListing::where('user_id', $userId)
-        ->where('deadline', '>=', now())
-        ->orderBy('deadline', 'asc')
-        ->get();
+        $lowongan_aktif = JobListing::where('user_id', $userId)
+            ->where('deadline', '>=', now())
+            ->orderBy('deadline', 'asc')
+            ->get();
 
-    $lowongan_kedaluwarsa = JobListing::where('user_id', $userId)
-        ->where('deadline', '<', now())
-        ->orderBy('deadline', 'desc')
-        ->get();
+        $lowongan_kedaluwarsa = JobListing::where('user_id', $userId)
+            ->where('deadline', '<', now())
+            ->orderBy('deadline', 'desc')
+            ->get();
 
-    return view('employer.manage-lowongan', [
-        'lowongan_aktif' => $lowongan_aktif,
-        'lowongan_kedaluwarsa' => $lowongan_kedaluwarsa,
-    ]);
-}
+        return view('employer.manage-lowongan', [
+            'lowongan_aktif' => $lowongan_aktif,
+            'lowongan_kedaluwarsa' => $lowongan_kedaluwarsa,
+        ]);
+    }
 
     public function editlowongan($slug)
     {
@@ -285,7 +286,7 @@ class EmployerController extends Controller
                     Storage::disk('public')->delete($employer->photo_profile);
                 }
 
-                 $validated['photo_profile'] = 'images/default_employer.png';
+                $validated['photo_profile'] = 'images/default_employer.png';
 
                 Log::info('Foto profil employer dihapus.', [
                     'employer_id' => $employer->id,
@@ -445,25 +446,25 @@ class EmployerController extends Controller
 
 
     public function showInterviewApplicants($slug)
-{
-    $employer = Employers::where('slug', $slug)->with('jobListings')->firstOrFail();
+    {
+        $employer = Employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
-    if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
-        return back()->with('error', 'Employer belum memiliki lowongan.');
+        if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
+            return back()->with('error', 'Employer belum memiliki lowongan.');
+        }
+
+        $applications = JobApplication::with(['employee', 'job'])
+            ->whereIn('job_id', $employer->jobListings->pluck('id'))
+            ->where('status', 'interview')
+            ->get()
+            ->sortBy(function ($app) {
+                $date = \Carbon\Carbon::parse($app->interview_date);
+                return $date->isPast() ? $date->addYears(1000) : $date;
+            })
+            ->groupBy('job_id');
+
+        return view('employer.kelola-interview', compact('applications'));
     }
-
-    $applications = JobApplication::with(['employee', 'job'])
-        ->whereIn('job_id', $employer->jobListings->pluck('id'))
-        ->where('status', 'interview')
-        ->get()
-        ->sortBy(function ($app) {
-            $date = \Carbon\Carbon::parse($app->interview_date);
-            return $date->isPast() ? $date->addYears(1000) : $date;
-        })
-        ->groupBy('job_id');
-
-    return view('employer.kelola-interview', compact('applications'));
-}
 
 
     public function updateInterviewDate(Request $request, $slug)
@@ -650,9 +651,9 @@ class EmployerController extends Controller
     }
 
     public function detailKandidat($slug, $id)
-{
-    // Query kandidat utama
-    $candidate = DB::selectOne("
+    {
+        // Query kandidat utama
+        $candidate = DB::selectOne("
         SELECT
             e.*,
             u.email,
@@ -675,6 +676,8 @@ class EmployerController extends Controller
 
         // Ambil data pendidikan
         $educations = \App\Models\educations::where('employee_id', $id)->get();
+        $workExperiences = \App\Models\work_experience::where('employee_id', $id)->get();
+
 
         // Ambil data lowongan milik employer yang sedang login
         $employer = Auth::user()->employer;
@@ -683,7 +686,7 @@ class EmployerController extends Controller
             ->get();
 
         // Kirim ke view
-        return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
+        return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations', 'workExperiences'));
     }
 
     public function detailPelamar($slug, $jobId, $userId)
@@ -703,9 +706,13 @@ class EmployerController extends Controller
             ->where('job_id', $jobId)
             ->where('employee_id', $userId)
             ->firstOrFail();
+            
+        $certificates = portofoliopathimg::where('employee_id', $userId)
+            ->where('job_id', $jobId)
+            ->get();
 
         $jobListings = $employer->jobListings;
 
-        return view('employer.detail_pelamar', compact('application', 'jobListings'));
+        return view('employer.detail_pelamar', compact('application', 'jobListings', 'certificates'));
     }
 }
