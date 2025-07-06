@@ -82,7 +82,7 @@
             photoPreview: '',
             init() {
                 // Set default foto dari server
-                this.photoPreview = '{{ $employeeData->photo_profile === 'image/user.png' ? asset($employeeData->photo_profile) : asset('storage/' . $employeeData->photo_profile) }}';
+                this.photoPreview = '{{ $employeeData->photo_profile === 'images/profile.png' ? asset($employeeData->photo_profile) : asset('storage/' . $employeeData->photo_profile) }}';
             },
             previewImage(event) {
                 const file = event.target.files[0];

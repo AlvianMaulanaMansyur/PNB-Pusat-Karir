@@ -9,6 +9,8 @@ use App\Models\employees;
 use App\Models\EmployerNotification;
 use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Models\portofoliopathimg;
+use App\Models\report_job;
 use App\Notifications\JobApplicationSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +45,7 @@ class JobSeekerController extends Controller
             });
         }
 
-        $jobs = $query->latest()->paginate(5);
+        $jobs = $query->latest()->paginate(10);
 
         return view('jobseeker.index', compact('employeeData', 'jobs'));
     }
@@ -56,8 +58,9 @@ class JobSeekerController extends Controller
 
     public function detailLowongan($id)
     {
+        $user = Auth::user();
         $job = JobListing::with('employer')->findOrFail($id);
-        return view('jobseeker.detail-lowongan', compact('job'));
+        return view('jobseeker.detail-lowongan', compact('job', 'user'));
     }
 
     public function applyJob($id)
@@ -78,14 +81,14 @@ class JobSeekerController extends Controller
 
         // simpan file ke folder sementara storage/temp
         $cv = $request->file('cv');
-        $cvPath = $cv->store('temp');
+        $cvPath = $cv->store('temp', 'public');
         $cvOriginalName = $cv->getClientOriginalName();
         $sertifikatPath = [];
         $sertifikatNames = [];
 
         if ($request->hasFile('certificates')) {
             foreach ($request->file('certificates') as $sertifikat) {
-                $sertifikatPath[] = $sertifikat->store('temp');
+                $sertifikatPath[] = $sertifikat->store('temp', 'public');
                 $sertifikatNames[] = $sertifikat->getClientOriginalName();
             }
         }
@@ -181,6 +184,7 @@ class JobSeekerController extends Controller
 
         DB::beginTransaction();
         try {
+            // Buat JobApplication dulu
             JobApplication::create([
                 'job_id' => $id,
                 'slug' => 'lamaran-' . Str::uuid(),
@@ -193,9 +197,18 @@ class JobSeekerController extends Controller
                 'interview_status' => 'not_scheduled',
                 'interview_date' => null,
             ]);
-            // Kirim notifikasi ke employer
-            $employer = $job->employer;
 
+            // Simpan path sertifikat (jika hanya satu file)
+            foreach ($finalSertifikatPaths as $path) {
+                portofoliopathimg::create([
+                    'employee_id' => $employeeData->id,
+                    'job_id' => $id,
+                    'portofolio_path' => $path,
+                    'file_name' => $sertifikat[$index] ?? null,
+                ]);
+            }
+
+            $employer = $job->employer;
             $employeeData->notify(new JobApplicationSubmitted($job, $employeeData));
 
             DB::commit();
@@ -240,5 +253,50 @@ class JobSeekerController extends Controller
         session()->forget(['suratLamaran', 'cv', 'cv_path', 'sertifikat', 'sertifikat_path', 'applied_job_id', 'step_1_completed', 'step_2_completed']);
 
         return view('jobseeker.jobapplied');
+    }
+
+    public function reportJob(Request $request, $id)
+    {
+        $request->validate([
+            'report_reason' => 'required|string',
+            'detailreason' => 'required|string',
+            // 'email' => 'required|email|max:255',
+        ]);
+
+        $job = JobListing::findOrFail($id);
+        $user = Auth::user();
+
+        $employeeId = $user->dataEmployees->id;
+
+        // ✅ CEK apakah sudah pernah melaporkan job ini
+        $alreadyReported = report_job::where('job_id', $id)->where('employee_id', $employeeId)->exists();
+
+        if ($alreadyReported) {
+            return redirect()
+                ->route('job.detail', ['id' => $id])
+                ->with('error', 'Anda sudah pernah melaporkan lowongan ini.');
+        }
+
+        DB::beginTransaction();
+        try {
+            report_job::create([
+                'job_id' => $id,
+                'employee_id' => $employeeId,
+                'report_reason' => $request->report_reason,
+                'detail_reason' => $request->detailreason,
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('job.detail', ['id' => $id])
+                ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda.');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()
+                ->route('job.detail', ['id' => $id])
+                ->with('error', 'Terjadi kesalahan saat mengirim laporan: ' . $e->getMessage());
+        }
     }
 }

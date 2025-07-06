@@ -15,29 +15,24 @@ class PersonalDetailsForm extends Component
 
     public $resumeId;
 
-    public $form = [ // <<< UBAH: Ganti $personalDetails menjadi $form
+    public $form = [ 
         'name' => '',
         'email' => '',
         'phone' => '',
         'address' => '',
         'summary' => '',
-        'profile_photo' => '', // URL path ke foto yang sudah di-upload
+        'profile_photo' => '', 
     ];
 
-    public $profilePhotoFile; // Properti untuk file yang baru di-upload
-    public $profilePhotoPreview; // URL untuk menampilkan preview
-    public $removeProfilePhoto = false; // Flag untuk menghapus foto
+    public $profilePhotoFile; 
+    public $profilePhotoPreview;
+    public $removeProfilePhoto = false;
 
-    // Tidak perlu isLoading, successMessage, errorMessage, listeners untuk fileUploaded
-    // Livewire 3 sudah lebih baik dalam menangani ini secara internal.
-    // protected $listeners = ['fileUploaded' => 'handleFileUpload']; // Hapus ini
-
-    // --- Validasi ---
     protected function rules()
     {
         return [
-            'form.name' => 'required|string|max:255',
-            'form.email' => 'required|email|max:255',
+            'form.name' => 'nullable|string|max:255',
+            'form.email' => 'nullable|email|max:255',
             'form.phone' => 'nullable|string|max:20',
             'form.address' => 'nullable|string|max:500',
             'form.summary' => 'nullable|string|max:1000',
@@ -56,17 +51,14 @@ class PersonalDetailsForm extends Component
         ];
     }
 
-    // --- Lifecycle Hook ---
     public function mount($id)
     {
         $this->resumeId = $id;
         $this->loadPersonalDetails();
     }
 
-    // --- Pembaruan Properti dan Auto-Save/Upload ---
     public function updated($propertyName)
     {
-        // Validasi dan simpan secara otomatis jika properti form.XYZ berubah
         if (str_starts_with($propertyName, 'form.')) {
             $this->validateOnly($propertyName);
             $this->savePersonalDetails();
@@ -75,11 +67,9 @@ class PersonalDetailsForm extends Component
         }
     }
 
-    // --- Metode untuk Upload Foto ---
     public function uploadPhoto()
     {
         $this->resetErrorBag('profilePhotoFile');
-        // $this->errorMessage = ''; // Hapus karena akan menggunakan flash message Livewire
 
         if ($this->profilePhotoFile) {
             try {
@@ -120,7 +110,6 @@ class PersonalDetailsForm extends Component
         }
     }
 
-    // --- Metode untuk Menghapus Foto ---
     public function removePhoto()
     {
         if (!empty($this->form['profile_photo'])) {
@@ -140,7 +129,6 @@ class PersonalDetailsForm extends Component
         }
     }
 
-    // --- Metode untuk Memuat Data Personal Details dari DB ---
     public function loadPersonalDetails()
     {
         Log::info('loadPersonalDetails: Memuat detail personal untuk resume.', ['resumeId' => $this->resumeId]);
@@ -177,8 +165,8 @@ class PersonalDetailsForm extends Component
     {
         // Validasi semua field yang ada di form. Kecuali profilePhotoFile, karena itu ditangani di uploadPhoto
         $this->validate([
-            'form.name' => 'required|string|max:255',
-            'form.email' => 'required|email|max:255',
+            'form.name' => 'nullable|string|max:255',
+            'form.email' => 'nullable|email|max:255',
             'form.phone' => 'nullable|string|max:20',
             'form.address' => 'nullable|string|max:500',
             'form.summary' => 'nullable|string|max:1000',

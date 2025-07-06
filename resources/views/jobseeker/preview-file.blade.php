@@ -5,8 +5,10 @@
     <section class="py-4">
         <div class="container max-w-3xl mx-auto border-2 border-gray-300 p-6 rounded-lg shadow-md bg-white">
             <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <img src="{{ asset($job->employer->photo_profile) }}" alt="Poster lowongan"
-                    class="w-28 h-28 object-cover rounded-lg shadow-md">
+                <img src="{{ $job->employer->photo_profile === 'images/default_employer.png'
+                    ? asset('images/default_employer.png')
+                    : asset('storage/' . $job->employer->photo_profile) }}"
+                    alt="Poster lowongan" class="w-28 h-28 object-cover rounded-lg shadow-md">
 
                 <div class="text-center md:text-left">
                     <p class="text-sm text-gray-500">Melamar Untuk</p>

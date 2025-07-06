@@ -285,7 +285,7 @@ class EmployerController extends Controller
                     Storage::disk('public')->delete($employer->photo_profile);
                 }
 
-                $validated['photo_profile'] = null;
+                 $validated['photo_profile'] = 'images/default_employer.png';
 
                 Log::info('Foto profil employer dihapus.', [
                     'employer_id' => $employer->id,
@@ -612,9 +612,9 @@ class EmployerController extends Controller
             $placeholders = implode(',', array_fill(0, count($selectedSkills), '?'));
 
             $query = "
-            SELECT 
-                e.*, 
-                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills, 
+            SELECT
+                e.*,
+                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills,
                 u.email as email,
                 COUNT(DISTINCT s.id) AS matching_count
             FROM employees e
@@ -629,9 +629,9 @@ class EmployerController extends Controller
             $candidates = DB::select($query, $selectedSkills);
         } else {
             $candidates = DB::select("
-            SELECT 
-                e.*, 
-                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills, 
+            SELECT
+                e.*,
+                GROUP_CONCAT(s.name SEPARATOR ', ') AS skills,
                 u.email as email
             FROM employees e
             JOIN employee_skill es ON e.id = es.employee_id
@@ -650,11 +650,11 @@ class EmployerController extends Controller
     }
 
     public function detailKandidat($slug, $id)
-    {
-        // Query kandidat utama
-        $candidate = DB::selectOne("
-        SELECT 
-            e.*, 
+{
+    // Query kandidat utama
+    $candidate = DB::selectOne("
+        SELECT
+            e.*,
             u.email,
             ANY_VALUE(ep.summary) AS summary,
             ANY_VALUE(ep.linkedin) AS linkedin,

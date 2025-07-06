@@ -53,9 +53,24 @@ class employees extends Model
     {
         return $this->hasMany(educations::class, 'employee_id');
     }
-    public function skills()
-{
-    return $this->belongsToMany(Skill::class, 'employee_skill', 'employee_id', 'skill_id');
-}
 
+    public function reports(): HasMany
+    {
+        return $this->hasMany(report_job::class, 'employee_id');
+    }
+
+    public function workExperiences(): HasMany
+    {
+        return $this->hasMany(work_experience::class, 'employee_id');
+    }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(expertness::class, 'employee_id');
+    }
+
+    public function employeeSkills(): HasMany
+    {
+        return $this->hasMany(employee_skill::class, 'employee_id');
+    }
 }

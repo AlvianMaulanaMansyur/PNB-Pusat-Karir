@@ -41,7 +41,7 @@ class JobApplicationSubmitted extends Notification
     {
         // Log::info('Job data:', ['job' => $this->job->toArray()]);
         return [
-            'title' => 'Lamaran berhasil dikirim!',
+            'title' => '🚀Lamaran berhasil dikirim!',
             'message' => 'Anda telah melamar untuk posisi: ' . $this->job->nama_lowongan,
             'job_id' => $this->job->id,
         ];
