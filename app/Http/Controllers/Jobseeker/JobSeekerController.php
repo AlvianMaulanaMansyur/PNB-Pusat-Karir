@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Jobseeker;
 
 use App\Http\Controllers\Controller;
 use App\Models\educations;
+use App\Models\employee_skill;
 use App\Models\EmployeeProfiles;
 use App\Models\employees;
 use App\Models\EmployerNotification;
@@ -11,6 +12,7 @@ use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\portofoliopathimg;
 use App\Models\report_job;
+use App\Models\work_experience;
 use App\Notifications\JobApplicationSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,11 +130,14 @@ class JobSeekerController extends Controller
         $job = JobListing::with('employer')->findOrFail($id);
         $user = Auth::user();
         $employeeData = $user->dataEmployees;
+
         $employeeSummary = EmployeeProfiles::where('employee_id', $employeeData->id)->first();
         $employeeEducations = educations::where('employee_id', $employeeData->id)->get();
+        $workExperience = work_experience::where('employee_id', $employeeData->id)->get();
+        $skills = $employeeData->skills;
 
         session(['step_2_completed' => true]); // tandai step 2 sudah selesai
-        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData', 'employeeSummary', 'employeeEducations'));
+        return view('jobseeker.preview-file', compact('suratLamaran', 'cv', 'sertifikat', 'job', 'employeeData', 'employeeSummary', 'employeeEducations', 'workExperience', 'skills'));
     }
 
     public function storeStepTwo($id)
@@ -291,7 +296,6 @@ class JobSeekerController extends Controller
             return redirect()
                 ->route('job.detail', ['id' => $id])
                 ->with('success', 'Laporan berhasil dikirim. Terima kasih atas partisipasi Anda.');
-
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()

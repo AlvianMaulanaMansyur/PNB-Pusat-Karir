@@ -9,16 +9,15 @@ class Skill extends Model
 {
     protected $table = 'skills';
 
-    protected $fillable = [
-        'name',
-        'created_at',
-        'updated_at',
-    ];
+    protected $fillable = ['name', 'created_at', 'updated_at'];
 
-    public function employeeSkills():HasMany
+    public function employeeSkills(): HasMany
     {
         return $this->hasMany(employee_skill::class);
     }
+
+    public function employees()
+    {
+        return $this->belongsToMany(employees::class, 'employee_skill', 'skill_id', 'employee_id')->withTimestamps();
+    }
 }
-
-
