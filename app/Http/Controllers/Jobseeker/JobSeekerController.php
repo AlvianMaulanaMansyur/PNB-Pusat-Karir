@@ -90,7 +90,7 @@ class JobSeekerController extends Controller
 
         if ($request->hasFile('certificates')) {
             foreach ($request->file('certificates') as $sertifikat) {
-                $sertifikatPath[] = $sertifikat->store('temp', 'public');
+                $sertifikatPath[] = $sertifikat->store('sertifikat', 'public');
                 $sertifikatNames[] = $sertifikat->getClientOriginalName();
             }
         }

@@ -48,7 +48,8 @@
                     </div>
                 </div>
 
-                <a href="{{ route('employer.temukan-kandidat') }}" class="text-base text-blue-600 hover:underline font-medium">
+                <a href="{{ route('employer.temukan-kandidat') }}?{{ http_build_query(['skills' => request('skills')]) }}"
+                    class="text-base text-blue-600 hover:underline font-medium">
                     ← Kembali
                 </a>
             </div>
@@ -86,7 +87,8 @@
             </div>
             @endif
 
-            {{-- Sosial --}}
+
+            <!-- {{-- Sosial --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                     <p class="text-sm text-gray-500">LinkedIn</p>
@@ -108,7 +110,7 @@
                     <p class="text-base text-gray-400 italic">Tidak tersedia</p>
                     @endif
                 </div>
-            </div>
+            </div> -->
 
             {{-- Skills --}}
             @if (!empty($candidate->skills))
@@ -144,6 +146,20 @@
             </div>
             @endif
 
+            <h3 class="text-lg font-semibold mb-2">Pengalaman Kerja</h3>
+            @forelse($workExperiences as $exp)
+            <div class="mb-4">
+                <p class="font-medium">{{ $exp->position }} di {{ $exp->company }}</p>
+                <p class="text-sm text-gray-600">
+                    {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('F Y') }}
+                    -
+                    {{ $exp->is_current ? 'Sekarang' : \Carbon\Carbon::parse($exp->end_date)->translatedFormat('F Y') }}
+                </p>
+                <p class="text-sm text-gray-700">{{ $exp->description }}</p>
+            </div>
+            @empty
+            <p class="text-sm text-gray-500">Belum ada pengalaman kerja.</p>
+            @endforelse
 
             {{-- Form Undangan --}}
             @if($jobListings && count($jobListings) > 0)
@@ -167,7 +183,7 @@
 
                     <div class="text-right">
                         <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                            class="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition">
                             Kirim Undangan
                         </button>
                     </div>

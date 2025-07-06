@@ -84,8 +84,10 @@
         </a>
     </div>
 
-    {{-- Tabel --}}
-    <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow">
+    {{-- ===================== LOWONGAN AKTIF ===================== --}}
+    @if ($lowongan_aktif->count())
+    <h2 class="text-lg font-bold text-gray-800 mb-3">Lowongan Aktif</h2>
+    <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow mb-10">
         <table class="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
             <thead class="bg-gray-50 text-gray-600 uppercase tracking-wider text-xs">
                 <tr>
@@ -99,7 +101,7 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-100">
-                @forelse ($joblisting as $lowongan)
+                @foreach ($lowongan_aktif as $lowongan)
                 <tr class="hover:bg-blue-50 transition">
                     <td class="px-6 py-4">
                         @if ($lowongan->poster)
@@ -151,17 +153,88 @@
                         </div>
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada lowongan ditambahkan.</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
+    @endif
+
+    {{-- ===================== LOWONGAN KEDALUWARSA ===================== --}}
+    @if ($lowongan_kedaluwarsa->count())
+    <h2 class="text-lg font-bold text-gray-800 mb-3">Lowongan Kedaluwarsa</h2>
+    <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow">
+        <table class="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
+            <thead class="bg-gray-50 text-gray-600 uppercase tracking-wider text-xs">
+                <tr>
+                    <th class="px-6 py-3 text-left font-semibold">Poster</th>
+                    <th class="px-6 py-3 text-left font-semibold">Nama Lowongan</th>
+                    <th class="px-6 py-3 text-left font-semibold">Posisi</th>
+                    <th class="px-6 py-3 text-left font-semibold">Jenis</th>
+                    <th class="px-6 py-3 text-left font-semibold">Gaji</th>
+                    <th class="px-6 py-3 text-left font-semibold">Deadline</th>
+                    <th class="px-6 py-3 text-center font-semibold">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100">
+                @foreach ($lowongan_kedaluwarsa as $lowongan)
+                <tr class="hover:bg-red-50 transition">
+                    <td class="px-6 py-4">
+                        @if ($lowongan->poster)
+                            <img src="{{ asset('storage/' . $lowongan->poster) }}" alt="Poster"
+                                 class="w-14 h-14 object-cover rounded-md border">
+                        @else
+                            <span class="text-gray-400 italic">Tidak ada</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 font-medium text-gray-900 truncate max-w-xs" title="{{ $lowongan->nama_lowongan }}">
+                        {{ $lowongan->nama_lowongan }}
+                    </td>
+                    <td class="px-6 py-4">{{ $lowongan->posisi }}</td>
+                    <td class="px-6 py-4">{{ $lowongan->jenislowongan }}</td>
+                    <td class="px-6 py-4 text-green-600 font-semibold">
+                        <div class="inline-flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.333.667-4 2-4 4s2.667 3.333 4 4 4-1.333 4-4-2.667-3.333-4-4z" />
+                            </svg>
+                            {{ 'Rp ' . number_format((int) str_replace('.', '', $lowongan->gaji), 0, ',', '.') }}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="inline-flex items-center gap-1 text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M8 7V3m8 4V3m-9 4h10M5 11h14M5 19h14M5 15h14" />
+                            </svg>
+                            {{ \Carbon\Carbon::parse($lowongan->deadline)->format('d M Y') }}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex justify-center items-center gap-2 flex-wrap">
+                            <a href="{{ route('employer.edit-lowongan', $lowongan->slug) }}"
+                               class="px-3 py-1 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded hover:bg-yellow-300 transition">
+                                Edit
+                            </a>
+                            <form action="{{ route('employer.destroy-lowongan', $lowongan->slug) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                        onclick="showDeleteModal(this.closest('form'))"
+                                        class="px-3 py-1 text-xs font-semibold text-white bg-red-600 rounded hover:bg-red-700 transition">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
+
 </div>
-
-
 
 
 {{-- Modal Konfirmasi Hapus --}}

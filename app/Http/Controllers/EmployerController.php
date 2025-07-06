@@ -8,14 +8,12 @@ use App\Models\employers;
 use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\Skill;
-use App\Models\User;
 use App\Notifications\ApplicationStatusUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -106,15 +104,7 @@ class EmployerController extends Controller
             Log::debug('Data akhir sebelum disimpan ke database.', ['final_data' => $validated]);
 
             // Simpan ke database
-            $jobListing = JobListing::create($validated);
-
-            // Ambil semua jobseeker aktif
-            $jobseekers = User::where('role', 'employee')->get();
-
-            // Kirim email ke masing-masing jobseeker
-            foreach ($jobseekers as $jobseeker) {
-                Mail::to($jobseeker->email)->send(new \App\Mail\NewJobListingNotification($jobListing));
-            }
+            JobListing::create($validated);
 
             Log::info('Lowongan berhasil disimpan ke database.', [
                 'nama_lowongan' => $validated['nama_lowongan'],
@@ -535,7 +525,8 @@ class EmployerController extends Controller
             })
             ->when($searchKeyword, function ($query) use ($searchKeyword) {
                 $query->whereHas('job', function ($q) use ($searchKeyword) {
-                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
+                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')
+                        ->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
                 });
             })
             ->orderBy('applied_at', 'desc')
@@ -554,10 +545,15 @@ class EmployerController extends Controller
         $employer = Auth::user()->employer;
 
         // Ambil semua notifikasi milik employer
-        $notifications = EmployerNotification::where('employer_id', $employer->id)->orderBy('created_at', 'desc')->get(); // <-- TIDAK lagi pakai paginate()
+        $notifications = EmployerNotification::where('employer_id', $employer->id)
+            ->orderBy('created_at', 'desc')
+            ->get(); // <-- TIDAK lagi pakai paginate()
 
         // Ambil notifikasi terbaru yang belum dibaca (hanya satu)
-        $latestUnread = EmployerNotification::where('employer_id', $employer->id)->where('is_read', false)->orderBy('created_at', 'desc')->first();
+        $latestUnread = EmployerNotification::where('employer_id', $employer->id)
+            ->where('is_read', false)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         // Tandai semua sebagai telah dibaca (setelah ambil latestUnread)
         EmployerNotification::where('employer_id', $employer->id)
@@ -617,12 +613,15 @@ class EmployerController extends Controller
 
         $jobListings = JobListing::where('user_id', $employer->user_id)->get();
 
+
         return view('employer.cari_pelamar', compact('skills', 'candidates', 'selectedSkills', 'jobListings'));
     }
 
     public function detailPelamar($slug, $jobId, $userId)
     {
-        $employer = Employers::where('slug', $slug)->with('jobListings')->firstOrFail();
+        $employer = Employers::where('slug', $slug)
+            ->with('jobListings')
+            ->firstOrFail();
 
         // Pastikan job_id termasuk milik employer ini
         $jobIds = $employer->jobListings->pluck('id')->toArray();
@@ -636,16 +635,16 @@ class EmployerController extends Controller
             ->where('employee_id', $userId)
             ->firstOrFail();
 
+
         $jobListings = $employer->jobListings;
 
         return view('employer.detail_pelamar', compact('application', 'jobListings'));
     }
 
     public function detailKandidat($slug, $id)
-    {
-        // Query kandidat utama
-        $candidate = DB::selectOne(
-            "
+{
+    // Query kandidat utama
+    $candidate = DB::selectOne("
         SELECT
             e.*,
             u.email,
@@ -660,22 +659,23 @@ class EmployerController extends Controller
         LEFT JOIN skills s ON s.id = es.skill_id
         WHERE e.id = ?
         GROUP BY e.id
-    ",
-            [$id],
-        );
+    ", [$id]);
 
-        if (!$candidate) {
-            abort(404, 'Kandidat tidak ditemukan');
-        }
-
-        // Ambil data pendidikan
-        $educations = \App\Models\educations::where('employee_id', $id)->get();
-
-        // Ambil data lowongan milik employer yang sedang login
-        $employer = Auth::user()->employer;
-        $jobListings = DB::table('job_listings')->where('user_id', $employer->user_id)->get();
-
-        // Kirim ke view
-        return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
+    if (!$candidate) {
+        abort(404, 'Kandidat tidak ditemukan');
     }
+
+    // Ambil data pendidikan
+    $educations = \App\Models\educations::where('employee_id', $id)->get();
+
+    // Ambil data lowongan milik employer yang sedang login
+    $employer = Auth::user()->employer;
+    $jobListings = DB::table('job_listings')
+        ->where('user_id', $employer->user_id)
+        ->get();
+
+    // Kirim ke view
+    return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
+}
+
 }
