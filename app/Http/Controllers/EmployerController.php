@@ -133,12 +133,25 @@ class EmployerController extends Controller
     }
 
     public function manajemenlowongan()
-    {
-        $userId = Auth::id();
+{
+    $userId = Auth::id();
 
-        $job_listings = JobListing::where('user_id', $userId)->latest()->get();
-        return view('employer.manage-lowongan', ['joblisting' => $job_listings]);
-    }
+    $lowongan_aktif = JobListing::where('user_id', $userId)
+        ->where('deadline', '>=', now())
+        ->orderBy('deadline', 'asc')
+        ->get();
+
+    $lowongan_kedaluwarsa = JobListing::where('user_id', $userId)
+        ->where('deadline', '<', now())
+        ->orderBy('deadline', 'desc')
+        ->get();
+
+    return view('employer.manage-lowongan', [
+        'lowongan_aktif' => $lowongan_aktif,
+        'lowongan_kedaluwarsa' => $lowongan_kedaluwarsa,
+    ]);
+}
+
     public function editlowongan($slug)
     {
         $lowongan = JobListing::where('slug', $slug)->firstOrFail();
@@ -344,16 +357,12 @@ class EmployerController extends Controller
     {
         $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
-        // Cek jika employer punya job listing
-        if (!$employer->jobListings) {
+        if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
             return back()->with('error', 'Employer belum memiliki lowongan.');
         }
 
-        $statusFilter = $request->query('status');
-
-        $applications = $this->filterstatus($request);
-
-        $withoutFilter = $this->getAllApplications();
+        $applications = $this->filterstatus($request, $employer->user_id);
+        $withoutFilter = $this->getAllApplications($employer->user_id);
 
         $summary = [
             'total' => $withoutFilter->flatten()->count(),
@@ -361,14 +370,56 @@ class EmployerController extends Controller
             'accepted' => $withoutFilter->flatten()->where('status', 'accepted')->count(),
             'rejected' => $withoutFilter->flatten()->where('status', 'rejected')->count(),
         ];
+
         return view('employer.pelamar-lowongan', compact('applications', 'summary'));
+    }
+
+
+    public function filterstatus(Request $request, $employerId)
+    {
+        $statusFilter = $request->query('status');
+        $searchKeyword = $request->query('search');
+
+        $applications = \App\Models\JobApplication::with('job', 'employee')
+            ->whereHas('job', function ($query) use ($employerId) {
+                $query->where('user_id', $employerId);
+            })
+            ->when($statusFilter, function ($query) use ($statusFilter) {
+                $query->where('status', $statusFilter);
+            })
+            ->when($searchKeyword, function ($query) use ($searchKeyword) {
+                $query->whereHas('job', function ($q) use ($searchKeyword) {
+                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')
+                        ->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
+                });
+            })
+            ->orderBy('applied_at', 'desc')
+            ->get()
+            ->groupBy('job_id');
+
+        return $applications;
+    }
+
+
+    public function getAllApplications($employerId)
+    {
+        return JobApplication::with('job', 'employee')
+            ->whereHas('job', function ($query) use ($employerId) {
+                $query->where('user_id', $employerId);
+            })
+            ->orderBy('applied_at', 'desc')
+            ->get()
+            ->groupBy('job_id');
     }
 
     public function updateStatus(Request $request, $slug)
     {
         $request->validate([
             'status' => 'required|in:pending,reviewed,interview,accepted,rejected',
-            'interview_date' => 'nullable|date',
+            'interview_date' => 'required_if:status,interview|nullable|date|after:now',
+        ], [
+            'interview_date.required_if' => 'Tanggal interview wajib diisi jika status adalah interview.',
+            'interview_date.after' => 'Tanggal interview harus di masa depan.',
         ]);
 
         $application = JobApplication::where('slug', $slug)->firstOrFail();
@@ -379,35 +430,41 @@ class EmployerController extends Controller
             $application->interview_status = 'scheduled';
         } else {
             $application->interview_date = null;
+            $application->interview_status = null;
         }
 
         $application->save();
-        // Notifikasi ke employee
+
+        // Kirim notifikasi
         $employee = $application->employee;
         $job = $application->job;
-        // dd($employee);
         $employee->notify(new ApplicationStatusUpdated($job, $application->status, $application->interview_date));
 
         return back()->with('success', 'Status pelamar berhasil diperbarui.');
     }
 
+
     public function showInterviewApplicants($slug)
-    {
-        $employer = employers::where('slug', $slug)->with('jobListings')->firstOrFail();
+{
+    $employer = Employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
-        if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
-            return back()->with('error', 'Employer belum memiliki lowongan.');
-        }
-
-        $applications = JobApplication::with(['employee', 'job'])
-            ->whereIn('job_id', $employer->jobListings->pluck('id'))
-            ->whereIn('status', ['interview'])
-            ->orderBy('applied_at', 'desc')
-            ->get()
-            ->groupBy('job_id');
-
-        return view('employer.kelola-interview', compact('applications'));
+    if (!$employer->jobListings || $employer->jobListings->isEmpty()) {
+        return back()->with('error', 'Employer belum memiliki lowongan.');
     }
+
+    $applications = JobApplication::with(['employee', 'job'])
+        ->whereIn('job_id', $employer->jobListings->pluck('id'))
+        ->where('status', 'interview')
+        ->get()
+        ->sortBy(function ($app) {
+            $date = \Carbon\Carbon::parse($app->interview_date);
+            return $date->isPast() ? $date->addYears(1000) : $date;
+        })
+        ->groupBy('job_id');
+
+    return view('employer.kelola-interview', compact('applications'));
+}
+
 
     public function updateInterviewDate(Request $request, $slug)
     {
@@ -514,31 +571,6 @@ class EmployerController extends Controller
         }
     }
 
-    public function filterstatus(Request $request)
-    {
-        $statusFilter = $request->query('status');
-        $searchKeyword = $request->query('search'); // Tambahkan ini
-
-        $applications = \App\Models\JobApplication::with('job', 'employee')
-            ->when($statusFilter, function ($query) use ($statusFilter) {
-                $query->where('status', $statusFilter);
-            })
-            ->when($searchKeyword, function ($query) use ($searchKeyword) {
-                $query->whereHas('job', function ($q) use ($searchKeyword) {
-                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')
-                        ->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
-                });
-            })
-            ->orderBy('applied_at', 'desc')
-            ->get()
-            ->groupBy('job_id'); // Penting untuk tampilan di view
-
-        return $applications;
-    }
-    public function getAllApplications()
-    {
-        return JobApplication::with('job', 'employee')->orderBy('applied_at', 'desc')->get()->groupBy('job_id'); // Penting untuk tampilan di view
-    }
 
     public function notifications()
     {
@@ -617,34 +649,10 @@ class EmployerController extends Controller
         return view('employer.cari_pelamar', compact('skills', 'candidates', 'selectedSkills', 'jobListings'));
     }
 
-    public function detailPelamar($slug, $jobId, $userId)
-    {
-        $employer = Employers::where('slug', $slug)
-            ->with('jobListings')
-            ->firstOrFail();
-
-        // Pastikan job_id termasuk milik employer ini
-        $jobIds = $employer->jobListings->pluck('id')->toArray();
-        if (!in_array($jobId, $jobIds)) {
-            abort(403, 'Lowongan tidak valid atau tidak dimiliki employer ini.');
-        }
-
-        // Ambil lamaran sesuai job_id dan employee_id
-        $application = JobApplication::with(['employee.educations', 'job']) // ← tambahkan employee.educations
-            ->where('job_id', $jobId)
-            ->where('employee_id', $userId)
-            ->firstOrFail();
-
-
-        $jobListings = $employer->jobListings;
-
-        return view('employer.detail_pelamar', compact('application', 'jobListings'));
-    }
-
     public function detailKandidat($slug, $id)
-{
-    // Query kandidat utama
-    $candidate = DB::selectOne("
+    {
+        // Query kandidat utama
+        $candidate = DB::selectOne("
         SELECT 
             e.*, 
             u.email,
@@ -661,21 +669,43 @@ class EmployerController extends Controller
         GROUP BY e.id
     ", [$id]);
 
-    if (!$candidate) {
-        abort(404, 'Kandidat tidak ditemukan');
+        if (!$candidate) {
+            abort(404, 'Kandidat tidak ditemukan');
+        }
+
+        // Ambil data pendidikan
+        $educations = \App\Models\educations::where('employee_id', $id)->get();
+
+        // Ambil data lowongan milik employer yang sedang login
+        $employer = Auth::user()->employer;
+        $jobListings = DB::table('job_listings')
+            ->where('user_id', $employer->user_id)
+            ->get();
+
+        // Kirim ke view
+        return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
     }
 
-    // Ambil data pendidikan
-    $educations = \App\Models\educations::where('employee_id', $id)->get();
+    public function detailPelamar($slug, $jobId, $userId)
+    {
+        $employer = Employers::where('slug', $slug)
+            ->with('jobListings')
+            ->firstOrFail();
 
-    // Ambil data lowongan milik employer yang sedang login
-    $employer = Auth::user()->employer;
-    $jobListings = DB::table('job_listings')
-        ->where('user_id', $employer->user_id)
-        ->get();
+        // Pastikan job_id termasuk milik employer ini
+        $jobIds = $employer->jobListings->pluck('id')->toArray();
+        if (!in_array($jobId, $jobIds)) {
+            abort(403, 'Lowongan tidak valid atau tidak dimiliki employer ini.');
+        }
 
-    // Kirim ke view
-    return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations'));
-}
+        // Ambil lamaran sesuai job_id dan employee_id (MUAT skills)
+        $application = JobApplication::with(['employee.educations', 'employee.skills', 'job'])
+            ->where('job_id', $jobId)
+            ->where('employee_id', $userId)
+            ->firstOrFail();
 
+        $jobListings = $employer->jobListings;
+
+        return view('employer.detail_pelamar', compact('application', 'jobListings'));
+    }
 }

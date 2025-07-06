@@ -53,4 +53,9 @@ class employees extends Model
     {
         return $this->hasMany(educations::class, 'employee_id');
     }
+    public function skills()
+{
+    return $this->belongsToMany(Skill::class, 'employee_skill', 'employee_id', 'skill_id');
+}
+
 }
