@@ -20,13 +20,13 @@
             },
             getDeadlineCountdown(deadline) {
                 if (!deadline) return '-';
-
+        
                 const now = new Date();
                 const target = new Date(deadline);
                 const diffTime = target - now;
-
+        
                 if (diffTime <= 0) return 'Sudah lewat';
-
+        
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 return `${diffDays} hari lagi`;
             },
@@ -59,6 +59,7 @@
                                     : asset('storage/' . $job->employer->photo_profile)),
 
                             deadline: @json($job->deadline),
+                            poster: @json($job->poster),
                             created_at: @json($job->created_at->diffForHumans())
                         })'>
 
@@ -203,7 +204,23 @@
                                 class="bg-red-600 text-white px-1 rounded-full">{{ \Carbon\Carbon::parse($job->deadline)->format('d M Y') }}</span>
 
                         </div>
-                        <div class="text-md text-gray-400" x-text="selectedJob.created_at"></div>
+                        {{-- poster --}}
+                        <div class="text-lg text-gray-800">
+                            Pamflet:
+                            <template x-if="selectedJob.poster">
+                                <a :href="'/storage/posters/' + selectedJob.poster" target="_blank"
+                                    class="text-blue-600 hover:underline font-semibold">
+                                    Lihat Informasi Lebih Lanjut
+                                </a>
+
+                            </template>
+                            <template x-if="!selectedJob.poster">
+                                <span class="text-gray-500">-</span>
+                            </template>
+
+                            <div class="text-md text-gray-400" x-text="selectedJob.created_at"></div>
+                        </div>
+
 
                         {{-- button lamar --}}
                         <div class="py-6 flex">
@@ -223,13 +240,6 @@
                             <x-secondary-button class="ml-2"
                                 x-text="getDeadlineCountdown(selectedJob.deadline)"></x-secondary-button>
                         </div>
-
-                        {{-- poster
-                        <div>
-                            <H1>Info ebih lanjut</H1>
-
-                        </div> --}}
-
 
                         {{-- deskripsi --}}
                         <div>
@@ -258,7 +268,8 @@
 
                         <div x-data="{ showForm: false }" class=" rounded-lg p-5 my-6">
                             <h3 class="text-gray-700 text-2xl font-bold mb-2"> Hati-hati Penipuan</h3>
-                            <p class="my-2 text-xl">Jangan berikan detail bank atau kartu kredit kamu saat mengirimkan
+                            <p class="my-2 text-xl">Jangan berikan detail bank atau kartu kredit kamu saat
+                                mengirimkan
                                 lamaran kerja.
                             </p>
 

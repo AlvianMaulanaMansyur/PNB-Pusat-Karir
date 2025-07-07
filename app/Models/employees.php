@@ -9,31 +9,11 @@ use Illuminate\Notifications\Notifiable;
 
 class employees extends Model
 {
-
     use HasFactory, Notifiable;
 
     protected $table = 'employees';
 
-    protected $fillable = [
-        'user_id',
-        'salutation',
-        'first_name',
-        'last_name',
-        'suffix',
-        'phone',
-        'photo_profile',
-        'country',
-        'city',
-        'highest_education',
-        'main_skill',
-        'current_or_previous_industry',
-        'current_or_previous_job_type',
-        'current_or_previous_position',
-        'employment_status',
-        'years_of_experience',
-        'availability',
-        'photo_profile',
-    ];
+    protected $fillable = ['user_id', 'salutation', 'first_name', 'last_name', 'suffix', 'phone', 'photo_profile', 'country', 'city', 'highest_education', 'main_skill', 'current_or_previous_industry', 'current_or_previous_job_type', 'current_or_previous_position', 'employment_status', 'years_of_experience', 'availability', 'photo_profile'];
 
     public function user()
     {
@@ -64,9 +44,9 @@ class employees extends Model
         return $this->hasMany(work_experience::class, 'employee_id');
     }
 
-    public function skills(): HasMany
+    public function skills()
     {
-        return $this->hasMany(expertness::class, 'employee_id');
+        return $this->belongsToMany(Skill::class, 'employee_skill', 'employee_id', 'skill_id')->withTimestamps();
     }
 
     public function employeeSkills(): HasMany
