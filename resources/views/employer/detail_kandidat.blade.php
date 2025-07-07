@@ -87,31 +87,6 @@
             </div>
             @endif
 
-
-            <!-- {{-- Sosial --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <p class="text-sm text-gray-500">LinkedIn</p>
-                    @if (!empty($candidate->linkedin))
-                    <a href="{{ $candidate->linkedin }}" target="_blank" class="text-base text-blue-600 hover:underline">
-                        {{ $candidate->linkedin }}
-                    </a>
-                    @else
-                    <p class="text-base text-gray-400 italic">Tidak tersedia</p>
-                    @endif
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Website</p>
-                    @if (!empty($candidate->website))
-                    <a href="{{ $candidate->website }}" target="_blank" class="text-base text-blue-600 hover:underline">
-                        {{ $candidate->website }}
-                    </a>
-                    @else
-                    <p class="text-base text-gray-400 italic">Tidak tersedia</p>
-                    @endif
-                </div>
-            </div> -->
-
             {{-- Skills --}}
             @if (!empty($candidate->skills))
             <div>
@@ -200,3 +175,28 @@
     }
 </script>
 @endsection
+
+
+<!-- {{-- Sosial --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <p class="text-sm text-gray-500">LinkedIn</p>
+                    @if (!empty($candidate->linkedin))
+                    <a href="{{ $candidate->linkedin }}" target="_blank" class="text-base text-blue-600 hover:underline">
+                        {{ $candidate->linkedin }}
+                    </a>
+                    @else
+                    <p class="text-base text-gray-400 italic">Tidak tersedia</p>
+                    @endif
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Website</p>
+                    @if (!empty($candidate->website))
+                    <a href="{{ $candidate->website }}" target="_blank" class="text-base text-blue-600 hover:underline">
+                        {{ $candidate->website }}
+                    </a>
+                    @else
+                    <p class="text-base text-gray-400 italic">Tidak tersedia</p>
+                    @endif
+                </div>
+            </div> -->
