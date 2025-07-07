@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Builder</title>
-    @vite(['resources/css/app.css', 'resources/css/resume-builder.css', 'resources/js/app-resume.js'])
+    @vite(['resources/css/app.css', 'resources/css/resume-builder.css'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @livewireStyles
 </head>
 

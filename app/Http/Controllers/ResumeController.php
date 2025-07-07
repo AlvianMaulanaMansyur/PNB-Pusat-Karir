@@ -19,13 +19,11 @@ class ResumeController extends Controller
      * @return \App\Models\employees
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    protected function getAuthenticatedEmployee(): employees // Pastikan type hint-nya singular: Employee
+    protected function getAuthenticatedEmployee(): employees
     {
         $user = Auth::user();
 
-        // 1. Pastikan user login.
         if (!$user) {
-            // Ini sebenarnya sudah ditangani oleh middleware 'auth', tapi sebagai safety check.
             abort(403, 'Anda tidak terautentikasi.');
         }
 
@@ -63,13 +61,12 @@ class ResumeController extends Controller
     {
         $employee = $this->getAuthenticatedEmployee();
 
+        if ($employee->resumes()->exists()) {
+            $employee->resumes()->delete();
+        }
+
         $validatedData = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('resumes')->where(fn($query) => $query->where('employee_id', $employee->id))
-            ],
+            'title' => ['required', 'string', 'max:255'],
         ]);
 
         $resumeData = [
@@ -85,7 +82,7 @@ class ResumeController extends Controller
             'title' => $validatedData['title'],
             'resume_data' => $resumeData,
         ]);
-        
+
         return redirect()->route('resumes.edit', ['resume' => $resume->slug])
             ->with('success', 'Resume created successfully! Now, let\'s fill in the details.');
     }
@@ -255,7 +252,7 @@ class ResumeController extends Controller
                 $profilePhotoUrl = 'data:image/' . $type . ';base64,' . base64_encode($data);
             }
         }
-       
+
         return view('resume.partials.pdf', compact('resumeData', 'profilePhotoUrl'));
     }
 }

@@ -14,7 +14,7 @@ class ResumeBuilder extends Component
     // Properti untuk panel resizable (sesuai Alpine.js Anda)
     public $showLeftPanel = true;
     public $showRightPanel = true;
-    public $leftWidth = 320; // Default width
+    public $leftWidth = 400; // Default width
     public $rightWidth = 280; // Default width
     public $minLeftWidth = 250;
     public $minRightWidth = 250;

@@ -28,6 +28,12 @@ window.addEventListener('resize', () => {
         <div class="overlay" @click="@this.set('showLeftPanel', false); @this.set('showRightPanel', false)"></div>
     </template>
 
+    {{-- <div class="mb-4 space-x-2">
+        <button wire:click="$set('leftWidth', 320)" class="px-3 py-1 bg-gray-200 rounded">320px</button>
+        <button wire:click="$set('leftWidth', 400)" class="px-3 py-1 bg-gray-200 rounded">400px</button>
+        <button wire:click="$set('leftWidth', 500)" class="px-3 py-1 bg-gray-200 rounded">500px</button>
+    </div> --}}
+    
     {{-- LEFT PANEL --}}
     <div id="left-panel" x-cloak
         :class="{
@@ -113,7 +119,7 @@ window.addEventListener('resize', () => {
             'flex-1 flex flex-col p-3 items-center justify-start bg-gray-100 overflow-hidden relative': true,
             'w-full': !isDesktop() // Ambil lebar penuh di mobile
         }">
-        <div class="h-full w-full max-w-[210mm] relative overflow-y-auto overflow-x-hidden custom-scrollbar">
+        <div class="h-full w-full max-w-[200mm] relative overflow-y-auto overflow-x-hidden custom-scrollbar">
             <div id="resume-wrapper" class="h-full w-full flex justify-center items-start overflow-hidden">
                 <div id="resume-preview" class="resume-preview bg-white shadow-lg border border-gray-200"
                     style="padding: 20mm;">
