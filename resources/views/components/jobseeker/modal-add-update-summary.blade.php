@@ -7,7 +7,7 @@
     <template x-if="!summary">
         <div>
             <button @click="showModal = true; $dispatch('open-modal', '{{ 'summary-modal' }}')"
-                class="bg-blue-600  rounded-xl text-white px-4 py-2 hover:bg-blue-700">
+                class="px-4 py-2 border-2 border-primaryColor text-primaryColor font-semibold rounded-lg hover:bg-slate-100">
                 Tambah Ringkasan
             </button>
         </div>

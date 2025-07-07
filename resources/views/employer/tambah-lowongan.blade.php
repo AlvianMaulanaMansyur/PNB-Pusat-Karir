@@ -8,7 +8,7 @@
         <p class="my-3 text-md 2xl:text-xl text-gray-600">Selamat datang di halaman</p>
         <p class="font-semibold text-xl 2xl:text-3xl my-2 text-gray-800">Tambah Lowongan Baru</p>
         <div class="w-20 h-1 bg-blue-500 rounded mb-4"></div>
-        <a href="javascript:history.back()"
+        <a href="{{ route('employer.dashboard') }}"
             class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mt-2 transition duration-300">
             <i class="fas fa-arrow-left mr-2"></i> Kembali ke Halaman Sebelumnya
         </a>

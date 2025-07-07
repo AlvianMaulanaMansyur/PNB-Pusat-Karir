@@ -28,102 +28,107 @@
 
     {{-- Konten Utama --}}
     <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-md">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8 border-b pb-4 border-gray-200">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Detail Pelamar</h1>
-                <p class="text-sm text-gray-500">Informasi lengkap mengenai kandidat</p>
+
+        {{-- Atas --}}
+        <div class="flex items-center justify-between border-b pb-5 mb-8">
+            <div class="flex items-center gap-6">
+                <img src="{{ $application->employee->photo_profile 
+                ? asset('storage/' . $application->employee->photo_profile) 
+                : asset('images/profile.png') }}"
+                    alt="Foto Pelamar"
+                    class="w-20 h-20 rounded-full border shadow object-cover">
+
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-800">
+                        {{ $application->employee->first_name }} {{ $application->employee->last_name }}
+                    </h1>
+                    <p class="text-base text-gray-600">{{ $application->employee->email }}</p>
+                    <p class="text-base text-gray-600">{{ $application->employee->phone ?? '-' }}</p>
+                </div>
             </div>
-            <a href="{{ route('employer.pelamar-lowongan', $application->job->employer->slug) }}"
-                class="inline-flex items-center text-sm text-blue-600 hover:underline font-medium">
-                ← Kembali ke Daftar Pelamar
+
+            <a href="{{ route('employer.pelamar-lowongan', $application->job->employer->slug) }}" class="text-base text-blue-600 hover:underline font-medium">
+                ← Kembali
             </a>
         </div>
 
-
-
-        <!-- Foto dan Identitas -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8">
-            <div class="flex-shrink-0">
-                <img src="{{ $application->employee->photo_profile 
-                    ? asset('storage/' . $application->employee->photo_profile) 
-                    : asset('images/profile.png') }}"
-                    alt="Foto Pelamar"
-                    class="w-24 h-24 rounded-full object-cover border shadow">
-            </div>
-            <div>
-                <p class="text-xl font-semibold text-gray-800">
-                    {{ $application->employee->first_name }} {{ $application->employee->last_name }}
-                </p>
-                <p class="text-sm text-gray-500 mt-1">{{ $application->employee->email }}</p>
-                <p class="text-sm text-gray-500">{{ $application->employee->phone ?? '-' }}</p>
-            </div>
-        </div>
-
-        <!-- Detail Tambahan -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700 mb-8">
-            <div>
-                <p class="text-gray-500">Tanggal Melamar</p>
-                <p class="mt-1">{{ $application->applied_at->format('d M Y H:i') }}</p>
-            </div>
+        {{-- Informasi Pelamar --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base text-gray-700 mb-8">
             @php
-            $statusColors = [
-            'pending' => 'bg-yellow-100 text-yellow-800',
-            'reviewed' => 'bg-blue-100 text-blue-800',
-            'interview' => 'bg-indigo-100 text-indigo-800',
-            'accepted' => 'bg-green-100 text-green-800',
-            'rejected' => 'bg-red-100 text-red-800',
+            $fields = [
+            'Tanggal Melamar' => $application->applied_at->format('d M Y H:i'),
+            'Status Lamaran' => ucfirst($application->status),
+            'Pendidikan Terakhir' => $application->employee->highest_education,
+            'Pengalaman' => $application->employee->years_of_experience . ' tahun',
+            'Industri Terakhir' => $application->employee->current_or_previous_industry,
+            'Posisi Terakhir' => $application->employee->current_or_previous_position,
+            'Jenis Pekerjaan yang Dicari' => $application->employee->current_or_previous_job_type,
+            'Ketersediaan' => $application->employee->availability,
+            'Negara' => $application->employee->country,
+            'Kota' => $application->employee->city,
             ];
-            $colorClass = $statusColors[$application->status] ?? 'bg-gray-100 text-gray-800';
             @endphp
-            <div>
-                <p class="text-gray-500">Status Lamaran</p>
-                <span class="inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold {{ $colorClass }}">
-                    {{ ucfirst($application->status) }}
-                </span>
-                @if ($application->status === 'interview' && $application->interview_date)
-                <p class="text-xs text-gray-500 mt-1">
-                    ({{ \Carbon\Carbon::parse($application->interview_date)->format('d M Y H:i') }})
-                </p>
-                @endif
-            </div>
 
+            @foreach($fields as $label => $value)
             <div>
-                <p class="text-gray-500">Pendidikan Terakhir</p>
-                <p class="mt-1">{{ $application->employee->highest_education ?? '-' }}</p>
+                <p class="text-sm text-gray-500">{{ $label }}</p>
+                <p class="mt-1 font-medium text-gray-800">{{ $value ?? '-' }}</p>
             </div>
-            <div>
-                <p class="text-gray-500">Pengalaman Kerja</p>
-                <p class="mt-1">{{ $application->employee->years_of_experience ?? '-' }} tahun</p>
-            </div>
-            <div>
-                <p class="text-gray-500">Industri Terakhir</p>
-                <p class="mt-1">{{ $application->employee->current_or_previous_industry ?? '-' }}</p>
-            </div>
-            <div>
-                <p class="text-gray-500">Posisi Terakhir</p>
-                <p class="mt-1">{{ $application->employee->current_or_previous_position ?? '-' }}</p>
-            </div>
-            <div>
-                <p class="text-gray-500">Jenis Pekerjaan yang Dicari</p>
-                <p class="mt-1">{{ $application->employee->current_or_previous_job_type ?? '-' }}</p>
-            </div>
-            <div>
-                <p class="text-gray-500">Negara</p>
-                <p class="mt-1">{{ $application->employee->country ?? '-' }}</p>
-            </div>
-            <div>
-                <p class="text-gray-500">Kota</p>
-                <p class="mt-1">{{ $application->employee->city ?? '-' }}</p>
-            </div>
-            <div>
-                <p class="text-gray-500">Ketersediaan Kerja</p>
-                <p class="mt-1">{{ $application->employee->availability ?? '-' }}</p>
-            </div>
+            @endforeach
         </div>
 
-        <!-- Riwayat Pendidikan -->
-        @if ($application->employee->educations && count($application->employee->educations))
+        {{-- Ringkasan --}}
+        @if ($application->employee->summary)
+        <div class="mb-6">
+            <p class="text-sm text-gray-500 mb-1">Ringkasan Profil</p>
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-base shadow-inner whitespace-pre-line">
+                {{ $application->employee->summary }}
+            </div>
+        </div>
+        @endif
+
+        {{-- Sosial --}}
+        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <div>
+            <p class="text-sm text-gray-500">LinkedIn</p>
+            @if ($application->employee->linkedin)
+            <a href="{{ $application->employee->linkedin }}" target="_blank" class="text-base text-blue-600 hover:underline">
+                {{ $application->employee->linkedin }}
+            </a>
+            @else
+            <p class="text-base text-gray-400 italic">Tidak tersedia</p>
+            @endif
+        </div>
+        <div>
+            <p class="text-sm text-gray-500">Website</p>
+            @if ($application->employee->website)
+            <a href="{{ $application->employee->website }}" target="_blank" class="text-base text-blue-600 hover:underline">
+                {{ $application->employee->website }}
+            </a>
+            @else
+            <p class="text-base text-gray-400 italic">Tidak tersedia</p>
+            @endif
+        </div>
+    </div> -->
+
+        {{-- Skills --}}
+        @if ($application->employee->skills && count($application->employee->skills))
+        <div class="mb-6">
+            <p class="text-sm text-gray-500 mb-1">Skills</p>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($application->employee->skills as $skill)
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                    {{ $skill->name }}
+                </span>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+
+
+        {{-- Pendidikan --}}
+        @if ($application->employee->educations && $application->employee->educations->count())
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-800 mb-2">Riwayat Pendidikan</h3>
             <ul class="space-y-4">
@@ -143,38 +148,59 @@
         </div>
         @endif
 
-        <!-- Cover Letter -->
+        {{-- Cover Letter --}}
         @if ($application->cover_letter)
         <div class="mb-8">
-            <p class="text-gray-500 mb-1">Cover Letter</p>
-            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-sm whitespace-pre-line shadow-inner">
+            <p class="text-sm text-gray-500 mb-1">Cover Letter</p>
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-base whitespace-pre-line shadow-inner">
                 {{ $application->cover_letter }}
             </div>
         </div>
         @endif
 
-        <!-- CV -->
+        {{-- CV --}}
         @if ($application->cv_file)
         <div class="mb-8">
-            <p class="text-gray-500 mb-1">CV</p>
-            <a href="{{ route('cv.download', basename($application->cv_file)) }}" target="_blank"
-                class="text-blue-600 hover:underline text-sm">📄 Lihat CV</a>
+            <p class="text-sm text-gray-500 mb-1">CV</p>
+            <a href="{{ route('cv.download', basename($application->cv_file)) }}" target="_blank" class="text-base text-blue-600 hover:underline">
+                📄 Lihat CV
+            </a>
         </div>
         @endif
 
-        <!-- Skills -->
-        @if ($application->employee->skills && count($application->employee->skills))
-        <div class="mb-6">
-            <p class="text-gray-500 mb-1">Skills</p>
-            <div class="flex flex-wrap gap-2">
-                @foreach ($application->employee->skills as $skill)
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
-                    {{ $skill->nama }}
-                </span>
-                @endforeach
-            </div>
+        <h3 class="text-lg font-semibold mb-4">Sertifikat / Portofolio</h3>
+        @forelse ($certificates as $cert)
+        <div class="mb-4">
+            <p class="font-medium text-gray-800">{{ $cert->file_name }}</p>
+            <a href="{{ asset('storage/' . $cert->portofolio_path) }}"
+                target="_blank"
+                class="text-blue-600 hover:underline text-sm">
+                Lihat Sertifikat
+            </a>
         </div>
-        @endif
+        @empty
+        <p class="text-sm text-gray-500">Tidak ada sertifikat yang diunggah.</p>
+        @endforelse
+
+
     </div>
-</div>
-@endsection
+
+
+
+    <!-- Tombol Kembali ke Atas -->
+    <button id="backToTop" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        class="hidden fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-3 rounded-full shadow-xl hover:scale-110 hover:shadow-2xl transition-all duration-300"
+        title="Kembali ke atas" aria-label="Kembali ke atas">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        // Tampilkan tombol setelah scroll 300px
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('backToTop');
+            btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+        });
+    </script>
+    @endsection

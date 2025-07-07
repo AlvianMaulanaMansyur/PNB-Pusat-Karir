@@ -53,20 +53,26 @@
                             detail_kualifikasi: @json(nl2br(e($job->detailkualifikasi))),
                             gaji: @json($job->gaji),
                             benefit: @json(nl2br(e($job->benefit))),
-                            photo_profile: @json(Str::startsWith($job->employer->photo_profile, 'image/')
-                                    ? asset($job->employer->photo_profile)
+                            photo_profile: @json(
+                                $job->employer->photo_profile === 'images/default_employer.png'
+                                    ? asset('images/default_employer.png')
                                     : asset('storage/' . $job->employer->photo_profile)),
+
                             deadline: @json($job->deadline),
+                            poster: @json($job->poster),
                             created_at: @json($job->created_at->diffForHumans())
                         })'>
+
+
                         {{-- Poster dan informasi lowongan --}}
                         <div class="flex items-start space-x-4">
                             {{-- Proflie pic --}}
                             <div>
-                                <img src="{{ Str::startsWith($job->employer->photo_profile, 'image/')
-                                    ? asset($job->employer->photo_profile)
+                                <img src="{{ $job->employer->photo_profile === 'images/default_employer.png'
+                                    ? asset('images/default_employer.png')
                                     : asset('storage/' . $job->employer->photo_profile) }}"
-                                    alt="Poster lowongan" class="w-24 h-24 object-cover rounded-lg shadow-md">
+                                    alt="Foto Profil"
+                                    class="w-28 h-28 object-cover rounded-lg border border-gray-300 shadow-sm">
                             </div>
 
                             {{-- Informasi lowongan --}}
@@ -198,7 +204,23 @@
                                 class="bg-red-600 text-white px-1 rounded-full">{{ \Carbon\Carbon::parse($job->deadline)->format('d M Y') }}</span>
 
                         </div>
-                        <div class="text-md text-gray-400" x-text="selectedJob.created_at"></div>
+                        {{-- poster --}}
+                        <div class="text-lg text-gray-800">
+                            Pamflet:
+                            <template x-if="selectedJob.poster">
+                                <a :href="'/storage/posters/' + selectedJob.poster" target="_blank"
+                                    class="text-blue-600 hover:underline font-semibold">
+                                    Lihat Informasi Lebih Lanjut
+                                </a>
+
+                            </template>
+                            <template x-if="!selectedJob.poster">
+                                <span class="text-gray-500">-</span>
+                            </template>
+
+                            <div class="text-md text-gray-400" x-text="selectedJob.created_at"></div>
+                        </div>
+
 
                         {{-- button lamar --}}
                         <div class="py-6 flex">
@@ -218,13 +240,6 @@
                             <x-secondary-button class="ml-2"
                                 x-text="getDeadlineCountdown(selectedJob.deadline)"></x-secondary-button>
                         </div>
-
-                        {{-- poster
-                        <div>
-                            <H1>Info ebih lanjut</H1>
-
-                        </div> --}}
-
 
                         {{-- deskripsi --}}
                         <div>
@@ -253,7 +268,8 @@
 
                         <div x-data="{ showForm: false }" class=" rounded-lg p-5 my-6">
                             <h3 class="text-gray-700 text-2xl font-bold mb-2"> Hati-hati Penipuan</h3>
-                            <p class="my-2 text-xl">Jangan berikan detail bank atau kartu kredit kamu saat mengirimkan
+                            <p class="my-2 text-xl">Jangan berikan detail bank atau kartu kredit kamu saat
+                                mengirimkan
                                 lamaran kerja.
                             </p>
 

@@ -80,8 +80,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/event/{id}/edit', [ManajemenEventController::class, 'editEvent'])->name('admin.event.edit');
     Route::put('/event/{id}', [ManajemenEventController::class, 'update'])->name('admin.event.update');
     Route::delete('/admin/event/{id}', [ManajemenEventController::class, 'destroy'])->name('admin.event.destroy');
-
-
 });
 
 // ===================
@@ -201,7 +199,7 @@ Route::middleware('auth')->group(function () {
             Route::get('{slug}/pelamar-lowongan', [EmployerController::class, 'showApplicants'])->name('employer.pelamar-lowongan');
             Route::patch('pelamar-lowongan/{slug}/status', [EmployerController::class, 'updateStatus'])->name('employer.updateStatus');
             Route::get('{slug}/pelamar-lowongan/{jobId}/{userId}/detail', [EmployerController::class, 'detailPelamar'])
-    ->name('employer.detail-pelamar');
+                ->name('employer.detail-pelamar');
 
 
             Route::get('{slug}/kelola-interview', [EmployerController::class, 'showInterviewApplicants'])->name('employer.kelolawawancara');
@@ -219,13 +217,13 @@ Route::middleware('auth')->group(function () {
             Route::post('send-invitation/{jobId}/{userId}', [MailController::class, 'inviteApplicants'])->name('employer.send-invitation');
 
             Route::get('/download/cv/{filename}', function ($filename) {
-                $path = 'temp/' . $filename;
+                $path = 'cv/' . $filename;
 
-                if (!Storage::exists($path)) {
+                if (!Storage::disk('public')->exists($path)) {
                     abort(404);
                 }
 
-                return Storage::download($path);
+                return Storage::download('public/' . $path);
             })->name('cv.download');
 
             Route::get('/download/sertif/{filename}', function ($filename) {

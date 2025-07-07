@@ -6,7 +6,7 @@
 @php
     $tingkatposisi = [
         'Internship' => 'Internship',
-        'Staf' => 'Staf',
+        'Staff' => 'Staff',
         'Junior Staff' => 'Junior Staff',
         'Senior Staff' => 'Senior Staff',
         'Supervisor' => 'Supervisor',

@@ -2,31 +2,6 @@
 
 @section('content')
 
-{{-- Judul Halaman --}}
-<div class="flex justify-start">
-    <div class="flex flex-col w-full lg:w-2/3 text-left mx-4 md:mx-10 lg:mx-20 lg:ml-28">
-        <p class="text-md text-gray-600">Selamat datang di halaman</p>
-        <p class="font-semibold text-2xl 2xl:text-3xl my-2 text-gray-800">Manajemen Pelamar Lowongan</p>
-        <div class="w-28 h-1 bg-blue-500 rounded mb-4"></div>
-        <p class="text-gray-600 text-sm mb-3">Lihat dan kelola semua pelamar yang mendaftar ke lowongan pekerjaan Anda.</p>
-        <div class="flex items-start space-x-4 border-l-4 border-blue-600 bg-blue-50 rounded-md p-5 mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 11-10 10A10 10 0 0112 2z" />
-            </svg>
-            <div>
-                <h3 class="text-blue-700 font-semibold text-lg mb-1">Informasi Tambahan</h3>
-                <p class="text-blue-800 text-sm leading-relaxed max-w-prose">
-                    Halaman ini digunakan oleh pemberi kerja untuk melihat daftar pelamar yang telah mengajukan lamaran ke lowongan pekerjaan Anda. Anda dapat meninjau profil pelamar, mengunduh CV, serta memberikan keputusan atau tindak lanjut terhadap lamaran yang masuk.
-                </p>
-            </div>
-        </div>
-        <a href="{{ route('employer.dashboard') }}"
-            class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mt-2 transition duration-300 mb-4">
-            <i class="fas fa-arrow-left mr-2"></i> Kembali ke Halaman Utama
-        </a>
-    </div>
-</div>
-
 {{-- Tampilkan pesan success --}}
 @if (session('success'))
 <x-alert.session-alert type="success" :message="session('success')" />
@@ -66,6 +41,31 @@
     });
 </script>
 @endif
+
+{{-- Judul Halaman --}}
+<div class="flex justify-start">
+    <div class="flex flex-col w-full lg:w-2/3 text-left mx-4 md:mx-10 lg:mx-20 lg:ml-28">
+        <p class="text-md text-gray-600">Selamat datang di halaman</p>
+        <p class="font-semibold text-2xl 2xl:text-3xl my-2 text-gray-800">Manajemen Pelamar Lowongan</p>
+        <div class="w-28 h-1 bg-blue-500 rounded mb-4"></div>
+        <p class="text-gray-600 text-sm mb-3">Lihat dan kelola semua pelamar yang mendaftar ke lowongan pekerjaan Anda.</p>
+        <div class="flex items-start space-x-4 border-l-4 border-blue-600 bg-blue-50 rounded-md p-5 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 11-10 10A10 10 0 0112 2z" />
+            </svg>
+            <div>
+                <h3 class="text-blue-700 font-semibold text-lg mb-1">Informasi Tambahan</h3>
+                <p class="text-blue-800 text-sm leading-relaxed max-w-prose">
+                    Halaman ini digunakan oleh pemberi kerja untuk melihat daftar pelamar yang telah mengajukan lamaran ke lowongan pekerjaan Anda. Anda dapat meninjau profil pelamar, mengunduh CV, serta memberikan keputusan atau tindak lanjut terhadap lamaran yang masuk.
+                </p>
+            </div>
+        </div>
+        <a href="{{ route('employer.dashboard') }}"
+            class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mt-2 transition duration-300 mb-4">
+            <i class="fas fa-arrow-left mr-2"></i> Kembali ke Halaman Utama
+        </a>
+    </div>
+</div>
 
 <div class="flex flex-col w-full lg:w-2/3 mx-4 md:mx-10 lg:mx-auto">
     {{-- Judul Statistik --}}
@@ -295,43 +295,6 @@
                                     </div>
                                 </div>
                             </form>
-                            <!-- Modal Detail Pelamar -->
-                            <div id="detail-modal-{{ $app->slug }}"
-                                class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                <div class="relative bg-white w-full max-w-lg max-h-[90vh] mx-4 rounded-2xl shadow-xl overflow-y-auto animate-fade-in">
-                                    <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-                                        <h2 class="text-xl font-semibold text-gray-800">Detail Pelamar</h2>
-                                        <button onclick="document.getElementById('detail-modal-{{ $app->slug }}').classList.add('hidden')"
-                                            class="text-gray-400 hover:text-gray-600 transition">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="p-6 space-y-4 text-sm text-gray-700">
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <p><span class="font-semibold">Nama:</span><br>{{ $app->employee->first_name }} {{ $app->employee->last_name }}</p>
-                                            <p><span class="font-semibold">Email:</span><br>{{ $app->employee->email }}</p>
-                                            <p><span class="font-semibold">No. HP:</span><br>{{ $app->employee->phone ?? '-' }}</p>
-                                            <p><span class="font-semibold">Tanggal Melamar:</span><br>{{ $app->applied_at->format('d M Y H:i') }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold mb-1">Cover Letter:</p>
-                                            <div class="bg-gray-50 border border-gray-200 p-3 rounded-md text-sm max-h-40 overflow-y-auto whitespace-pre-line">
-                                                {{ $app->cover_letter ?? '-' }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="px-6 py-4 border-t border-gray-200 bg-white sticky bottom-0 text-right">
-                                        <button onclick="document.getElementById('detail-modal-{{ $app->slug }}').classList.add('hidden')"
-                                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-4 py-2 rounded-md transition">
-                                            Tutup
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         </td>
                     </tr>
                     @empty

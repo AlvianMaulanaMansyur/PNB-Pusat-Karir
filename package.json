@@ -19,8 +19,10 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
+        "@alpinejs/collapse": "^3.14.9",
         "@inertiajs/inertia": "^0.11.1",
         "flowbite": "^3.1.2",
+        "livewire": "^0.6.1",
         "split.js": "^1.6.5"
     }
 }

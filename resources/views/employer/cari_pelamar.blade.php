@@ -119,7 +119,7 @@
                 <tr class="border-t hover:bg-gray-50">
                     {{-- Ganti angka dengan ikon detail --}}
                     <td class="px-5 py-3 text-center">
-                        <a href="{{ route('employer.detail-kandidat', ['slug' => Auth::user()->employer->slug, 'id' => $candidate->id]) }}"
+                        <a href="{{ route('employer.detail-kandidat', ['slug' => Auth::user()->employer->slug, 'id' => $candidate->id]) }}?{{ http_build_query(['skills' => request('skills')]) }}"
                             class="text-blue-600 hover:text-blue-800 transition"
                             title="Lihat Detail">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" viewBox="0 0 20 20" fill="currentColor">
@@ -154,59 +154,6 @@
                     </td>
                 </tr>
 
-
-                {{-- Modal Detail Kandidat --}}
-                <div id="modal-{{ $index }}"
-                    class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex items-center justify-center transition-all duration-300">
-                    <div
-                        class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-8 relative animate-fade-in-up">
-
-                        {{-- Tombol Close --}}
-                        <button type="button"
-                            onclick="document.getElementById('modal-{{ $index }}').classList.add('hidden')"
-                            class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                        {{-- Header --}}
-                        <div class="mb-6 text-center">
-                            <h3 class="text-2xl font-bold text-gray-800">Detail Kandidat</h3>
-                            <p class="text-sm text-gray-500">Informasi singkat mengenai pelamar</p>
-                        </div>
-
-                        {{-- Konten --}}
-                        <div class="space-y-5 text-sm text-gray-700">
-                            <div class="flex items-start">
-                                <span class="w-28 font-medium text-gray-600">Nama:</span>
-                                <span>{{ $candidate->first_name }} {{ $candidate->last_name ?? '-' }}</span>
-                            </div>
-
-                            <div class="flex items-start">
-                                <span class="w-28 font-medium text-gray-600">Email:</span>
-                                <span>{{ $candidate->email }}</span>
-                            </div>
-
-                            <div>
-                                <p class="font-medium text-gray-600 mb-2">Skill:</p>
-                                @if($candidate->skills)
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach(explode(',', $candidate->skills) as $skill)
-                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full">
-                                        {{ trim($skill) }}
-                                    </span>
-                                    @endforeach
-                                </div>
-                                @else
-                                <p class="text-gray-400 italic">Belum ada data skill</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 {{-- Modal Undang Kandidat ke Lowongan --}}
                 <div id="invite-modal-{{ $index }}" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
                     <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">

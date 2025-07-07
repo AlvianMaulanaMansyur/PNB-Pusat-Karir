@@ -1,13 +1,39 @@
 <div x-data="educationForm()">
-    <p class="text-blue-700 text-2xl font-semibold py-2">Pendidikan</p>
+    <div class="mb-8">
+        <p class="text-blue-700 text-3xl font-semibold py-2">Pendidikan</p>
+        <p class="text-gray-600 text-lg">Tambahkan detail pendidikan Anda di sini. Jangan ragu untuk menambahkan
+            pengalaman dan pencapaian Anda secara detail agar menjadi poin plus bagi pencari kerja!</p>
+    </div>
     @foreach ($educations as $key)
-        <div class="container border-4 border-gray-300 p-5 my-2 rounded-lg relative">
-            <!-- Tombol Edit di pojok kanan atas -->
-            <button @click="openEditModal(@js($key))"
-                class="absolute top-2 right-6 text-gray-500 hover:text-gray-300">
-                <i class="fa-regular fa-pen-to-square text-2xl"></i>
-            </button>
+        <div class="container border-4 border-gray-300 p-5 my-2 rounded-lg relative" x-data="{ showMenu: false, expanded: false }">
+            <!-- Tombol titik tiga -->
+            <div class="absolute top-2 right-6">
+                <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <i class="fas fa-ellipsis-v text-xl"></i>
+                </button>
 
+                <!-- Dropdown menu -->
+                <div x-show="showMenu" @click.outside="showMenu = false"
+                    class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-10">
+                    <button @click="openEditModal(@js($key)); showMenu = false"
+                        class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-800">
+                        Edit
+                    </button>
+                    <button @click.prevent="confirmDeletionEdu({{ $key->id }}); showMenu = false"
+                        class="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-600">
+                        Hapus
+                    </button>
+
+                    <!-- Form Hapus -->
+                    <form x-ref="deleteEduForm_{{ $key->id }}" action="{{ route('education.delete', $key->id) }}"
+                        method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                </div>
+            </div>
+
+            <!-- Konten utama -->
             <p class="text-gray-700 text-md">{{ $key->institution }}</p>
             <h2 class="font-semibold text-xl">{{ $key->sertifications }}</h2>
 
@@ -19,18 +45,35 @@
                 <i class="fa-solid fa-book"></i>
                 <p>{{ $key->dicipline }}</p>
             </div>
-            <p class="text-sm text-gray-500">Lulus {{ \Carbon\Carbon::parse($key->end_date)->translatedFormat('F Y') }}
+            <p class="text-sm text-gray-500">
+                Lulus {{ \Carbon\Carbon::parse($key->end_date)->translatedFormat('F Y') }}
             </p>
+
             <div class="py-4">
                 <h2 class="font-semibold py-2">Deskripsi Pengalaman:</h2>
-                <p class="text-justify">{!! nl2br(e($key->description)) !!}</p>
+                <p class="text-justify text-gray-700">
+                    <span x-show="!expanded">
+                        {{ \Illuminate\Support\Str::limit(strip_tags($key->description), 150) }}
+                        @if (strlen(strip_tags($key->description)) > 150)
+                            <span class="text-blue-600 cursor-pointer" @click="expanded = true"> Baca
+                                selengkapnya</span>
+                        @endif
+                    </span>
+
+                    <span x-show="expanded">
+                        {!! nl2br(e($key->description)) !!}
+                        <span class="text-blue-600 cursor-pointer ml-2" @click="expanded = false">Tutup</span>
+                    </span>
+                </p>
             </div>
         </div>
     @endforeach
 
+
+
     <!-- Tombol toggle form tambah -->
     <button type="button" @click="showForm = !showForm"
-        class="px-4 py-2 border-2 border-primaryColor text-primaryColor font-semibold rounded-lg hover:bg-slate-100">
+        class="px-4 py-2 mt-3 border-2 border-primaryColor text-primaryColor font-semibold rounded-lg hover:bg-slate-100">
         Tambah Pendidikan
     </button>
 
@@ -121,16 +164,16 @@
                     x-model="form.sertifications" required />
 
                 <x-label-required for="degrees" :value="__('Jenis Pendidikan')" />
-                <x-dropdown.kualifikasi-pendidikan id="degrees" class="block w-full" type="text" name="degrees" x-model="form.degrees"
-                    required />
+                <x-dropdown.kualifikasi-pendidikan id="degrees" class="block w-full" type="text" name="degrees"
+                    x-model="form.degrees" required />
 
                 <x-label-required for="dicipline" :value="__('Jenis Keahlian')" />
                 <x-dropdown.disiplin-utama id="dicipline" class="block w-full" type="text" name="dicipline"
                     x-model="form.dicipline" required />
 
                 <x-label-required for="end_date" :value="__('Tanggal Kelulusan')" />
-                <x-text-input id="end_date" class="block w-full" type="date" name="end_date" x-model="form.end_date"
-                    required />
+                <x-text-input id="end_date" class="block w-full" type="date" name="end_date"
+                    x-model="form.end_date" required />
 
                 <x-label-required for="description" :value="__('Deskripsi')" />
                 <textarea name="description" x-model="form.description" rows="4" class="w-full border p-2 rounded" required></textarea>
@@ -189,6 +232,22 @@
                     end_date: data.end_date,
                 };
                 this.$dispatch('open-modal', 'edit-education-modal');
+            },
+            confirmDeletionEdu(id) {
+                Swal.fire({
+                    title: 'Yakin ingin menghapus riwayat pendidikan ini?',
+                    text: "Data yang dihapus tidak dapat dikembalikan.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.$refs[`deleteEduForm_${id}`].submit();
+                    }
+                });
             }
         }
     }

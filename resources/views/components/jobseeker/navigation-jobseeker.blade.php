@@ -42,7 +42,7 @@
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
-                        <img src="{{ $employeeData->photo_profile === 'image/user.png'
+                        <img src="{{ $employeeData->photo_profile === 'images/profile.png'
                             ? asset($employeeData->photo_profile)
                             : asset('storage/' . $employeeData->photo_profile) }}"
                             {{-- Use the user's profile photo URL --}} alt="Profile"
