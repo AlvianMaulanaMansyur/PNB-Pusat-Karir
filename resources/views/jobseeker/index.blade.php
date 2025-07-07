@@ -200,10 +200,12 @@
                                 x-text="'Rp. ' + Number(selectedJob.gaji).toLocaleString('id-ID')"></div>
                         </div>
                         <div class="text-lg text-gray-800">
-                            Batas: <span
-                                class="bg-red-600 text-white px-1 rounded-full">{{ \Carbon\Carbon::parse($job->deadline)->format('d M Y') }}</span>
-
+                            Batas:
+                            <span class="bg-red-600 text-white px-1 rounded-full"
+                                x-text="new Date(selectedJob.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })">
+                            </span>
                         </div>
+
                         {{-- poster --}}
                         <div class="text-lg text-gray-800">
                             Pamflet:
@@ -285,7 +287,7 @@
                             </button>
 
                             <div x-show="showForm" x-transition x-cloak class="mt-4">
-                                <form action="{{ route('report.job', $job->id) }}" method="POST"
+                                <form :action="'/report-job/' + selectedJob.id" method="POST"z`
                                     class="mt-8 space-y-4">
                                     @csrf
 

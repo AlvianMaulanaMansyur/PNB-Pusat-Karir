@@ -27,7 +27,6 @@ class NewJobListingNotification extends Mailable
     {
         return $this->subject('Lowongan Baru: ' . $this->jobListing->nama_lowongan)->markdown('emails.new-job-listing');
     }
-
     /**
      * Get the message envelope.
      */

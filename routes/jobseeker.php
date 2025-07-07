@@ -30,6 +30,8 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
         Route::get('/activity/applied-jobs', [AppliedJobController::class, 'index'])->name('applied.index');
 
         Route::post('/report-job/{id}', [JobSeekerController::class, 'reportJob'])->name('report.job');
+
+        Route::get('/dashboard', [JobSeekerController::class, 'dashboard'])->name('employee.dashboard');
     });
 
     Route::prefix('/my-profile')->group(function () {

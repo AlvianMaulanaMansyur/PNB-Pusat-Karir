@@ -5,7 +5,7 @@
 
         <div class="max-w-screen-xl w-full mx-auto px-4 sm:px-6  lg:px-32">
             <div class="py-3">
-                <x-breadcrumb :links="[['label' => 'Home', 'url' => route('employee.landing-page')], ['label' => 'Profile']]" />
+                <x-breadcrumb :links="[['label' => 'Home', 'url' => route('employee.lowongan')], ['label' => 'Profile']]" />
             </div>
             <div class="container border-2 shadow rounded-xl p-5 py-5  bg-darkBlue  md:px-20">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5 py-7">
@@ -40,7 +40,8 @@
             </div>
             <div class="py-4">
                 <p class="text-blue-700 text-3xl font-semibold py-2">Ringkasan Diri</p>
-                <p class="text-gray-600 text-lg py-2">Tambahkan ringkasan pribadi ke profil untuk memperkenalkan diri Anda.</p>
+                <p class="text-gray-600 text-lg py-2">Tambahkan ringkasan pribadi ke profil untuk memperkenalkan diri
+                    Anda.</p>
                 @include('components.jobseeker.modal-add-update-summary', [
                     'summary' => $employeeProfile->summary ?? '',
                 ])

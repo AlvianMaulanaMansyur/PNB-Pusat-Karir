@@ -18,8 +18,10 @@
                 </x-dropdown.nav-dropdown>
 
                 <x-dropdown.nav-dropdown label="pekerjaan">
-                    <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Lowongan Pekerjaan</a>
-                    <a href="{{ route('applied.index') }}" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
+                    <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Cari Pekerjaan
+                    </a>
+                    <a href="{{ route('applied.index') }}" class="block px-4 py-2 hover:bg-gray-100">Lamaran
+                        Pekerjaan</a>
                 </x-dropdown.nav-dropdown>
 
                 {{-- notification --}}
@@ -39,6 +41,7 @@
                     </x-navlink>
 
                 @endauth
+
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
@@ -62,6 +65,8 @@
                         <a href="{{ route('jobseeker.profiles') }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
                             Saya</a>
+                        <a href="{{ route('employee.dashboard') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dasboard</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

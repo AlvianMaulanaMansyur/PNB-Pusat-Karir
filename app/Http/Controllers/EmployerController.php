@@ -114,6 +114,7 @@ class EmployerController extends Controller
 
             // Kirim email ke masing-masing jobseeker
             foreach ($jobseekers as $jobseeker) {
+                Log::info('Mengirim email ke jobseeker', ['email' => $jobseeker->email]);
                 Mail::to($jobseeker->email)->send(new \App\Mail\NewJobListingNotification($jobListing));
             }
 
