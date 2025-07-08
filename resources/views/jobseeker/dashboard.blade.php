@@ -1,5 +1,6 @@
 <x-jobseeker-layout>
     <div class="min-h-screen flex flex-col justify-between bg-gray-50">
+        
         <div class="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-32 py-10 flex-grow">
             {{-- Breadcrumb --}}
             <div class="mb-4">

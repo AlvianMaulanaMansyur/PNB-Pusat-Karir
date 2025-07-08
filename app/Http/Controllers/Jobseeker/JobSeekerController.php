@@ -319,4 +319,9 @@ class JobSeekerController extends Controller
 
         return view('jobseeker.dashboard', compact('employeeData', 'pending', 'interview', 'accepted', 'rejected'));
     }
+
+    public function aboutUs()
+    {
+        return view('jobseeker.about-us');
+    }
 }

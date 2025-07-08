@@ -72,7 +72,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 // ===================
 // Admin - Event
 // ===================
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/event/store', [ManajemenEventController::class, 'store'])->name('admin.event.store');
     Route::get('/event', [ManajemenEventController::class, 'manajemenevent'])->name('admin.manajemenevent');
     Route::get('/event/create', [ManajemenEventController::class, 'create'])->name('admin.event.create');
