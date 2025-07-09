@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 // Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
 // Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
 // Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
-Route::post('/admin/logout', [AdminauthController::class, 'destroy'])->name('admin.logout');    
+Route::post('/admin/logout', [AdminauthController::class, 'destroy'])->name('admin.logout');
 
 // ============================
 // Admin - Verifikasi & Akun

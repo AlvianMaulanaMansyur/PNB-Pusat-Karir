@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\eventController;
+use App\Http\Controllers\Jobseeker\eventController;
 use App\Http\Controllers\Jobseeker\AppliedJobController;
 use App\Http\Controllers\Jobseeker\JobSeekerController;
 use App\Http\Controllers\jobseeker\JobseekerProfiles;
