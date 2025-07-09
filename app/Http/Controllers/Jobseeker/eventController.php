@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class eventController extends Controller
 {
-     public function index()
+    public function index()
     {
         $user = Auth::user();
         $events = Event::where('is_active', true)->latest('event_date')->get();
