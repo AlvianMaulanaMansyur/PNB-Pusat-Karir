@@ -703,18 +703,24 @@ class EmployerController extends Controller
 
     public function detailPelamar($slug, $jobId, $userId)
     {
+        // Ambil employer beserta daftar lowongan
         $employer = Employers::where('slug', $slug)
             ->with('jobListings')
             ->firstOrFail();
 
-        // Pastikan job_id termasuk milik employer ini
+        // Cek apakah lowongan milik employer tersebut
         $jobIds = $employer->jobListings->pluck('id')->toArray();
         if (!in_array($jobId, $jobIds)) {
             abort(403, 'Lowongan tidak valid atau tidak dimiliki employer ini.');
         }
 
-        // Ambil lamaran sesuai job_id dan employee_id (MUAT skills)
-        $application = JobApplication::with(['employee.educations', 'employee.skills', 'job'])
+        // Ambil data lamaran dan employee lengkap (dengan relasi)
+        $application = JobApplication::with([
+            'employee.educations',
+            'employee.skills',
+            'employee.workExperiences',
+            'job'
+        ])
             ->where('job_id', $jobId)
             ->where('employee_id', $userId)
             ->firstOrFail();
@@ -723,8 +729,14 @@ class EmployerController extends Controller
             ->where('job_id', $jobId)
             ->get();
 
+        // Daftar semua lowongan milik employer (untuk form undangan)
         $jobListings = $employer->jobListings;
 
-        return view('employer.detail_pelamar', compact('application', 'jobListings', 'certificates'));
+        // Kirim data ke view
+        return view('employer.detail_pelamar', compact(
+            'application',
+            'jobListings',
+            'certificates'
+        ));
     }
 }

@@ -42,7 +42,7 @@
             <div class="mb-5">
                 <x-label-required for="nama_lowongan" :value="__('Nama Lowongan')" />
                 <x-text-input id="nama_lowongan" name="nama_lowongan" type="text"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     placeholder="Contoh: Staff Marketing" required />
             </div>
 
@@ -50,7 +50,7 @@
             <div class="mb-5">
                 <x-label-required for="deskripsi" :value="__('Deskripsi')" />
                 <x-text-area-input id="deskripsi" name="deskripsi"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     placeholder="Masukkan ringkasan pekerjaan yang jelas dan menarik." required />
             </div>
 
@@ -60,7 +60,7 @@
                 <x-dropdown.jenis-lowongan class="block mt-1 w-full text-sm" />
             </div>
 
-            {{-- Posisi Jabatan--}}
+            {{-- Posisi Jabatan --}}
             <div class="mb-5">
                 <x-label-required for="posisi" :value="__('Posisi Lowongan')" />
                 <x-dropdown.tingkat-posisi class="block mt-1 w-full text-sm" />
@@ -70,7 +70,7 @@
             <div class="mb-5">
                 <x-label-required for="responsibility" :value="__('Tanggung Jawab')" />
                 <x-text-area-input id="responsibility" name="responsibility"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     placeholder="Tulis tanggung jawab utama posisi ini, misalnya: mengatur jadwal, menyusun laporan, dll." required />
             </div>
 
@@ -84,7 +84,7 @@
             <div class="mb-5">
                 <x-label-required for="detailkualifikasi" :value="__('Detail Kualifikasi')" />
                 <x-text-area-input id="detailkualifikasi" name="detailkualifikasi"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     placeholder="Contoh: Minimal lulusan S1 Teknik Informatika atau jurusan terkait." required />
             </div>
 
@@ -92,7 +92,7 @@
             <div class="mb-5">
                 <x-label-required for="gaji" :value="__('Gaji')" />
                 <x-text-input id="gaji" name="gaji" type="text"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     placeholder="Contoh: 5000000" value="{{ old('gaji', $job->gaji ?? '') }}" required />
                 <p class="text-xs text-gray-500 mt-1">Masukkan nominal angka saja, tanpa titik atau simbol. Misal: 5000000</p>
             </div>
@@ -101,7 +101,7 @@
             <div class="mb-5">
                 <x-label-required for="benefit" :value="__('Benefit')" />
                 <x-text-area-input id="benefit" name="benefit"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     placeholder="Tulis benefit seperti asuransi, bonus, cuti tambahan, jenjang karir, dll." required />
             </div>
 
@@ -110,17 +110,26 @@
                 <x-label-required for="deadline" :value="__('Tenggat Pendaftaran')" />
                 <x-text-input id="deadline" name="deadline" type="date"
                     :min="now()->toDateString()"
-                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
+                    class="block mt-1 w-full rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm placeholder-gray-500"
                     required />
             </div>
 
             {{-- Poster / Flayer --}}
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2" for="poster">
-                    <i class="fas fa-image mr-1 text-blue-500"></i> Poster atau Flayer
+                <label for="poster" class="block text-sm font-medium text-gray-700 mb-2">
+                    Poster atau Flayer
                 </label>
-                <input type="file" name="poster" id="poster" accept="image/*"
-                    class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                <label for="poster"
+                    class="flex items-center gap-3 cursor-pointer border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 5h18M3 19h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7M12 11v2m0 4h.01" />
+                    </svg>
+                    <span id="poster-file-name" class="truncate">Pilih file gambar…</span>
+                    <input id="poster" name="poster" type="file" accept="image/*" class="sr-only" />
+                </label>
             </div>
 
             {{-- Tombol Simpan: ubah jadi type button supaya tidak langsung submit --}}
@@ -260,6 +269,11 @@
         });
     });
 </script>
-
+<script>
+    document.getElementById('poster').addEventListener('change', function(e) {
+        const fileName = e.target.files[0]?.name || 'Pilih file gambar…';
+        document.getElementById('poster-file-name').textContent = fileName;
+    });
+</script>
 
 @endsection

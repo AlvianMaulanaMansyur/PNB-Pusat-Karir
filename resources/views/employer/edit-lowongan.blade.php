@@ -159,23 +159,31 @@
 
     {{-- Gambar Poster (Opsional) --}}
     <div class="mb-6">
-        <label for="poster" class="block text-sm font-medium text-gray-700">Poster (opsional)</label>
+        <label for="poster" class="block text-sm font-medium text-gray-700 mb-2">Poster (opsional)</label>
+
         @if ($lowongan->poster)
-        <div class="my-2">
-            <img src="{{ asset('storage/' . $lowongan->poster) }}" alt="Poster Lowongan" class="w-32 rounded shadow-sm">
+        <div class="mb-3">
+            <img src="{{ asset('storage/' . $lowongan->poster) }}" alt="Poster Lowongan"
+                class="w-32 rounded-md border shadow-sm">
         </div>
         @endif
-        <input type="file" name="poster" id="poster"
-            class="block mt-1 w-full text-sm text-gray-600
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-md file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100">
+
+        <label for="poster"
+            class="flex items-center gap-3 cursor-pointer border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 5h18M3 19h18M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7M12 11v2m0 4h.01" />
+            </svg>
+            <span id="poster-file-name" class="truncate">Pilih file baru…</span>
+            <input type="file" name="poster" id="poster" accept="image/*" class="sr-only" />
+        </label>
+
         @error('poster')
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
+
 
     {{-- Tombol Submit (ubah jadi button untuk intercept) --}}
     <div class="flex justify-end">
@@ -308,6 +316,11 @@
         gajiInput.value = cleanValue;
     });
 </script>
-
+<script>
+    document.getElementById('poster').addEventListener('change', function(e) {
+        const fileName = e.target.files[0]?.name || 'Pilih file baru…';
+        document.getElementById('poster-file-name').textContent = fileName;
+    });
+</script>
 
 @endsection

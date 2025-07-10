@@ -244,7 +244,7 @@ class JobSeekerController extends Controller
         $user = Auth::user();
         $employee = DB::table('employees')->where('user_id', $user->id)->first();
         $employer_id = $job->employer->id;
-        $title = "{$employee->first_name} {$employee->last_name} melamar di lowongan anda {$job->nama_lowongan}";
+        $title = "{$employee->first_name} {$employee->last_name} melamar pada lowongan anda '{$job->nama_lowongan}'";
         $message = "Anda memiliki pelamar baru pada lowongan {$job->nama_lowongan}";
 
         EmployerNotification::create([
@@ -252,6 +252,7 @@ class JobSeekerController extends Controller
             'title' => $title,
             'message' => $message,
             'is_read' => false,
+            'sent_at' => now(),
         ]);
 
         // Hapus session setelah sukses apply
