@@ -29,7 +29,7 @@
     {{-- Konten Utama --}}
     <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-md">
 
-        {{-- Atas --}}
+        {{-- Header --}}
         <div class="flex items-center justify-between border-b pb-5 mb-8">
             <div class="flex items-center gap-6">
                 <img src="{{ $application->employee->photo_profile 
@@ -47,7 +47,8 @@
                 </div>
             </div>
 
-            <a href="{{ route('employer.pelamar-lowongan', $application->job->employer->slug) }}" class="text-base text-blue-600 hover:underline font-medium">
+            <a href="{{ route('employer.pelamar-lowongan', $application->job->employer->slug) }}"
+                class="text-base text-blue-600 hover:underline font-medium">
                 ← Kembali
             </a>
         </div>
@@ -77,18 +78,140 @@
             @endforeach
         </div>
 
-        {{-- Ringkasan --}}
+        {{-- Ringkasan Profil --}}
         @if ($application->employee->summary)
-        <div class="mb-6">
-            <p class="text-sm text-gray-500 mb-1">Ringkasan Profil</p>
+        <div class="mb-8">
+            <h3 class="text-sm text-gray-500 mb-1">Ringkasan Profil</h3>
             <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-base shadow-inner whitespace-pre-line">
-                {{ $application->employee->summary }}
+                {!! nl2br(e($application->employee->summary)) !!}
             </div>
         </div>
         @endif
 
-        {{-- Sosial --}}
-        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        {{-- Skills --}}
+        @if ($application->employee->skills && $application->employee->skills->count())
+        <div class="mb-8">
+            <h3 class="text-sm text-gray-500 mb-1">Skills</h3>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($application->employee->skills as $skill)
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                    {{ $skill->name }}
+                </span>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Surat Lamaran --}}
+        @if ($application->cover_letter)
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Surat Lamaran</h3>
+            <div class="bg-white border border-gray-200 rounded-xl shadow p-5">
+                <div class="text-base text-gray-700 leading-relaxed m-0">
+                    {!! nl2br(e(trim($application->cover_letter))) !!}
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Riwayat Pendidikan --}}
+        @if ($application->employee->educations && $application->employee->educations->count())
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Riwayat Pendidikan</h3>
+            <ul class="space-y-4">
+                @foreach ($application->employee->educations as $edu)
+                <li class="border-l-4 border-blue-500 pl-4">
+                    <p class="text-base font-medium text-gray-900">{{ $edu->institution }}</p>
+                    <p class="text-sm text-gray-600">
+                        {{ $edu->degrees ?? '-' }} - {{ $edu->dicipline ?? '-' }}<br>
+                        Selesai: {{ $edu->end_date ? \Carbon\Carbon::parse($edu->end_date)->format('M Y') : '-' }}
+                    </p>
+                    @if ($edu->description)
+                    <p class="text-sm text-gray-500 mt-1">
+                        {!! nl2br(e($edu->description)) !!}
+                    </p>
+                    @endif
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        {{-- Pengalaman Kerja --}}
+        @if ($application->employee->workExperiences && $application->employee->workExperiences->count())
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Pengalaman Kerja</h3>
+            <ul class="space-y-4">
+                @foreach ($application->employee->workExperiences as $exp)
+                <li class="border-l-4 border-green-500 pl-4">
+                    <p class="text-base font-medium text-gray-900">{{ $exp->position }} di {{ $exp->company }}</p>
+                    <p class="text-sm text-gray-600">
+                        {{ \Carbon\Carbon::parse($exp->start_date)->format('M Y') }}
+                        -
+                        {{ $exp->is_current ? 'Sekarang' : \Carbon\Carbon::parse($exp->end_date)->format('M Y') }}
+                    </p>
+                    @if ($exp->description)
+                    <p class="text-sm text-gray-500 mt-1">
+                        {!! nl2br(e($exp->description)) !!}
+                    </p>
+                    @endif
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @else
+        <p class="text-sm text-gray-500">Belum ada pengalaman kerja.</p>
+        @endif
+
+        {{-- CV --}}
+        @if ($application->cv_file)
+        <div class="mb-8">
+            <h3 class="text-sm text-gray-500 mb-1">CV</h3>
+            <a href="{{ route('cv.download', basename($application->cv_file)) }}" target="_blank"
+                class="text-base text-blue-600 hover:underline">
+                📄 Lihat CV
+            </a>
+        </div>
+        @endif
+
+        {{-- Sertifikat / Portofolio --}}
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800">Sertifikat / Portofolio</h3>
+            @forelse ($certificates as $cert)
+            <div class="mb-4">
+                <p class="font-medium text-gray-800">{{ $cert->file_name }}</p>
+                <a href="{{ asset('storage/' . $cert->portofolio_path) }}"
+                    target="_blank"
+                    class="text-blue-600 hover:underline text-sm">
+                    Lihat Sertifikat
+                </a>
+            </div>
+            @empty
+            <p class="text-sm text-gray-500">Tidak ada sertifikat yang diunggah.</p>
+            @endforelse
+        </div>
+    </div>
+
+    <!-- Tombol Kembali ke Atas -->
+    <button id="backToTop" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        class="hidden fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-3 rounded-full shadow-xl hover:scale-110 hover:shadow-2xl transition-all duration-300"
+        title="Kembali ke atas" aria-label="Kembali ke atas">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        // Tampilkan tombol setelah scroll 300px
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('backToTop');
+            btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+        });
+    </script>
+    @endsection
+
+    {{-- Sosial --}}
+    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         <div>
             <p class="text-sm text-gray-500">LinkedIn</p>
             @if ($application->employee->linkedin)
@@ -110,97 +233,3 @@
             @endif
         </div>
     </div> -->
-
-        {{-- Skills --}}
-        @if ($application->employee->skills && count($application->employee->skills))
-        <div class="mb-6">
-            <p class="text-sm text-gray-500 mb-1">Skills</p>
-            <div class="flex flex-wrap gap-2">
-                @foreach ($application->employee->skills as $skill)
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
-                    {{ $skill->name }}
-                </span>
-                @endforeach
-            </div>
-        </div>
-        @endif
-
-
-
-        {{-- Pendidikan --}}
-        @if ($application->employee->educations && $application->employee->educations->count())
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Riwayat Pendidikan</h3>
-            <ul class="space-y-4">
-                @foreach ($application->employee->educations as $edu)
-                <li class="border-l-4 border-blue-500 pl-4">
-                    <p class="text-base font-medium text-gray-900">{{ $edu->institution }}</p>
-                    <p class="text-sm text-gray-600">
-                        {{ $edu->degrees ?? '-' }} - {{ $edu->dicipline ?? '-' }}<br>
-                        Selesai: {{ $edu->end_date ? \Carbon\Carbon::parse($edu->end_date)->format('M Y') : '-' }}
-                    </p>
-                    @if ($edu->description)
-                    <p class="text-sm text-gray-500 mt-1">{{ $edu->description }}</p>
-                    @endif
-                </li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        {{-- Cover Letter --}}
-        @if ($application->cover_letter)
-        <div class="mb-8">
-            <p class="text-sm text-gray-500 mb-1">Cover Letter</p>
-            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-base whitespace-pre-line shadow-inner">
-                {{ $application->cover_letter }}
-            </div>
-        </div>
-        @endif
-
-        {{-- CV --}}
-        @if ($application->cv_file)
-        <div class="mb-8">
-            <p class="text-sm text-gray-500 mb-1">CV</p>
-            <a href="{{ route('cv.download', basename($application->cv_file)) }}" target="_blank" class="text-base text-blue-600 hover:underline">
-                📄 Lihat CV
-            </a>
-        </div>
-        @endif
-
-        <h3 class="text-lg font-semibold mb-4">Sertifikat / Portofolio</h3>
-        @forelse ($certificates as $cert)
-        <div class="mb-4">
-            <p class="font-medium text-gray-800">{{ $cert->file_name }}</p>
-            <a href="{{ asset('storage/' . $cert->portofolio_path) }}"
-                target="_blank"
-                class="text-blue-600 hover:underline text-sm">
-                Lihat Sertifikat
-            </a>
-        </div>
-        @empty
-        <p class="text-sm text-gray-500">Tidak ada sertifikat yang diunggah.</p>
-        @endforelse
-
-
-    </div>
-
-
-
-    <!-- Tombol Kembali ke Atas -->
-    <button id="backToTop" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-        class="hidden fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-3 rounded-full shadow-xl hover:scale-110 hover:shadow-2xl transition-all duration-300"
-        title="Kembali ke atas" aria-label="Kembali ke atas">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-        </svg>
-    </button>
-
-    <script>
-        // Tampilkan tombol setelah scroll 300px
-        window.addEventListener('scroll', () => {
-            const btn = document.getElementById('backToTop');
-            btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-        });
-    </script>
-    @endsection

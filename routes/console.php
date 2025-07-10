@@ -42,6 +42,7 @@ Schedule::call(function () {
                     'title' => 'Jadwal Interview Anda',
                     'message' => $message,
                     'is_read' => false,
+                    'sent_at' => now(),
                 ]);
             }
         }
