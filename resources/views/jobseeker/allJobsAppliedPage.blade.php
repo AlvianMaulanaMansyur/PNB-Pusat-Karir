@@ -1,5 +1,5 @@
 <x-jobseeker-layout>
-    <div x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 10 00)">
+    <div x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 1000)">
         <!-- Spinner -->
         <div x-show="loading" class="flex justify-center items-center h-[70vh]">
             <!-- SVG Spinner -->

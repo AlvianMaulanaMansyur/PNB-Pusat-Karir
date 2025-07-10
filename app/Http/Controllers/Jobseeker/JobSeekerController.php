@@ -322,6 +322,6 @@ class JobSeekerController extends Controller
 
     public function aboutUs()
     {
-        return view('jobseeker.about-us');
+    return view('jobseeker.about');
     }
 }

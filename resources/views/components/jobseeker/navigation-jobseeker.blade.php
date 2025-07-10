@@ -12,10 +12,11 @@
                 <x-navlink href="#">Tracer Study</x-navlink>
                 <x-navlink href="{{ route('employee.about-us') }}">Tentang Kami</x-navlink>
                 <x-navlink href="{{ route('resumes.index') }}">Generate CV</x-navlink>
+                <x-navlink href="{{ route('employee.event') }}">Acara</x-navlink>
 
-                <x-dropdown.nav-dropdown label="Acara">
+                {{-- <x-dropdown.nav-dropdown label="Acara">
                     <a href="{{ route('employee.event') }}" class="block px-4 py-2 hover:bg-gray-100">Acara</a>
-                </x-dropdown.nav-dropdown>
+                </x-dropdown.nav-dropdown> --}}
 
                 <x-dropdown.nav-dropdown label="Pekerjaan">
                     <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Cari Pekerjaan
@@ -67,7 +68,7 @@
                             Saya</a>
                         <a href="{{ route('employee.dashboard') }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
+                        {{-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a> --}}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
