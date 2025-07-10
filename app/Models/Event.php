@@ -16,7 +16,6 @@ class Event extends Model
         'event_date',
         'event_time',
         'location',
-        'needs_registration',
         'max_participants',
         'registration_link',
         'flyer',

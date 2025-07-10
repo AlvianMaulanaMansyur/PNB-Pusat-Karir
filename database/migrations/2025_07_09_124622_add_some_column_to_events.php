@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
             $table->string('flyer')->after('registration_link');
-            $table->dropColumn(['needs_registration', 'posted_by_role', ]);
+            // $table->dropColumn(['needs_registration', 'posted_by_role', ])
             $table->timestamps();
             $table->boolean('is_active')->default(true)->after('flyer');
         });

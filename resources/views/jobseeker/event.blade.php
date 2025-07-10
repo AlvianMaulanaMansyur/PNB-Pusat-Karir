@@ -11,27 +11,63 @@
             <h1 class="text-lg font-medium">Event belum ditambahkan</h1>
         </div>
     @else
-        @foreach ($events as $event)
-            <div class="p-4 border rounded-lg shadow mb-4">
-                <h2 class="text-xl font-bold">{{ $event->title }}</h2>
-                <p class="text-gray-600">{{ $event->event_type }}</p>
-                <p>{{ $event->description }}</p>
-                <p><strong>Waktu:</strong> {{ $event->event_date->format('d M Y') }}
-                    {{ $event->event_time->format('H:i') }}
-                </p>
-                <p><strong>Lokasi:</strong> {{ $event->location }}</p>
+        <div class="max-w-7xl mx-auto px-20 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @foreach ($events as $event)
+                    <div
+                        class="flex flex-col border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                        <!-- Gambar dengan ukuran konsisten -->
+                        @if ($event->flyer)
+                            <div class="w-full h-48 overflow-hidden">
+                                <img src="{{ asset('storage/' . $event->flyer) }}" alt="Flyer {{ $event->title }}"
+                                    class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                <span class="text-gray-500">No Image</span>
+                            </div>
+                        @endif
 
-                @if ($event->needs_registration)
-                    <p class="text-sm text-blue-600">Perlu registrasi: <a href="{{ $event->registration_link }}"
-                            target="_blank" class="underline">Daftar</a></p>
-                @endif
+                        <!-- Detail Event -->
+                        <div class="p-4 flex-grow">
+                            <h2 class="text-xl font-bold mb-2 line-clamp-2">{{ $event->title }}</h2>
+                            <p class="text-sm text-gray-600 mb-1">{{ $event->event_type }}</p>
 
-                @if ($event->flyer)
-                    <img src="{{ asset('storage/' . $event->flyer) }}" alt="Flyer {{ $event->title }}"
-                        class="mt-2 w-64">
-                @endif
+                            <div class="my-2 text-sm">
+                                <p class="flex items-center mb-1">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    {{ $event->event_date->format('d M Y') }} {{ $event->event_time->format('H:i') }}
+                                </p>
+                                <p class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                        </path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    {{ Str::limit($event->location, 30) }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Button Lihat Detail -->
+                        <div class="px-4 pb-4">
+                            <a href="{{ route('employee.event.detail' , $event->id) }}"
+                                class="w-full block text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition-colors duration-300">
+                                Lihat Acara
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-        @endforeach
+        </div>
     @endif
 
 </x-jobseeker-layout>
