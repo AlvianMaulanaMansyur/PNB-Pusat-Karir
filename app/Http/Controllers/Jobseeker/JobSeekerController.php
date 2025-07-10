@@ -304,4 +304,25 @@ class JobSeekerController extends Controller
                 ->with('error', 'Terjadi kesalahan saat mengirim laporan: ' . $e->getMessage());
         }
     }
+
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+
+        $pending = JobApplication::where('employee_id', $employeeData->id)
+            ->whereIn('status', ['pending', 'reviewed'])
+            ->count();
+
+        $interview = JobApplication::where('employee_id', $employeeData->id)->where('status', 'interviewed')->count();
+        $accepted = JobApplication::where('employee_id', $employeeData->id)->where('status', 'accepted')->count();
+        $rejected = JobApplication::where('employee_id', $employeeData->id)->where('status', 'rejected')->count();
+
+        return view('jobseeker.dashboard', compact('employeeData', 'pending', 'interview', 'accepted', 'rejected'));
+    }
+
+    public function aboutUs()
+    {
+        return view('jobseeker.about-us');
+    }
 }

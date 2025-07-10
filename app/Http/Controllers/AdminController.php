@@ -23,7 +23,7 @@ class AdminController extends Controller
     public function AdminDashboard()
     {
     $users = User::whereIn('role', ['employer', 'employee'])->get();
-    
+
     $jobCount = JobListing::count();
     $eventCount = Event::where('is_active', '1')->count();
 
@@ -95,9 +95,7 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (auth()->id() === $user->id) {
-            return back()->withErrors(['error' => 'Anda tidak dapat menghapus akun Anda sendiri.']);
-        }
+       
 
         $user->delete();
         return redirect()->back()->with('success', 'Akun berhasil dihapus.');

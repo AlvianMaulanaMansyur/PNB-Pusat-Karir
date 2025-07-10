@@ -259,8 +259,9 @@ class JobseekerProfiles extends Controller
     // Ambil skill employee
     public function fetchSkills()
     {
-        $employee = auth()->user()->dataEmployees;
-        $skills = $employee
+         $user = Auth::user();
+        $employeeData = $user->dataEmployees;
+        $skills = $employeeData
             ->employeeSkills()
             ->with('skill')
             ->get()
@@ -276,7 +277,8 @@ class JobseekerProfiles extends Controller
     // Simpan skill dan relasi employee_skill
     public function addSkill(Request $request)
     {
-        $employee = auth()->user()->dataEmployees;
+        $user = Auth::user();
+        $employee = $user->dataEmployees;
         $skills = $request->skills; // array dari front-end
 
         // Hitung jumlah skill yang sudah dimiliki employee
@@ -323,7 +325,9 @@ class JobseekerProfiles extends Controller
     // Hapus skill employee
     public function deleteSkill($skillId)
     {
-        $employee = auth()->user()->dataEmployees;
+         $user = Auth::user();
+        $employee = $user->dataEmployees;
+        
 
         if (!$employee) {
             return response()->json(['success' => false, 'message' => 'Employee tidak ditemukan']);
@@ -337,7 +341,7 @@ class JobseekerProfiles extends Controller
             } else {
                 return response()->json(['success' => false, 'message' => 'Data tidak ditemukan']);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error('Gagal menghapus skill: ' . $th->getMessage());
             return response()->json(['success' => false, 'message' => 'Gagal menghapus skill: ' . $th->getMessage()]);
         }

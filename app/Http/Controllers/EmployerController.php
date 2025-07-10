@@ -9,12 +9,14 @@ use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\portofoliopathimg;
 use App\Models\Skill;
+use App\Models\User;
 use App\Notifications\ApplicationStatusUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -105,7 +107,17 @@ class EmployerController extends Controller
             Log::debug('Data akhir sebelum disimpan ke database.', ['final_data' => $validated]);
 
             // Simpan ke database
-            JobListing::create($validated);
+            $jobListing = JobListing::create($validated);
+
+            // Ambil semua jobseeker aktif
+            $jobseekers = User::where('role', 'employee')->get();
+
+            // Kirim email ke masing-masing jobseeker
+            foreach ($jobseekers as $jobseeker) {
+                Log::info('Mengirim email ke jobseeker', ['email' => $jobseeker->email]);
+                Mail::to($jobseeker->email)->send(new \App\Mail\NewJobListingNotification($jobListing));
+            }
+
 
             Log::info('Lowongan berhasil disimpan ke database.', [
                 'nama_lowongan' => $validated['nama_lowongan'],
@@ -713,7 +725,6 @@ class EmployerController extends Controller
             ->where('employee_id', $userId)
             ->firstOrFail();
 
-        // Ambil data sertifikat atau portofolio
         $certificates = portofoliopathimg::where('employee_id', $userId)
             ->where('job_id', $jobId)
             ->get();
