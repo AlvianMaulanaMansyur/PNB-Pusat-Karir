@@ -2,6 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+
     <div class="font-semibold text-2xl mb-3">
         <p>Login</p>
     </div>

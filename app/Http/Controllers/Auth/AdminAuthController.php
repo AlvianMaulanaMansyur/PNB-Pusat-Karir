@@ -13,6 +13,7 @@ class AdminAuthController extends Controller
     {
         return view('admin.adminLogin');
     }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -31,17 +32,14 @@ class AdminAuthController extends Controller
     }
 
     public function destroy(Request $request)
-{
-    Auth::logout(); // Logout user dari sesi
+    {
+        Auth::logout(); // Logout user dari sesi
 
-    // Hancurkan session & token agar aman
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+        // Hancurkan session & token agar aman
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    // Redirect ke halaman login admin
-    return redirect()->route('admin.adminLogin'); // pastikan route ini ada
-}
-
-
-    
+        // Redirect ke halaman login admin
+        return redirect()->route('login'); // pastikan route ini ada
+    }
 }

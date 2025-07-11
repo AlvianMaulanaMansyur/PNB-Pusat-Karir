@@ -81,11 +81,12 @@
             @if (!empty($candidate->summary))
             <div>
                 <p class="text-sm text-gray-500 mb-1">Ringkasan Profil</p>
-                <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-base shadow-inner whitespace-pre-line">
-                    {{ $candidate->summary }}
+                <div class="bg-gray-50 border border-gray-200 p-4 rounded-md text-base shadow-inner">
+                    {!! nl2br(e($candidate->summary)) !!}
                 </div>
             </div>
             @endif
+
 
             {{-- Skills --}}
             @if (!empty($candidate->skills))
@@ -101,6 +102,7 @@
             </div>
             @endif
 
+            {{-- Riwayat Pendidikan --}}
             @if ($educations->count())
             <div class="mt-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">Riwayat Pendidikan</h3>
@@ -113,7 +115,9 @@
                             Selesai: {{ $edu->end_date ? \Carbon\Carbon::parse($edu->end_date)->format('M Y') : '-' }}
                         </p>
                         @if ($edu->description)
-                        <p class="text-sm text-gray-500 mt-1">{{ $edu->description }}</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            {!! nl2br(e($edu->description)) !!}
+                        </p>
                         @endif
                     </li>
                     @endforeach
@@ -121,20 +125,32 @@
             </div>
             @endif
 
-            <h3 class="text-lg font-semibold mb-2">Pengalaman Kerja</h3>
-            @forelse($workExperiences as $exp)
-            <div class="mb-4">
-                <p class="font-medium">{{ $exp->position }} di {{ $exp->company }}</p>
-                <p class="text-sm text-gray-600">
-                    {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('F Y') }}
-                    -
-                    {{ $exp->is_current ? 'Sekarang' : \Carbon\Carbon::parse($exp->end_date)->translatedFormat('F Y') }}
-                </p>
-                <p class="text-sm text-gray-700">{{ $exp->description }}</p>
+            {{-- Pengalaman Kerja --}}
+            @if ($workExperiences->count())
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Pengalaman Kerja</h3>
+                <ul class="space-y-4">
+                    @foreach ($workExperiences as $exp)
+                    <li class="border-l-4 border-green-500 pl-4">
+                        <p class="text-base font-medium text-gray-900">{{ $exp->position }} di {{ $exp->company }}</p>
+                        <p class="text-sm text-gray-600">
+                            {{ \Carbon\Carbon::parse($exp->start_date)->format('M Y') }}
+                            -
+                            {{ $exp->is_current ? 'Sekarang' : \Carbon\Carbon::parse($exp->end_date)->format('M Y') }}
+                        </p>
+                        @if ($exp->description)
+                        <p class="text-sm text-gray-500 mt-1">
+                            {!! nl2br(e($exp->description)) !!}
+                        </p>
+                        @endif
+                    </li>
+                    @endforeach
+                </ul>
             </div>
-            @empty
-            <p class="text-sm text-gray-500">Belum ada pengalaman kerja.</p>
-            @endforelse
+            @else
+            <p class="text-sm text-gray-500 mt-4">Belum ada pengalaman kerja.</p>
+            @endif
+
 
             {{-- Form Undangan --}}
             @if($jobListings && count($jobListings) > 0)

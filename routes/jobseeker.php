@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Jobseeker\eventController;
 use App\Http\Controllers\Jobseeker\AppliedJobController;
 use App\Http\Controllers\Jobseeker\JobSeekerController;
 use App\Http\Controllers\jobseeker\JobseekerProfiles;
@@ -30,6 +31,15 @@ Route::middleware(['auth', 'role:employee', 'verified'])->group(function () {
         Route::get('/activity/applied-jobs', [AppliedJobController::class, 'index'])->name('applied.index');
 
         Route::post('/report-job/{id}', [JobSeekerController::class, 'reportJob'])->name('report.job');
+
+        Route::get('/dashboard', [JobSeekerController::class, 'dashboard'])->name('employee.dashboard');
+
+        Route::get('/about-us', [JobSeekerController::class, 'aboutUs'])->name('employee.about-us');
+
+        Route::prefix('/event')->group(function () {
+            Route::get('/', [eventController::class, 'index'])->name('employee.event');
+            Route::get('/detail/{id}', [eventController::class, 'eventDetail'])->name('employee.event.detail');
+        });
     });
 
     Route::prefix('/my-profile')->group(function () {

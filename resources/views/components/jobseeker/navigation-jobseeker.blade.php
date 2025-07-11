@@ -10,16 +10,19 @@
             <!-- Menu Utama Desktop -->
             <div class="hidden md:flex items-center gap-5 font-semibold text-sm xl:text-md">
                 <x-navlink href="#">Tracer Study</x-navlink>
-                <x-navlink href="#">Tentang Kami</x-navlink>
+                <x-navlink href="{{ route('employee.about-us') }}">Tentang Kami</x-navlink>
                 <x-navlink href="{{ route('resumes.index') }}">Generate CV</x-navlink>
+                <x-navlink href="{{ route('employee.event') }}">Acara</x-navlink>
 
-                <x-dropdown.nav-dropdown label="acara">
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Acara Saya</a>
-                </x-dropdown.nav-dropdown>
+                {{-- <x-dropdown.nav-dropdown label="Acara">
+                    <a href="{{ route('employee.event') }}" class="block px-4 py-2 hover:bg-gray-100">Acara</a>
+                </x-dropdown.nav-dropdown> --}}
 
-                <x-dropdown.nav-dropdown label="pekerjaan">
-                    <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Lowongan Pekerjaan</a>
-                    <a href="{{ route('applied.index') }}" class="block px-4 py-2 hover:bg-gray-100">Lamaran Saya</a>
+                <x-dropdown.nav-dropdown label="Pekerjaan">
+                    <a href="{{ route('employee.lowongan') }}" class="block px-4 py-2 hover:bg-gray-100">Cari Pekerjaan
+                    </a>
+                    <a href="{{ route('applied.index') }}" class="block px-4 py-2 hover:bg-gray-100">Lamaran
+                        Pekerjaan</a>
                 </x-dropdown.nav-dropdown>
 
                 {{-- notification --}}
@@ -39,6 +42,7 @@
                     </x-navlink>
 
                 @endauth
+
                 <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative inline-block text-left">
                     <a href="#" @click.prevent="open = !open" class="flex items-center space-x-2">
@@ -62,7 +66,9 @@
                         <a href="{{ route('jobseeker.profiles') }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil
                             Saya</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
+                        <a href="{{ route('employee.dashboard') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+                        {{-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a> --}}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"

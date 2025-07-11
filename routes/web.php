@@ -1,10 +1,31 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Storage;
+
+// ========================
+// Admin Auth & Dashboard
+// ========================
+// Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
+// Route::post('/admin/login', [AdminauthController::class, 'login'])->name('admin.login.submit');
+// Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
+Route::post('/admin/logout', [AdminAuthController::class, 'destroy'])->name('admin.logout');
+
+// ============================
+// Admin - Verifikasi & Akun
+// ============================
+
+
+// ==========================
+// Admin - Employer Creation
+// ==========================
+// Route::get('/admin/employer/create', [AdminController::class, 'create'])->name('admin.employer.create');
+
+
 
 // ===================
 // Employer Routes

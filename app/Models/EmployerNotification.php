@@ -14,10 +14,12 @@ class EmployerNotification extends Model
         'title',
         'message',
         'is_read',
+        'sent_at', // <-- pastikan ini ada
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
+        'sent_at' => 'datetime', // <-- Tambahkan ini untuk memastikan formatnya benar
     ];
 
     // Relasi ke employer (jika diperlukan)
