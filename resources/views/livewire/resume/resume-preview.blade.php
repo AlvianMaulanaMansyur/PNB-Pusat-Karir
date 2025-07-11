@@ -40,12 +40,11 @@
                 </p>
             @endif
         </div>
-        @if ($profilePhotoUrl)
-            <div class="flex-shrink-0">
-                <img src="{{ $profilePhotoUrl }}" alt="Profile Photo"
-                    class="w-28 h-28 md:w-36 md:h-36 object-cover rounded-full shadow-lg border-2 border-gray-200">
-            </div>
-        @endif
+        <div class="flex-shrink-0">
+            <img src="{{ $profilePhotoUrl ? asset('storage/' . $profilePhotoUrl) : asset('images/profile.png') }}"
+                alt="Profile Photo"
+                class="w-28 h-28 md:w-36 md:h-36 object-cover rounded-full shadow-lg border-2 border-gray-200">
+        </div>
     </div>
 
     {{-- Summary --}}

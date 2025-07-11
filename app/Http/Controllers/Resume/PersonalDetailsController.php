@@ -40,7 +40,7 @@ class PersonalDetailsController extends Controller
 
             $resumeData = $resume->resume_data ?? [];
             $currentProfilePhotoUrl = Arr::get($resumeData, 'personal_details.profile_photo');
-            
+
             // Perbarui data personal terlebih dahulu
             Arr::set($resumeData, 'personal_details', array_merge(
                 Arr::get($resumeData, 'personal_details', []),
@@ -53,13 +53,12 @@ class PersonalDetailsController extends Controller
                 if ($currentProfilePhotoUrl) {
                     $this->deleteProfilePhoto($currentProfilePhotoUrl);
                 }
-                
-                // Upload foto baru
-                $path = $request->file('profile_photo')->store('public/profile_photos');
-                $newProfilePhotoUrl = Storage::url($path);
-                Arr::set($resumeData, 'personal_details.profile_photo', $newProfilePhotoUrl);
-                Log::info("New profile photo uploaded: {$newProfilePhotoUrl}");
-            } 
+
+                $path = $request->file('profile_photo')->store('public/resume_profile_photos');
+                $relativePath = str_replace('public/', '', $path);
+                Arr::set($resumeData, 'personal_details.profile_photo', $relativePath);
+                Log::info("New profile photo uploaded: {$relativePath}");
+            }
             // Handle penghapusan foto profil
             elseif ($request->has('remove_profile_photo') && $request->input('remove_profile_photo')) {
                 if ($currentProfilePhotoUrl) {
@@ -70,18 +69,17 @@ class PersonalDetailsController extends Controller
 
             $resume->resume_data = $resumeData;
             $resume->save();
-            
+
             return response()->json([
                 'message' => 'Profile updated successfully!',
                 'personal_details' => $resumeData['personal_details']
             ], 200);
-            
         } catch (ValidationException $e) {
             Log::warning("Validation failed", ['errors' => $e->errors()]);
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             Log::error("Error updating profile", [
-                'error' => $e->getMessage(), 
+                'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json([
@@ -97,20 +95,12 @@ class PersonalDetailsController extends Controller
      * @param string $photoUrl
      * @return void
      */
-    protected function deleteProfilePhoto($photoUrl)
+    protected function deleteProfilePhoto($photoPath)
     {
         try {
-            // Ekstrak nama file dari URL
-            $photoPath = $this->extractPhotoPath($photoUrl);
-            
-            if (!$photoPath) {
-                Log::warning("Invalid profile photo URL format: {$photoUrl}");
-                return;
-            }
-            
-            // Path lengkap untuk file di storage
-            $storagePath = "public/profile_photos/{$photoPath}";
-            
+            // Pastikan path sudah relatif
+            $storagePath = "public/{$photoPath}";
+
             if (Storage::exists($storagePath)) {
                 Storage::delete($storagePath);
                 Log::info("Profile photo deleted: {$storagePath}");
@@ -119,7 +109,7 @@ class PersonalDetailsController extends Controller
             }
         } catch (\Exception $e) {
             Log::error("Error deleting profile photo", [
-                'url' => $photoUrl,
+                'path' => $photoPath,
                 'error' => $e->getMessage()
             ]);
         }
@@ -133,24 +123,21 @@ class PersonalDetailsController extends Controller
      */
     protected function extractPhotoPath($url)
     {
-        // Coba ekstrak dari URL storage
-        if (str_contains($url, '/storage/profile_photos/')) {
-            $parts = explode('/storage/profile_photos/', $url);
+        if (str_contains($url, '/storage/resume_profile_photos/')) {
+            $parts = explode('/storage/resume_profile_photos/', $url);
             return end($parts);
         }
-        
-        // Coba ekstrak dari URL public
-        if (str_contains($url, '/public/profile_photos/')) {
-            $parts = explode('/public/profile_photos/', $url);
+
+        if (str_contains($url, '/public/resume_profile_photos/')) {
+            $parts = explode('/public/resume_profile_photos/', $url);
             return end($parts);
         }
-        
-        // Jika URL adalah path relatif
-        if (str_contains($url, 'profile_photos/')) {
-            $parts = explode('profile_photos/', $url);
+
+        if (str_contains($url, 'resume_profile_photos/')) {
+            $parts = explode('resume_profile_photos/', $url);
             return end($parts);
         }
-        
+
         return null;
     }
 }

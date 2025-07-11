@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                
+
             </div>
 
             <div class="mt-4">
@@ -66,20 +66,29 @@
             <div class="md:col-span-1 flex flex-col items-center">
                 <label for="profilePhotoFile" class="block text-sm font-medium text-gray-700 mb-2">Profile
                     Photo</label>
-                <div
-                    class="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-100">
+                <div class="relative w-32 h-32 rounded-full border-4 border-blue-200 shadow-md group overflow-hidden">
                     @if ($profilePhotoPreview)
-                        <img src="{{ $profilePhotoPreview }}" alt="Profile Photo"
+                        <img src="{{ asset('storage/' . $profilePhotoPreview) }}" alt="Profile Photo"
                             class="w-full h-full object-cover">
                     @else
-                        <i class="fas fa-user-circle text-6xl text-gray-400"></i>
+                        <div class="w-full h-full flex items-center justify-center bg-gray-100">
+                            <i class="fas fa-user-circle text-6xl text-gray-400"></i>
+                        </div>
                     @endif
-                    <input type="file" id="profilePhotoFile" wire:model.live="profilePhotoFile"
-                        class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*">
-                    <span class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 text-xs">
-                        <i class="fas fa-camera"></i>
-                    </span>
+
+                    {{-- Input file transparan di atas semua --}}
+                    <input type="file" id="profilePhotoFile" wire:model.live="profilePhotoFile" accept="image/*"
+                        class="absolute inset-0 opacity-0 cursor-pointer z-10">
+
+                    {{-- Icon kamera muncul saat hover --}}
+                    <div
+                        class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 z-0">
+                        <div class="bg-white rounded-full p-2 shadow-md">
+                            <i class="fas fa-camera text-blue-600"></i>
+                        </div>
+                    </div>
                 </div>
+
                 @error('profilePhotoFile')
                     <span class="text-red-600 text-sm mt-2">{{ $message }}</span>
                 @enderror

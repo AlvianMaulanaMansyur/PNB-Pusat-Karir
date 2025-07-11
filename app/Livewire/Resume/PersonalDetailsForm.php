@@ -87,8 +87,8 @@ class PersonalDetailsForm extends Component
                 }
 
                 // Simpan foto baru
-                $path = $this->profilePhotoFile->store('profile_photos', 'public');
-                $this->form['profile_photo'] = Storage::url($path);
+                $path = $this->profilePhotoFile->store('resume_profile_photos', 'public');
+                $this->form['profile_photo'] = str_replace('public/', '', $path);
 
                 // Update pratinjau
                 $this->profilePhotoPreview = $this->form['profile_photo'];

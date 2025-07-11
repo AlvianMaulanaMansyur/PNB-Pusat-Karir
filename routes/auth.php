@@ -79,6 +79,3 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
-
-// Route::get('/admin/login', [  AdminAuthController::class, 'showLoginForm'])->name('admin.adminLogin');
-// Route::post('/admin/login', [ AdminAuthController::class, 'login'])->name('admin.login.submit');

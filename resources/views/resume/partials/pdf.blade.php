@@ -303,7 +303,7 @@ function formatDate($date)
             <div class="item">
                 <div class="item-header">
                     <h4 class="item-title">
-                        <?= htmlspecialchars($experience['title'] ?? 'Untitled Position') ?>
+                        <?= htmlspecialchars($experience['position'] ?? 'Untitled Position') ?>
                     </h4>
                     <span class="item-date">
                         <?= formatDate($experience['start_date'] ?? '') ?> -
@@ -313,22 +313,16 @@ function formatDate($date)
                 <p class="item-subtitle">
                     <?= htmlspecialchars($experience['company'] ?? 'Unknown Company') ?>
                 </p>
-                <?php if (!empty($experience['location'])): ?>
-                <p class="item-location">
-                    <?= htmlspecialchars($experience['location']) ?>
-                </p>
-                <?php endif; ?>
                 <?php if (!empty($experience['description'])): ?>
-                <div class="item-description prose">
-                    <?= $experience['description']
-// Jika mengandung HTML, gunakan htmlspecialchars jika perlu
-?>
+                <div class="item-description prose mt-2">
+                    <?= $experience['description'] ?>
                 </div>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
         </section>
         <?php endif; ?>
+
 
         <!-- Education -->
         <?php if (!empty($resumeData['educations'])): ?>
@@ -338,24 +332,23 @@ function formatDate($date)
             <div class="item">
                 <div class="item-header">
                     <h4 class="item-title">
-                        <?= htmlspecialchars($education['degree'] ?? 'N/A') ?>
-                        <?php if ($education['field_of_study']): ?>
-                        <span> in <?= htmlspecialchars($education['field_of_study']) ?></span>
+                        <?= htmlspecialchars($education['degrees'] ?? 'N/A') ?>
+                        <?php if (!empty($education['dicipline'])): ?>
+                        <span> in <?= htmlspecialchars($education['dicipline']) ?></span>
                         <?php endif; ?>
                     </h4>
                     <span class="item-date">
-                        <?= formatDate($education['start_date'] ?? '') ?> -
-                        <?= !empty($education['is_current']) ? 'Present' : formatDate($education['end_date'] ?? '') ?>
+                        <?= !empty($education['end_date']) ? formatDate($education['end_date']) : 'N/A' ?>
                     </span>
                 </div>
                 <p class="item-subtitle">
                     <?= htmlspecialchars($education['institution'] ?? 'N/A') ?>
                 </p>
-                <?php if (isset($education['gpa']) && $education['gpa']): ?>
-                <p class="text-sm mt-2">GPA: <?= htmlspecialchars($education['gpa']) ?></p>
+                <?php if (!empty($education['sertifications'])): ?>
+                <p class="text-sm mt-1">Certifications: <?= htmlspecialchars($education['sertifications']) ?></p>
                 <?php endif; ?>
                 <?php if (!empty($education['description'])): ?>
-                <div class="item-description prose">
+                <div class="item-description prose mt-2">
                     <?= $education['description'] ?>
                 </div>
                 <?php endif; ?>
@@ -363,6 +356,7 @@ function formatDate($date)
             <?php endforeach; ?>
         </section>
         <?php endif; ?>
+
 
         <!-- Skills -->
         <?php if (!empty($resumeData['skills'])): ?>
