@@ -18,12 +18,11 @@ class CertificationsForm extends Component
 
     public $form = [
         'id' => null,
-        'name' => '', // Nama Sertifikasi/Kursus
-        'issuing_organization' => '', // Penyelenggara/Lembaga
-        'issue_date' => '', // Tanggal Terbit/Selesai
-        'expiration_date' => '', // Tanggal Kedaluwarsa (opsional)
-        'credential_id' => '', // ID Kredensial (opsional)
-        'credential_url' => '', // URL Kredensial (opsional)
+        'title' => '',
+        'issuer' => '',
+        'date_issued' => '',
+        'expiry_date' => '',
+        'description' => '',
     ];
 
     protected $listeners = [
@@ -36,32 +35,28 @@ class CertificationsForm extends Component
         $this->loadCertifications(); // Muat data sertifikasi saat komponen diinisialisasi
     }
 
-    // --- Validasi ---
     protected function rules()
     {
         return [
-            'form.name' => 'required|string|max:255',
-            'form.issuing_organization' => 'required|string|max:255',
-            'form.issue_date' => 'required|date',
-            'form.expiration_date' => 'nullable|date|after_or_equal:form.issue_date',
-            'form.credential_id' => 'nullable|string|max:255',
-            'form.credential_url' => 'nullable|url|max:255',
+            'form.title' => 'required|string|max:255',
+            'form.issuer' => 'required|string|max:255',
+            'form.date_issued' => 'required|date',
+            'form.expiry_date' => 'nullable|date|after_or_equal:form.date_issued',
+            'form.description' => 'nullable|string|max:1000',
         ];
     }
 
-    // Custom validation messages
     protected function messages()
     {
         return [
-            'form.name.required' => 'Certification/Course Name is required.',
-            'form.issuing_organization.required' => 'Issuing Organization is required.',
-            'form.issue_date.required' => 'Issue Date is required.',
-            'form.expiration_date.after_or_equal' => 'Expiration Date must be after or equal to Issue Date.',
-            'form.credential_url.url' => 'Credential URL must be a valid URL.',
+            'form.title.required' => 'Title is required.',
+            'form.issuer.required' => 'Issuer is required.',
+            'form.date_issued.required' => 'Date Issued is required.',
+            'form.expiry_date.after_or_equal' => 'Expiry Date must be after or equal to Date Issued.',
+            'form.description.max' => 'Description is too long.',
         ];
     }
 
-    // --- Metode Modal ---
     public function openModal($certificationId = null)
     {
         $this->resetErrorBag();
@@ -96,16 +91,14 @@ class CertificationsForm extends Component
     {
         $this->form = [
             'id' => null,
-            'name' => '',
-            'issuing_organization' => '',
-            'issue_date' => '',
-            'expiration_date' => '',
-            'credential_id' => '',
-            'credential_url' => '',
+            'title' => '',
+            'issuer' => '',
+            'date_issued' => '',
+            'expiry_date' => '',
+            'description' => '',
         ];
     }
 
-    // --- Metode CRUD ---
     public function saveCertification()
     {
         $this->validate();
@@ -196,7 +189,6 @@ class CertificationsForm extends Component
         }
     }
 
-    // --- Metode Bantuan untuk Memuat/Menyimpan ---
     public function loadCertifications()
     {
         Log::info('loadCertifications: Memuat sertifikasi untuk resume.', ['resumeId' => $this->resumeId]);
@@ -210,9 +202,9 @@ class CertificationsForm extends Component
                     }
                     // Pastikan semua field yang ada di $this->form diinisialisasi
                     foreach ($this->form as $key => $defaultValue) {
-                         if (!isset($certification[$key])) {
-                             $certification[$key] = $defaultValue;
-                         }
+                        if (!isset($certification[$key])) {
+                            $certification[$key] = $defaultValue;
+                        }
                     }
                     return $certification;
                 })->all();

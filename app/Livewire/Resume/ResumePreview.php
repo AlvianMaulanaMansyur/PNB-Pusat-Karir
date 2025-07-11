@@ -45,11 +45,7 @@ class ResumePreview extends Component
         }
 
         if (!isset($this->resumeData['skills'])) {
-            $this->resumeData['skills'] = [
-                'technical_skills' => [],
-                'soft_skills' => [],
-                'languages' => [],
-            ];
+            $this->resumeData['skills'] = [];   
         }
 
         if (!isset($this->resumeData['projects'])) {
@@ -60,15 +56,15 @@ class ResumePreview extends Component
             $this->resumeData['certifications'] = [];
         }
 
-        if (!isset($this->resumeData['awards'])) { // <<< TAMBAHKAN INI
+        if (!isset($this->resumeData['awards'])) {
             $this->resumeData['awards'] = [];
         }
 
-        if (!isset($this->resumeData['volunteering'])) { // <<< TAMBAHKAN INI
+        if (!isset($this->resumeData['volunteering'])) {
             $this->resumeData['volunteering'] = [];
         }
 
-        if (!isset($this->resumeData['interests'])) { // <<< TAMBAHKAN INI
+        if (!isset($this->resumeData['interests'])) {
             $this->resumeData['interests'] = [];
         }
     }

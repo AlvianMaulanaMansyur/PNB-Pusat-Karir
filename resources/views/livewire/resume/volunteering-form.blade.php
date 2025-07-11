@@ -3,34 +3,35 @@
 <div>
     <div id="volunteering-section" class="panel-container">
         <div class="panel-header flex justify-between items-center">
-            <h3>Volunteering Experience</h3>
+            <h3 class="flex items-center text-xl font-semibold">
+                <img src="{{ asset('images/resume-icons/volunteering.png') }}" alt="Icon"
+                    class="icon-resume icon-resume--large">
+                Volunteering Experience
+            </h3>
         </div>
 
         <div class="panel-body">
-            <div id="existing-volunteering">
+            <div id="existing-volunteering" class="panel-item">
                 @if (count($volunteeringExperiences) > 0)
                     @foreach ($volunteeringExperiences as $volunteering)
-                        <div class="volunteering-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm"
-                            wire:key="{{ $volunteering['id'] }}" x-data="{ open: false }">
+                        <div class="volunteering-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+                            wire:key="{{ $volunteering['id'] }}" x-data="{ open: false }" @click="open = !open">
                             {{-- Konten Utama Item DAN Tombol --}}
-                            <div class="flex justify-between items-start">
+                            <div class="flex justify-between items-center">
                                 {{-- Bagian Teks --}}
-                                <div>
-                                    <h4 class="text-lg font-bold text-gray-900">{{ $volunteering['organization_name'] ?? 'Untitled Organization' }}</h4>
-                                    <p class="text-sm text-gray-600">
-                                        {{ $volunteering['role'] ?? 'Volunteer' }} |
-                                        {{ $volunteering['start_date'] ?? '' }} -
-                                        {{ ($volunteering['is_current'] ?? false) ? 'Present' : ($volunteering['end_date'] ?? '') }}
+                                <div class="overflow-hidden max-w-[85%]">
+                                    <h4 class="text-md font-medium truncate">
+                                        {{ $volunteering['organization_name'] ?? '' }}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 truncate">
+                                        {{ $volunteering['role'] ?? '' }}
                                     </p>
-                                    @if ($volunteering['description'])
-                                        <p class="text-gray-700 text-sm mt-2">{!! nl2br(e($volunteering['description'])) !!}</p>
-                                    @endif
                                 </div>
 
                                 {{-- Tombol Dropdown --}}
-                                <div>
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                <div class="flex-shrink-0">
+                                    <button @click.stop="open = !open"
+                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg"
                                         type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 16 3">
                                             <path
@@ -70,7 +71,8 @@
                         </div>
                     @endforeach
                 @else
-                    <p id="no-volunteering-message" class="text-gray-500 text-center py-4">No volunteering experience added yet.</p>
+                    <p id="no-volunteering-message" class="text-gray-500 text-center py-4">No volunteering experience
+                        added yet.</p>
                 @endif
             </div>
 
@@ -111,7 +113,8 @@
             <div class="px-6 py-4 overflow-y-auto max-h-[70vh]">
                 <form wire:submit="saveVolunteering">
                     <div class="mb-4">
-                        <label for="organization_name" class="block text-sm font-medium text-gray-700">Organization Name</label>
+                        <label for="organization_name" class="block text-sm font-medium text-gray-700">Organization
+                            Name</label>
                         <input type="text" id="organization_name" wire:model="form.organization_name"
                             class="form-input w-full p-2 border rounded @error('form.organization_name') border-red-500 @enderror" />
                         @error('form.organization_name')
@@ -150,11 +153,13 @@
 
                     <div class="mb-4">
                         <input type="checkbox" id="is_current" wire:model.live="form.is_current" class="mr-2" />
-                        <label for="is_current" class="text-sm font-medium text-gray-700">I currently volunteer here</label>
+                        <label for="is_current" class="text-sm font-medium text-gray-700">I currently volunteer
+                            here</label>
                     </div>
 
                     <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description of Responsibilities & Achievements (Use bullet points for clarity)</label>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description of
+                            Responsibilities & Achievements (Use bullet points for clarity)</label>
                         <textarea id="description" wire:model="form.description" rows="5"
                             class="form-textarea w-full p-2 border rounded @error('form.description') border-red-500 @enderror"></textarea>
                         @error('form.description')

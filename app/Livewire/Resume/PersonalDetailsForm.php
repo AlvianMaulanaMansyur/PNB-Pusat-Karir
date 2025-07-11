@@ -95,7 +95,7 @@ class PersonalDetailsForm extends Component
 
                 // Auto-save data setelah upload berhasil
                 $this->savePersonalDetails();
-                session()->flash('success', 'Profile photo uploaded successfully!'); // <<< Flash message
+                session()->flash('success', 'Profile photo uploaded successfully!');
                 Log::info('Foto profil berhasil diunggah dan disimpan.', ['url' => $this->form['profile_photo']]);
 
             } catch (\Illuminate\Validation\ValidationException $e) {
@@ -104,7 +104,7 @@ class PersonalDetailsForm extends Component
                 // $this->errorMessage = 'Gagal mengunggah foto: ' . implode(', ', $e->errors()['profilePhotoFile'] ?? ['Unknown error']); // Hapus ini
                 throw $e; // Re-throw agar error bag tetap terisi
             } catch (\Exception $e) {
-                session()->flash('error', 'Failed to upload photo: ' . $e->getMessage()); // <<< Flash message
+                session()->flash('error', 'Failed to upload photo: ' . $e->getMessage());
                 Log::critical('Terjadi kesalahan fatal saat mengunggah foto.', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             }
         }
@@ -117,7 +117,7 @@ class PersonalDetailsForm extends Component
             if (Storage::disk('public')->exists($oldPhotoPath)) {
                 Storage::disk('public')->delete($oldPhotoPath);
                 Log::info('Foto profil berhasil dihapus dari storage.', ['path' => $oldPhotoPath]);
-                session()->flash('success', 'Profile photo removed successfully!'); // <<< Flash message
+                session()->flash('success', 'Profile photo removed successfully!');
             } else {
                 Log::warning('Gagal menghapus foto: File tidak ditemukan di storage.', ['path' => $oldPhotoPath]);
                 session()->flash('error', 'Failed to remove photo: File not found.');
@@ -163,7 +163,6 @@ class PersonalDetailsForm extends Component
     // --- Metode untuk Menyimpan Data Personal Details ke DB ---
     public function savePersonalDetails()
     {
-        // Validasi semua field yang ada di form. Kecuali profilePhotoFile, karena itu ditangani di uploadPhoto
         $this->validate([
             'form.name' => 'nullable|string|max:255',
             'form.email' => 'nullable|email|max:255',
@@ -184,15 +183,13 @@ class PersonalDetailsForm extends Component
             }
 
             $resumeData = is_array($resume->resume_data) ? $resume->resume_data : [];
-            $resumeData['personal_details'] = $this->form; // Simpan seluruh array $this->form
+            $resumeData['personal_details'] = $this->form;
 
             $resume->resume_data = $resumeData;
             $resume->save();
 
-            session()->flash('success', 'Personal details saved successfully!'); // <<< Flash message
-            // $this->errorMessage = ''; // Hapus ini
+            session()->flash('success', 'Personal details saved successfully!');
 
-            // Dispatch event untuk update preview
             $this->dispatch('personalDetailsUpdated', $this->form); // Mengirim $this->form (data personal details)
             Log::info('Detail personal berhasil disimpan dan event didispatch.', ['data' => $this->form]);
 
@@ -200,7 +197,7 @@ class PersonalDetailsForm extends Component
             Log::error('savePersonalDetails: Validasi gagal.', ['errors' => $e->errors()]);
             throw $e; // Lempar kembali exception agar validasi tetap tampil di frontend
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to save personal details: ' . $e->getMessage()); // <<< Flash message
+            session()->flash('error', 'Failed to save personal details: ' . $e->getMessage());
             // $this->errorMessage = 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage(); // Hapus ini
             // session()->flash('personal_details_success', null); // Hapus ini
             Log::critical('savePersonalDetails: Terjadi kesalahan fatal.', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);

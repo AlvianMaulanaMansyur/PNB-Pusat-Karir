@@ -44,7 +44,7 @@ window.addEventListener('resize', () => {
         }"
         :style="isDesktop() ? `width: ${@this.leftWidth}px;` : ''"
         class="bg-white border-r border-gray-200 p-6 overflow-y-auto custom-scrollbar">
-        <div class="bg-white pb-4 z-10 border-b border-gray-200 -mx-6 px-6">
+        <div class="bg-white pb-4 z-10 border-b-2 border-darkBlue -mx-6 px-6">
             <h2 class="text-xl font-semibold mb-4 flex justify-between items-center">
                 Resume Sections
                 <button x-show="!isDesktop()" wire:click="toggleLeftPanel" class="text-gray-500 hover:text-gray-700">

@@ -69,14 +69,7 @@ class ResumeController extends Controller
             'title' => ['required', 'string', 'max:255'],
         ]);
 
-        $resumeData = [
-            'personal_details' => [],
-            'experiences' => [],
-            'educations' => [],
-            'skills' => [],
-            'organizations' => [],
-            'projects' => [],
-        ];
+        $resumeData = [];
 
         $resume = $employee->resumes()->create([
             'title' => $validatedData['title'],
@@ -85,6 +78,94 @@ class ResumeController extends Controller
 
         return redirect()->route('resumes.edit', ['resume' => $resume->slug])
             ->with('success', 'Resume created successfully! Now, let\'s fill in the details.');
+    }
+
+    public function storeFromProfile(Request $request)
+    {
+        $employee = $this->getAuthenticatedEmployee();
+
+        if ($employee->resumes()->exists()) {
+            $employee->resumes()->delete();
+        }
+
+        $validatedData = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+        ]);
+
+        // === Personal Details ===
+        $fullName = trim("{$employee->first_name} {$employee->last_name}");
+        $email = $employee->user->email ?? '';
+        $phone = $employee->phone ?? '';
+        $address = trim("{$employee->city}, {$employee->country}");
+        $profilePhoto = $employee->photo_profile ?? '';
+        $summary = optional($employee->profile)->summary ?? '';
+
+        // === Work Experience ===
+        $workExperiences = $employee->workExperiences()
+            ->orderBy('start_date', 'desc')
+            ->get()
+            ->map(function ($exp) {
+                return [
+                    'company'     => $exp->company,
+                    'position'    => $exp->position,
+                    'start_date'  => $exp->start_date,
+                    'end_date'    => $exp->is_current ? '' : $exp->end_date,
+                    'is_current'  => $exp->is_current,
+                    'description' => $exp->description,
+                ];
+            })
+            ->toArray();
+
+        // === Educations ===
+        $educations = $employee->educations()
+            ->orderBy('end_date', 'desc')
+            ->get()
+            ->map(function ($edu) {
+                return [
+                    'institution'    => $edu->institution,
+                    'sertifications' => $edu->sertifications,
+                    'degrees'        => $edu->degrees,
+                    'dicipline'      => $edu->dicipline,
+                    'end_date'       => $edu->end_date,
+                    'description'    => $edu->description,
+                ];
+            })
+            ->toArray();
+
+        // === Skills ===
+        $skills = $employee->employeeSkills()
+            ->with('skill')
+            ->get()
+            ->filter(fn($employeeSkill) => $employeeSkill->skill) // pastikan relasi ada
+            ->map(function ($employeeSkill) {
+                return [
+                    'name' => $employeeSkill->skill->name,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        $resumeData = [
+            'personal_details' => [
+                'name' => $fullName,
+                'email' => $email,
+                'phone' => $phone,
+                'address' => $address,
+                'summary' => $summary,
+                'profile_photo' => $profilePhoto,
+            ],
+            'experiences' => $workExperiences,
+            'educations' => $educations,
+            'skills' => $skills,
+        ];
+
+        $resume = $employee->resumes()->create([
+            'title' => $validatedData['title'],
+            'resume_data' => $resumeData,
+        ]);
+
+        return redirect()->route('resumes.edit', ['resume' => $resume->slug])
+            ->with('success', 'Resume created successfully with profile, experiences, education, and skills!');
     }
 
     /**

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -14,11 +13,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthenticationChecker;
 use Illuminate\Support\Facades\Route;
-use phpDocumentor\Reflection\Location;
 
 Route::get('/get-countries', [LocationController::class, 'getCountries']);
 Route::get('/get-cities', [LocationController::class, 'getCities']);
-
 
 Route::middleware('guest')->group(function () {
     Route::get('/admin/login', [AdminauthController::class, 'showLoginForm'])->name('admin.adminLogin');
@@ -59,7 +56,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/AuthCheker', [AuthenticationChecker::class, 'CheckerFormStore']);
 
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)

@@ -1,37 +1,34 @@
 {{-- resources/views/livewire/resume/experience-form.blade.php --}}
 
 <div>
-    <div id="experience-section" class="panel-container">
+    <div id="experience-section">
         <div class="panel-header flex justify-between items-center">
-            <h3>Work Experience</h3>
+            <h3 class="flex items-center text-xl font-semibold">
+                <img src="{{ asset('images/resume-icons/work-experiences.png') }}" alt="Icon"
+                    class="icon-resume icon-resume--large">
+                Work Experience
+            </h3>
         </div>
 
         <div class="panel-body">
-            <div id="existing-experiences">
+            <div id="existing-experiences" class="panel-item">
                 @if (count($experiences) > 0)
                     @foreach ($experiences as $experience)
-                        <div class="experience-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm"
-                            wire:key="{{ $experience['id'] }}" x-data="{ open: false }">
-                            {{-- Konten Utama Item DAN Tombol --}}
-                            <div class="flex justify-between items-start">
-                                {{-- Bagian Teks --}}
-                                <div>
-                                    <h4 class="text-lg font-bold text-gray-900">{{ $experience['title'] ?? 'Untitled Position' }}</h4>
-                                    <p class="text-sm text-gray-600">
-                                        {{ $experience['company'] ?? 'Unknown Company' }} |
-                                        {{ $experience['start_date'] ?? '' }} -
-                                        {{ ($experience['is_current'] ?? false) ? 'Present' : ($experience['end_date'] ?? '') }}
+                        <div class="experience-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+                            wire:key="{{ $experience['id'] }}" x-data="{ open: false }" @click="open = !open">
+                            <div class="flex justify-between items-center">
+                                <div class="overflow-hidden max-w-[85%]">
+                                    <h4 class="text-md font-medium truncate">
+                                        {{ $experience['position'] ?? '' }}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 truncate">
+                                        {{ $experience['company'] ?? '' }}
                                     </p>
-                                    @if ($experience['description'])
-                                        <p class="text-gray-700 text-sm mt-2">{!! nl2br(e($experience['description'])) !!}</p>
-                                    @endif
                                 </div>
-
-                                {{-- Tombol Dropdown --}}
-                                <div>
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
-                                        type="button">
+                                <div class="flex-shrink-0">
+                                    <button @click.stop="open = !open"
+                                    class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg"
+                                    type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 16 3">
                                             <path
                                                 d="M2 0a1.5 1.5 0 1 1 0 3A1.5 1.5 0 0 1 2 0Zm6.041 0a1.5 1.5 0 1 1 0 3A1.5 1.5 0 0 1 8.041 0ZM14 0a1.5 1.5 0 1 1 0 3A1.5 1.5 0 0 1 14 0Z" />
@@ -40,7 +37,7 @@
                                 </div>
                             </div>
 
-                            {{-- Dropdown Menu --}}
+                            <!-- Dropdown -->
                             <div x-cloak x-show="open" @click.outside="open = false" x-transition
                                 class="z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute right-0 mt-2">
                                 <ul class="py-2 text-sm text-gray-700">
@@ -70,18 +67,18 @@
                         </div>
                     @endforeach
                 @else
-                    <p id="no-experience-message" class="text-gray-500 text-center py-4">No work experience added yet.</p>
+                    <p id="no-experience-message" class="text-gray-500 text-center py-4">No work experience added yet.
+                    </p>
                 @endif
             </div>
 
             <div class="text-center mt-6">
-                <button class="add-item-btn bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    wire:click="openModal()">Add a new work experience</button>
+                <button class="add-item-btn"
+                    wire:click="openModal()">Add work experience</button>
             </div>
         </div>
     </div>
 
-    {{-- Modal Form Experience --}}
     <div x-data="{ show: @entangle('showModal').live }" x-show="show" x-transition x-cloak
         class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center overflow-y-auto px-4">
 
@@ -94,7 +91,7 @@
                     @if ($editingExperienceId)
                         Edit Work Experience
                     @else
-                        Add New Work Experience
+                        Add Work Experience
                     @endif
                 </h3>
                 <button @click="show = false" type="button"
@@ -107,14 +104,13 @@
                 </button>
             </div>
 
-            {{-- Body --}}
             <div class="px-6 py-4 overflow-y-auto max-h-[70vh]">
                 <form wire:submit="saveExperience">
                     <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-gray-700">Job Title</label>
-                        <input type="text" id="title" wire:model="form.title"
-                            class="form-input w-full p-2 border rounded @error('form.title') border-red-500 @enderror" />
-                        @error('form.title')
+                        <label for="position" class="block text-sm font-medium text-gray-700">Job position</label>
+                        <input type="text" id="position" wire:model="form.position"
+                            class="form-input w-full p-2 border rounded @error('form.position') border-red-500 @enderror" />
+                        @error('form.position')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
@@ -154,7 +150,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description of Responsibilities & Achievements (Use bullet points for clarity)</label>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description of
+                            Responsibilities & Achievements (Use bullet points for clarity)</label>
                         <textarea id="description" wire:model="form.description" rows="5"
                             class="form-textarea w-full p-2 border rounded @error('form.description') border-red-500 @enderror"></textarea>
                         @error('form.description')
@@ -164,7 +161,6 @@
                 </form>
             </div>
 
-            {{-- Footer --}}
             <div class="flex justify-end items-center px-6 py-2 border-t rounded-b space-x-2">
                 <button type="button" wire:click="closeModal"
                     class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>

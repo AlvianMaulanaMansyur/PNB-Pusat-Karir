@@ -3,26 +3,29 @@
 <div>
     <div id="interests-section" class="panel-container">
         <div class="panel-header flex justify-between items-center">
-            <h3>Interests & Hobbies</h3>
+            <h3 class="flex items-center text-xl font-semibold">
+                <img src="{{ asset('images/resume-icons/hobby.png') }}" alt="Icon"
+                    class="icon-resume icon-resume--large">
+                Interest / Hobby
+            </h3>
         </div>
 
         <div class="panel-body">
-            <div id="existing-interests">
+            <div id="existing-interests" class="panel-item">
                 @if (count($interests) > 0)
                     @foreach ($interests as $interest)
-                        <div class="interest-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm"
-                            wire:key="{{ $interest['id'] }}" x-data="{ open: false }">
-                            {{-- Konten Utama Item DAN Tombol --}}
-                            <div class="flex justify-between items-start">
-                                {{-- Bagian Teks --}}
-                                <div>
-                                    <h4 class="text-lg font-bold text-gray-900">{{ $interest['interest'] ?? 'Untitled Interest' }}</h4>
+                        <div class="interest-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+                        wire:key="{{ $interest['id'] }}" x-data="{ open: false }" @click="open = !open">
+                            <div class="flex justify-between items-center">
+                                <div class="overflow-hidden max-w-[85%]">
+                                    <h4 class="text-md font-medium truncate">
+                                        {{ $interest['interest'] ?? '' }}
+                                    </h4>
                                 </div>
 
-                                {{-- Tombol Dropdown --}}
-                                <div>
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                <div class="flex-shrink-0">
+                                    <button @click.stop="open = !open"
+                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg"
                                         type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 16 3">
                                             <path

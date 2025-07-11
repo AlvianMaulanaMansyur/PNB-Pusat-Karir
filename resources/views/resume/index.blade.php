@@ -10,7 +10,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Buat dari Profil -->
-                <form action="" method="POST"
+                <form action="{{ route('resumes.storeFromProfile') }}" method="POST"
                     class="border border-gray-300 rounded-lg p-6 text-center hover:shadow-lg transition hover:border-indigo-600 hover:ring-2 hover:ring-indigo-100">
                     @csrf
                     <div class="flex flex-col items-center justify-center gap-2">
@@ -20,7 +20,7 @@
                             Kami akan menggunakan informasi dari profil Anda (seperti data pribadi, pengalaman kerja,
                             dan pendidikan) untuk membuat CV dasar.
                         </p>
-                        <input type="hidden" name="title" value="Resume dari Profil" />
+                        <input type="hidden" name="title" value="Resume" />
                         <button type="submit"
                             class="mt-4 bg-darkBlue hover:bg-darkBlue text-white text-sm px-4 py-2 rounded shadow">
                             Gunakan Profil

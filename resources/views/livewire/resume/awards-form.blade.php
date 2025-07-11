@@ -3,33 +3,32 @@
 <div>
     <div id="awards-section" class="panel-container">
         <div class="panel-header flex justify-between items-center">
-            <h3>Awards & Recognition</h3>
+            <h3 class="flex items-center text-xl font-semibold">
+                <img src="{{ asset('images/resume-icons/awards.png') }}" alt="Icon"
+                    class="icon-resume icon-resume--large">
+                Award & Recognition
+            </h3>
         </div>
 
         <div class="panel-body">
-            <div id="existing-awards">
+            <div id="existing-awards" class="panel-item">
                 @if (count($awards) > 0)
                     @foreach ($awards as $award)
-                        <div class="award-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm"
-                            wire:key="{{ $award['id'] }}" x-data="{ open: false }">
-                            {{-- Konten Utama Item DAN Tombol --}}
-                            <div class="flex justify-between items-start">
-                                {{-- Bagian Teks --}}
-                                <div>
-                                    <h4 class="text-lg font-bold text-gray-900">{{ $award['name'] ?? 'Untitled Award' }}</h4>
-                                    <p class="text-sm text-gray-600">
-                                        {{ $award['awarding_organization'] ?? 'N/A' }} |
-                                        Received: {{ $award['date_received'] ?? '' }}
+                        <div class="award-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+                            wire:key="{{ $award['id'] }}" x-data="{ open: false }" @click="open = !open">
+                            <div class="flex justify-between items-center">
+                                <div class="overflow-hidden max-w-[85%]">
+                                    <h4 class="text-md font-medium truncate">
+                                        {{ $award['name'] ?? '' }}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 truncate">
+                                        {{ $award['awarding_organization'] ?? '' }}
                                     </p>
-                                    @if ($award['description'])
-                                        <p class="text-gray-700 text-sm mt-2">{!! nl2br(e($award['description'])) !!}</p>
-                                    @endif
                                 </div>
 
-                                {{-- Tombol Dropdown --}}
-                                <div>
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                <div class="flex-shrink-0">
+                                    <button @click.stop="open = !open"
+                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg"
                                         type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 16 3">
                                             <path
@@ -39,7 +38,6 @@
                                 </div>
                             </div>
 
-                            {{-- Dropdown Menu --}}
                             <div x-cloak x-show="open" @click.outside="open = false" x-transition
                                 class="z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute right-0 mt-2">
                                 <ul class="py-2 text-sm text-gray-700">
@@ -69,7 +67,8 @@
                         </div>
                     @endforeach
                 @else
-                    <p id="no-award-message" class="text-gray-500 text-center py-4">No awards or recognition added yet.</p>
+                    <p id="no-award-message" class="text-gray-500 text-center py-4">No awards or recognition added yet.
+                    </p>
                 @endif
             </div>
 
@@ -80,14 +79,12 @@
         </div>
     </div>
 
-    {{-- Modal Form Award --}}
     <div x-data="{ show: @entangle('showModal').live }" x-show="show" x-transition x-cloak
         class="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center overflow-y-auto px-4">
 
         <div @click.away="show = false"
             class="relative bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
 
-            {{-- Header --}}
             <div class="flex justify-between items-center px-6 py-4 border-b rounded-t">
                 <h3 class="text-xl font-semibold text-gray-900">
                     @if ($editingAwardId)
@@ -106,7 +103,6 @@
                 </button>
             </div>
 
-            {{-- Body --}}
             <div class="px-6 py-4 overflow-y-auto max-h-[70vh]">
                 <form wire:submit="saveAward">
                     <div class="mb-4">
@@ -119,7 +115,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="awarding_organization" class="block text-sm font-medium text-gray-700">Awarding Organization</label>
+                        <label for="awarding_organization" class="block text-sm font-medium text-gray-700">Awarding
+                            Organization</label>
                         <input type="text" id="awarding_organization" wire:model="form.awarding_organization"
                             class="form-input w-full p-2 border rounded @error('form.awarding_organization') border-red-500 @enderror" />
                         @error('form.awarding_organization')
@@ -137,7 +134,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description
+                            (Optional)</label>
                         <textarea id="description" wire:model="form.description" rows="3"
                             class="form-textarea w-full p-2 border rounded @error('form.description') border-red-500 @enderror"></textarea>
                         @error('form.description')
@@ -147,7 +145,6 @@
                 </form>
             </div>
 
-            {{-- Footer --}}
             <div class="flex justify-end items-center px-6 py-2 border-t rounded-b space-x-2">
                 <button type="button" wire:click="closeModal"
                     class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>

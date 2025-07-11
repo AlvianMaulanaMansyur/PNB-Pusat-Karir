@@ -3,44 +3,34 @@
 <div>
     <div id="projects-section" class="panel-container">
         <div class="panel-header flex justify-between items-center">
-            <h3>Projects</h3>
+            <h3 class="flex items-center text-xl font-semibold">
+                <img src="{{ asset('images/resume-icons/projects.png') }}" alt="Icon"
+                    class="icon-resume icon-resume--large">
+                Project
+            </h3>
         </div>
 
         <div class="panel-body">
-            <div id="existing-projects">
+            <div id="existing-projects" class="panel-item">
                 @if (count($projects) > 0)
                     @foreach ($projects as $project)
-                        <div class="project-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm"
-                            wire:key="{{ $project['id'] }}" x-data="{ open: false }">
-                            {{-- Konten Utama Item DAN Tombol --}}
-                            <div class="flex justify-between items-start">
-                                {{-- Bagian Teks (Judul & Perusahaan/Tanggal) --}}
-                                <div>
-                                    <h4 class="text-lg font-bold text-gray-900">{{ $project['project_name'] ?? 'Untitled Project' }}</h4>
-                                    <p class="text-sm text-gray-600">
-                                        @if ($project['role'])
-                                            {{ $project['role'] }} |
-                                        @endif
-                                        {{ $project['start_date'] ?? '' }} -
-                                        {{ ($project['is_current'] ?? false) ? 'Present' : ($project['end_date'] ?? '') }}
+                        <div class="project-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+                        wire:key="{{ $project['id'] }}" x-data="{ open: false }" @click="open = !open">
+
+                            <div class="flex justify-between items-center">
+
+                                <div class="overflow-hidden max-w-[85%]">
+                                    <h4 class="text-md font-medium truncate">
+                                        {{ $project['project_name'] ?? '' }}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 truncate">
+                                        {{ $project['role'] ?? '' }}
                                     </p>
-                                    @if ($project['technologies_used'])
-                                        <p class="text-xs text-gray-500 mt-1">
-                                            Technologies: {{ $project['technologies_used'] }}
-                                        </p>
-                                    @endif
-                                    @if ($project['project_url'])
-                                        <a href="{{ $project['project_url'] }}" target="_blank" class="text-blue-500 hover:underline text-sm block mt-1">Live Project</a>
-                                    @endif
-                                    @if ($project['github_url'])
-                                        <a href="{{ $project['github_url'] }}" target="_blank" class="text-blue-500 hover:underline text-sm block">GitHub Repo</a>
-                                    @endif
                                 </div>
 
-                                {{-- Tombol Dropdown --}}
-                                <div>
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                <div class="flex-shrink-0">
+                                    <button @click.stop="open = !open"
+                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg"
                                         type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 16 3">
                                             <path

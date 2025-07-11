@@ -3,39 +3,36 @@
 <div>
     <div id="certifications-section" class="panel-container">
         <div class="panel-header flex justify-between items-center">
-            <h3>Certifications & Licenses</h3>
+            <h3 class="flex items-center text-xl font-semibold">
+                <img src="{{ asset('images/resume-icons/certifications.png') }}" alt="Icon"
+                    class="icon-resume icon-resume--large">
+                Certification / License
+            </h3>
         </div>
 
         <div class="panel-body">
-            <div id="existing-certifications">
+            <div id="existing-certifications" class="panel-item">
                 @if (count($certifications) > 0)
                     @foreach ($certifications as $certification)
-                        <div class="certification-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm"
-                            wire:key="{{ $certification['id'] }}" x-data="{ open: false }">
+                        <div class="certification-item border rounded-lg p-3 mb-3 relative bg-white shadow-sm hover:bg-gray-50 cursor-pointer transition duration-200"
+                        wire:key="{{ $certification['id'] }}" x-data="{ open: false }" @click="open = !open">
+
                             {{-- Konten Utama Item DAN Tombol --}}
-                            <div class="flex justify-between items-start">
+                            <div class="flex justify-between items-center">
                                 {{-- Bagian Teks --}}
-                                <div>
-                                    <h4 class="text-lg font-bold text-gray-900">{{ $certification['name'] ?? 'Untitled Certification' }}</h4>
-                                    <p class="text-sm text-gray-600">
-                                        {{ $certification['issuing_organization'] ?? 'N/A' }} |
-                                        Issued: {{ $certification['issue_date'] ?? '' }}
-                                        @if ($certification['expiration_date'])
-                                            | Expires: {{ $certification['expiration_date'] }}
-                                        @endif
+                                <div class="overflow-hidden max-w-[85%]">
+                                    <h4 class="text-md font-medium truncate">
+                                        {{ $certification['title'] ?? '' }}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 truncate">
+                                        {{ $certification['issuer'] ?? '' }}
                                     </p>
-                                    @if ($certification['credential_id'])
-                                        <p class="text-xs text-gray-500 mt-1">Credential ID: {{ $certification['credential_id'] }}</p>
-                                    @endif
-                                    @if ($certification['credential_url'])
-                                        <a href="{{ $certification['credential_url'] }}" target="_blank" class="text-blue-500 hover:underline text-sm block mt-1">Verify Credential</a>
-                                    @endif
                                 </div>
 
                                 {{-- Tombol Dropdown --}}
-                                <div>
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+                                <div class="flex-shrink-0">
+                                    <button @click.stop="open = !open"
+                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg"
                                         type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 16 3">
                                             <path
@@ -75,7 +72,8 @@
                         </div>
                     @endforeach
                 @else
-                    <p id="no-certification-message" class="text-gray-500 text-center py-4">No certifications or licenses added yet.</p>
+                    <p id="no-certification-message" class="text-gray-500 text-center py-4">No certifications or
+                        licenses added yet.</p>
                 @endif
             </div>
 
@@ -115,60 +113,60 @@
             {{-- Body --}}
             <div class="px-6 py-4 overflow-y-auto max-h-[70vh]">
                 <form wire:submit="saveCertification">
+                    {{-- Title --}}
                     <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-gray-700">Certification/Course Name</label>
-                        <input type="text" id="name" wire:model="form.name"
-                            class="form-input w-full p-2 border rounded @error('form.name') border-red-500 @enderror" />
-                        @error('form.name')
+                        <label for="title" class="block text-sm font-medium text-gray-700">Certification
+                            Title</label>
+                        <input type="text" id="title" wire:model="form.title"
+                            class="form-input w-full p-2 border rounded @error('form.title') border-red-500 @enderror" />
+                        @error('form.title')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
+                    {{-- Issuer --}}
                     <div class="mb-4">
-                        <label for="issuing_organization" class="block text-sm font-medium text-gray-700">Issuing Organization</label>
-                        <input type="text" id="issuing_organization" wire:model="form.issuing_organization"
-                            class="form-input w-full p-2 border rounded @error('form.issuing_organization') border-red-500 @enderror" />
-                        @error('form.issuing_organization')
+                        <label for="issuer" class="block text-sm font-medium text-gray-700">Issuing
+                            Organization</label>
+                        <input type="text" id="issuer" wire:model="form.issuer"
+                            class="form-input w-full p-2 border rounded @error('form.issuer') border-red-500 @enderror" />
+                        @error('form.issuer')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
+                    {{-- Dates --}}
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label for="issue_date" class="block text-sm font-medium text-gray-700">Issue Date</label>
-                            <input type="date" id="issue_date" wire:model="form.issue_date"
-                                class="form-input w-full p-2 border rounded @error('form.issue_date') border-red-500 @enderror" />
-                            @error('form.issue_date')
+                            <label for="date_issued" class="block text-sm font-medium text-gray-700">Date Issued</label>
+                            <input type="date" id="date_issued" wire:model="form.date_issued"
+                                class="form-input w-full p-2 border rounded @error('form.date_issued') border-red-500 @enderror" />
+                            @error('form.date_issued')
                                 <span class="text-red-600 text-sm">{{ $message }}</span>
                             @enderror
                         </div>
                         <div>
-                            <label for="expiration_date" class="block text-sm font-medium text-gray-700">Expiration Date (Optional)</label>
-                            <input type="date" id="expiration_date" wire:model="form.expiration_date"
-                                class="form-input w-full p-2 border rounded @error('form.expiration_date') border-red-500 @enderror" />
-                            @error('form.expiration_date')
+                            <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date
+                                (Optional)</label>
+                            <input type="date" id="expiry_date" wire:model="form.expiry_date"
+                                class="form-input w-full p-2 border rounded @error('form.expiry_date') border-red-500 @enderror" />
+                            @error('form.expiry_date')
                                 <span class="text-red-600 text-sm">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
 
+                    {{-- Description --}}
                     <div class="mb-4">
-                        <label for="credential_id" class="block text-sm font-medium text-gray-700">Credential ID (Optional)</label>
-                        <input type="text" id="credential_id" wire:model="form.credential_id"
-                            class="form-input w-full p-2 border rounded @error('form.credential_id') border-red-500 @enderror" />
-                        @error('form.credential_id')
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description
+                            (Optional)</label>
+                        <textarea id="description" wire:model="form.description" rows="3"
+                            class="form-textarea w-full p-2 border rounded @error('form.description') border-red-500 @enderror"></textarea>
+                        @error('form.description')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="credential_url" class="block text-sm font-medium text-gray-700">Credential URL (Optional)</label>
-                        <input type="url" id="credential_url" wire:model="form.credential_url" placeholder="https://www.credly.com/badges/..."
-                            class="form-input w-full p-2 border rounded @error('form.credential_url') border-red-500 @enderror" />
-                        @error('form.credential_url')
-                            <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
                 </form>
             </div>
 
