@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -35,4 +34,8 @@ return [
         ],
     ],
 
+    'wablas' => [
+        'authorization' => env('WABLAS_AUTHORIZATION'),
+        'url' => env('WABLAS_API_URL'),
+    ],
 ];

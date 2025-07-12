@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -110,7 +111,7 @@ class EmployerController extends Controller
             $jobListing = JobListing::create($validated);
 
             // Ambil semua jobseeker aktif
-            $jobseekers = User::where('role', 'employee')->get();
+            $jobseekers = User::with('employee')->where('role', 'employee')->get();
 
             // Kirim email ke masing-masing jobseeker
             foreach ($jobseekers as $jobseeker) {
@@ -118,6 +119,42 @@ class EmployerController extends Controller
                 Mail::to($jobseeker->email)->send(new \App\Mail\NewJobListingNotification($jobListing));
             }
 
+            $payload = [
+                'data' => [],
+            ];
+
+            foreach ($jobseekers as $jobseeker) {
+                $phone = $jobseeker->employee->phone ?? null;
+
+                if ($phone) {
+                    $payload['data'][] = [
+                        'phone' => preg_replace('/\D/', '', $phone), // bersihkan nomor
+                        'message' => "Kabar Gembira Untuk Kamu 🎉\n\nHai {$jobseeker->employee->first_name}{$jobseeker->employee->last_name}, ada lowongan baru: {$jobListing->nama_lowongan}. \nLokasi:  \nCek detailnya di: " . route('job.detail', $jobListing->id),
+                        'isGroup' => 'false',
+                    ];
+                }
+            }
+
+            // Kirim ke API WA
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => env('WABLAS_API_URL'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_HTTPHEADER => ['Authorization: ' . env('WABLAS_AUTHORIZATION'), 'Content-Type: application/json'],
+            ]);
+
+            $response = curl_exec($curl);
+
+            if (curl_errno($curl)) {
+                Log::error('WA Curl Error: ' . curl_error($curl));
+            } else {
+                Log::info('Hasil pengiriman WA: ' . $response);
+            }
+
+            curl_close($curl);
 
             Log::info('Lowongan berhasil disimpan ke database.', [
                 'nama_lowongan' => $validated['nama_lowongan'],
@@ -149,15 +186,9 @@ class EmployerController extends Controller
     {
         $userId = Auth::id();
 
-        $lowongan_aktif = JobListing::where('user_id', $userId)
-            ->where('deadline', '>=', now())
-            ->orderBy('deadline', 'asc')
-            ->get();
+        $lowongan_aktif = JobListing::where('user_id', $userId)->where('deadline', '>=', now())->orderBy('deadline', 'asc')->get();
 
-        $lowongan_kedaluwarsa = JobListing::where('user_id', $userId)
-            ->where('deadline', '<', now())
-            ->orderBy('deadline', 'desc')
-            ->get();
+        $lowongan_kedaluwarsa = JobListing::where('user_id', $userId)->where('deadline', '<', now())->orderBy('deadline', 'desc')->get();
 
         return view('employer.manage-lowongan', [
             'lowongan_aktif' => $lowongan_aktif,
@@ -387,7 +418,6 @@ class EmployerController extends Controller
         return view('employer.pelamar-lowongan', compact('applications', 'summary'));
     }
 
-
     public function filterstatus(Request $request, $employerId)
     {
         $statusFilter = $request->query('status');
@@ -402,8 +432,7 @@ class EmployerController extends Controller
             })
             ->when($searchKeyword, function ($query) use ($searchKeyword) {
                 $query->whereHas('job', function ($q) use ($searchKeyword) {
-                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')
-                        ->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
+                    $q->where('nama_lowongan', 'like', '%' . $searchKeyword . '%')->orWhere('posisi', 'like', '%' . $searchKeyword . '%');
                 });
             })
             ->orderBy('applied_at', 'desc')
@@ -412,7 +441,6 @@ class EmployerController extends Controller
 
         return $applications;
     }
-
 
     public function getAllApplications($employerId)
     {
@@ -427,13 +455,16 @@ class EmployerController extends Controller
 
     public function updateStatus(Request $request, $slug)
     {
-        $request->validate([
-            'status' => 'required|in:pending,reviewed,interview,accepted,rejected',
-            'interview_date' => 'required_if:status,interview|nullable|date|after:now',
-        ], [
-            'interview_date.required_if' => 'Tanggal interview wajib diisi jika status adalah interview.',
-            'interview_date.after' => 'Tanggal interview harus di masa depan.',
-        ]);
+        $request->validate(
+            [
+                'status' => 'required|in:pending,reviewed,interview,accepted,rejected',
+                'interview_date' => 'required_if:status,interview|nullable|date|after:now',
+            ],
+            [
+                'interview_date.required_if' => 'Tanggal interview wajib diisi jika status adalah interview.',
+                'interview_date.after' => 'Tanggal interview harus di masa depan.',
+            ],
+        );
 
         $application = JobApplication::where('slug', $slug)->firstOrFail();
         $application->status = $request->status;
@@ -456,7 +487,6 @@ class EmployerController extends Controller
         return back()->with('success', 'Status pelamar berhasil diperbarui.');
     }
 
-
     public function showInterviewApplicants($slug)
     {
         $employer = Employers::where('slug', $slug)->with('jobListings')->firstOrFail();
@@ -477,7 +507,6 @@ class EmployerController extends Controller
 
         return view('employer.kelola-interview', compact('applications'));
     }
-
 
     public function updateInterviewDate(Request $request, $slug)
     {
@@ -584,21 +613,15 @@ class EmployerController extends Controller
         }
     }
 
-
     public function notifications()
     {
         $employer = Auth::user()->employer;
 
         // Ambil semua notifikasi milik employer
-        $notifications = EmployerNotification::where('employer_id', $employer->id)
-            ->orderBy('created_at', 'desc')
-            ->get(); // <-- TIDAK lagi pakai paginate()
+        $notifications = EmployerNotification::where('employer_id', $employer->id)->orderBy('created_at', 'desc')->get(); // <-- TIDAK lagi pakai paginate()
 
         // Ambil notifikasi terbaru yang belum dibaca (hanya satu)
-        $latestUnread = EmployerNotification::where('employer_id', $employer->id)
-            ->where('is_read', false)
-            ->orderBy('created_at', 'desc')
-            ->first();
+        $latestUnread = EmployerNotification::where('employer_id', $employer->id)->where('is_read', false)->orderBy('created_at', 'desc')->first();
 
         // Tandai semua sebagai telah dibaca (setelah ambil latestUnread)
         EmployerNotification::where('employer_id', $employer->id)
@@ -658,14 +681,14 @@ class EmployerController extends Controller
 
         $jobListings = JobListing::where('user_id', $employer->user_id)->get();
 
-
         return view('employer.cari_pelamar', compact('skills', 'candidates', 'selectedSkills', 'jobListings'));
     }
 
     public function detailKandidat($slug, $id)
     {
         // Query kandidat utama
-        $candidate = DB::selectOne("
+        $candidate = DB::selectOne(
+            "
         SELECT
             e.*,
             u.email,
@@ -680,7 +703,9 @@ class EmployerController extends Controller
         LEFT JOIN skills s ON s.id = es.skill_id
         WHERE e.id = ?
         GROUP BY e.id
-    ", [$id]);
+    ",
+            [$id],
+        );
 
         if (!$candidate) {
             abort(404, 'Kandidat tidak ditemukan');
@@ -690,12 +715,9 @@ class EmployerController extends Controller
         $educations = \App\Models\educations::where('employee_id', $id)->get();
         $workExperiences = \App\Models\work_experience::where('employee_id', $id)->get();
 
-
         // Ambil data lowongan milik employer yang sedang login
         $employer = Auth::user()->employer;
-        $jobListings = DB::table('job_listings')
-            ->where('user_id', $employer->user_id)
-            ->get();
+        $jobListings = DB::table('job_listings')->where('user_id', $employer->user_id)->get();
 
         // Kirim ke view
         return view('employer.detail_kandidat', compact('candidate', 'jobListings', 'educations', 'workExperiences'));
@@ -704,9 +726,7 @@ class EmployerController extends Controller
     public function detailPelamar($slug, $jobId, $userId)
     {
         // Ambil employer beserta daftar lowongan
-        $employer = Employers::where('slug', $slug)
-            ->with('jobListings')
-            ->firstOrFail();
+        $employer = Employers::where('slug', $slug)->with('jobListings')->firstOrFail();
 
         // Cek apakah lowongan milik employer tersebut
         $jobIds = $employer->jobListings->pluck('id')->toArray();
@@ -715,28 +735,17 @@ class EmployerController extends Controller
         }
 
         // Ambil data lamaran dan employee lengkap (dengan relasi)
-        $application = JobApplication::with([
-            'employee.educations',
-            'employee.skills',
-            'employee.workExperiences',
-            'job'
-        ])
+        $application = JobApplication::with(['employee.educations', 'employee.skills', 'employee.workExperiences', 'job'])
             ->where('job_id', $jobId)
             ->where('employee_id', $userId)
             ->firstOrFail();
 
-        $certificates = portofoliopathimg::where('employee_id', $userId)
-            ->where('job_id', $jobId)
-            ->get();
+        $certificates = portofoliopathimg::where('employee_id', $userId)->where('job_id', $jobId)->get();
 
         // Daftar semua lowongan milik employer (untuk form undangan)
         $jobListings = $employer->jobListings;
 
         // Kirim data ke view
-        return view('employer.detail_pelamar', compact(
-            'application',
-            'jobListings',
-            'certificates'
-        ));
+        return view('employer.detail_pelamar', compact('application', 'jobListings', 'certificates'));
     }
 }
