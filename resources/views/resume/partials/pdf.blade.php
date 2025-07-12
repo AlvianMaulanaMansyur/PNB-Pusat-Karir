@@ -316,6 +316,7 @@ function formatDate($date)
                 <?php if (!empty($experience['description'])): ?>
                 <div class="item-description prose mt-2">
                     <?= $experience['description'] ?>
+
                 </div>
                 <?php endif; ?>
             </div>

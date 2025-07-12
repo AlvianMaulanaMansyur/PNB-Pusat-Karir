@@ -123,6 +123,7 @@ class EmployerController extends Controller
                 'data' => [],
             ];
 
+            // wa blast start
             $employer = $jobListing->user->employer ?? null;
 
             foreach ($jobseekers as $jobseeker) {
@@ -136,13 +137,12 @@ class EmployerController extends Controller
                     $message .= "Mungkin akan cocok banget sama skill kamu!\n\n";
                     $message .= "📢 posisi: *{$jobListing->nama_lowongan}* - *{$jobListing->jenislowongan}*\n";
                     $message .= "📍 Lokasi: {$employer->country}, {$employer->city}\n";
-                    $message .= '💰 Gaji: Rp ' . number_format($jobListing->gaji, 0, ',', '.') . "\n";
                     $message .= '📅 Tutup: ' . Carbon::parse($jobListing->deadline)->format('d M Y') . "\n\n";
                     $message .= "Aku udah kasih tau karena sayang kalau kamu melewatkan ini. Yuk cek detailnya di:\n";
                     $message .= route('job.detail', $jobListing->id) . "\n\n";
                     $message .= "Kalau tertarik, buruan daftar ya! Aku tunggu kabar baiknya 🎉\n\n";
                     $message .= "Cheers,\n";
-                    $message .= "{$employer->first_name}{$employer->last_name}\n";
+                    $message .= "{$employer->first_name} {$employer->last_name}\n";
                     $message .= "{$employer->company_name}";
 
                     $payload['data'][] = [

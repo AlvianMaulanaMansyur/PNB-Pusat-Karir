@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\employees;
 use App\Models\Event;
 use App\Models\JobListing;
 use Illuminate\Http\Request;
@@ -73,6 +74,38 @@ class ManajemenEventController extends Controller
             ]);
 
             DB::commit();
+
+            // Ambil semua jobseeker yang memiliki nomor WA
+            $employees = employees::with('user')->whereNotNull('phone')->get();
+
+            // Siapkan payload WA
+            $payload = ['data' => []];
+
+            foreach ($employees as $employee) {
+                $payload['data'][] = [
+                    'phone' => $employee->phone,
+                    'message' => "Hai {$employee->user->name}, ada event baru nih dari kami! 🎉\n\n" . "*{$event->title}*\n\n" . '📅 Tanggal: ' . \Carbon\Carbon::parse($event->event_date)->format('d M Y') . "\n" . "🕒 Jam: {$event->event_time}\n" . "📍 Lokasi: {$event->location}\n\n" . (!empty($event->registration_link) ? "Klik link berikut untuk mendaftar:\n{$event->registration_link}\n\n" : '') . 'Yuk, jangan sampai kelewatan. Sampai jumpa di sana! 😊',
+                    'isGroup' => false,
+                ];
+            }
+
+            // Kirim request ke API Wablas
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => env('WABLAS_API_URL'),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_HTTPHEADER => ['Authorization: ' . env('WABLAS_AUTHORIZATION'), 'Content-Type: application/json'],
+            ]);
+
+            $response = curl_exec($curl);
+            if (curl_errno($curl)) {
+                Log::error('WA Event Curl Error: ' . curl_error($curl));
+            } else {
+                Log::info('WA Event Result: ' . $response);
+            }
+            curl_close($curl);
 
             return redirect()->route('admin.manajemenevent')->with('success', 'Event berhasil ditambahkan.');
         } catch (Throwable $e) {

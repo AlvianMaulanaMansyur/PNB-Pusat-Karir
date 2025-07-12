@@ -12,7 +12,6 @@
         Lihat Lowongan
     @endcomponent
 
-
     Terima kasih,<br>
     {{ config('app.name') }}
 @endcomponent
