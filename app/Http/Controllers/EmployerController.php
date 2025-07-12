@@ -123,13 +123,31 @@ class EmployerController extends Controller
                 'data' => [],
             ];
 
-            foreach ($jobseekers as $jobseeker) {
-                $phone = $jobseeker->employee->phone ?? null;
+            $employer = $jobListing->user->employer ?? null;
 
-                if ($phone) {
+            foreach ($jobseekers as $jobseeker) {
+                $employee = $jobseeker->employee;
+
+                if ($employee && $employee->phone) {
+                    $phone = preg_replace('/\D/', '', $employee->phone); // pastikan format WA
+
+                    $message = "Hai {$employee->name}, apa kabar? 😊\n\n";
+                    $message .= "Ada kabar baik nih! *{$employer->company_name}* Lagi buka lowongan.\n";
+                    $message .= "Mungkin akan cocok banget sama skill kamu!\n\n";
+                    $message .= "📢 posisi: *{$jobListing->nama_lowongan}* - *{$jobListing->jenislowongan}*\n";
+                    $message .= "📍 Lokasi: {$employer->country}, {$employer->city}\n";
+                    $message .= '💰 Gaji: Rp ' . number_format($jobListing->gaji, 0, ',', '.') . "\n";
+                    $message .= '📅 Tutup: ' . Carbon::parse($jobListing->deadline)->format('d M Y') . "\n\n";
+                    $message .= "Aku udah kasih tau karena sayang kalau kamu melewatkan ini. Yuk cek detailnya di:\n";
+                    $message .= route('job.detail', $jobListing->id) . "\n\n";
+                    $message .= "Kalau tertarik, buruan daftar ya! Aku tunggu kabar baiknya 🎉\n\n";
+                    $message .= "Cheers,\n";
+                    $message .= "{$employer->first_name}{$employer->last_name}\n";
+                    $message .= "{$employer->company_name}";
+
                     $payload['data'][] = [
-                        'phone' => preg_replace('/\D/', '', $phone), // bersihkan nomor
-                        'message' => "Kabar Gembira Untuk Kamu 🎉\n\nHai {$jobseeker->employee->first_name}{$jobseeker->employee->last_name}, ada lowongan baru: {$jobListing->nama_lowongan}. \nLokasi:  \nCek detailnya di: " . route('job.detail', $jobListing->id),
+                        'phone' => $phone,
+                        'message' => $message,
                         'isGroup' => 'false',
                     ];
                 }
